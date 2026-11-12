@@ -1,103 +1,92 @@
 import Link from "next/link";
-import { MapPin, ArrowRight } from "lucide-react";
 import { Professional } from "@/types/professional";
 import { VerificationBadge, SampleDataBadge } from "@/components/common/Badge";
 import { ImagePlaceholder } from "@/components/common/ImagePlaceholder";
+import { categoryMedia } from "@/lib/media";
 
 interface ProfessionalCardProps {
   professional: Professional;
-  featured?: boolean;
 }
 
 export function ProfessionalCard({ professional }: ProfessionalCardProps) {
+  const { slug, name, profession, coverage, services, verification, isSample, categorySlug } = professional;
+
+  // Coverage areas beyond base
+  const otherAreas = coverage.coverageAreas.filter(
+    (a) => a !== coverage.baseLocation
+  );
+  const displayAreas = otherAreas.slice(0, 3).join(", ");
+  const extraCount = otherAreas.length - 3;
+
+  // First price estimate
+  const firstPrice = services[0]?.priceEstimate ?? null;
+
+  // Category tone for placeholder
+  const mediaTone = categoryMedia[categorySlug]?.tone ?? "slate";
+
   return (
-    <div className="group relative flex flex-col justify-between rounded-[3px] border border-border-subtle bg-warm-bone transition-all duration-200 hover:border-deep-slate/40 hover:bg-sand-dune/20">
-      <div className="p-5">
-        {/* Top Meta: Verification and Sample tag */}
-        <div className="flex items-center justify-between gap-2 mb-4">
-          {professional.verification.isVerified ? <VerificationBadge /> : <span />}
-          {professional.isSample && <SampleDataBadge />}
-        </div>
-
-        {/* Profile Header */}
-        <div className="flex items-start gap-3.5 mb-3.5">
-          <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-[2px]">
-            <ImagePlaceholder
-              tone="clay"
-              label="Photo"
-              className="rounded-[2px]"
-            />
-          </div>
-
-          <div className="min-w-0 flex-1">
-            <Link
-              href={`/professionals/${professional.slug}`}
-              className="group-hover:text-laterite transition-colors inline-block"
-            >
-              <h3 className="text-base font-semibold text-deep-slate leading-snug truncate">
-                {professional.name}
-              </h3>
-            </Link>
-            {professional.businessName && (
-              <p className="text-xs text-river-silt truncate">
-                {professional.businessName}
-              </p>
-            )}
-            <p className="text-xs font-medium text-deep-slate/80 mt-0.5">
-              {professional.profession}
-            </p>
-          </div>
-        </div>
-
-        {/* Tagline */}
-        <p className="text-xs text-river-silt line-clamp-2 mb-4 leading-relaxed">
-          {professional.tagline}
-        </p>
-
-        {/* Experience */}
-        <div className="py-2.5 border-y border-border-subtle text-xs text-center mb-4">
-          <span className="font-semibold text-deep-slate">
-            {professional.yearsExperience} yrs
-          </span>
-          <span className="text-[10px] text-river-silt block mt-0.5">Experience</span>
-        </div>
-
-        {/* Location & Coverage Notice */}
-        <div className="space-y-1.5 text-xs text-river-silt">
-          <div className="flex items-center gap-1.5 text-deep-slate font-medium">
-            <MapPin className="h-3.5 w-3.5 text-laterite shrink-0" />
-            <span>Based in {professional.coverage.baseLocation}</span>
-          </div>
-          <p className="text-[11px] text-river-silt pl-5 leading-tight line-clamp-1">
-            Coverage: {professional.coverage.coverageAreas.slice(0, 3).join(", ")}
-            {professional.coverage.coverageAreas.length > 3 ? " + more" : ""}
-          </p>
+    <div className="group flex flex-col overflow-hidden rounded-[3px] border border-border-subtle bg-warm-bone">
+      {/* IMAGE AREA */}
+      <div className="relative aspect-[4/3] overflow-hidden">
+        <ImagePlaceholder
+          tone={mediaTone}
+          label="Best work photo"
+          className="h-full w-full"
+        />
+        {/* Top-left chip stack */}
+        <div className="absolute left-3 top-3 flex flex-col gap-1.5">
+          {isSample && <SampleDataBadge />}
+          {verification.isVerified && <VerificationBadge />}
         </div>
       </div>
 
-      {/* Footer / Action */}
-      <div className="flex items-center justify-between border-t border-border-subtle bg-sand-dune/30 px-5 py-3 text-xs">
-        <span className="text-river-silt">
-          {professional.services[0]?.priceEstimate ? (
-            <>
-              Est:{" "}
-              <strong className="text-deep-slate font-medium">
-                {professional.services[0].priceEstimate.split(" ")[0]}{" "}
-                {professional.services[0].priceEstimate.split(" ")[1]}
-              </strong>
-            </>
-          ) : (
-            <span>See profile for rates</span>
-          )}
-        </span>
+      {/* BODY */}
+      <div className="flex flex-1 flex-col p-5 gap-1.5">
+        <h3 className="font-serif text-2xl leading-snug text-deep-slate">
+          {name}
+        </h3>
+        <p className="text-sm text-river-silt">
+          {profession} · Based in {coverage.baseLocation}
+        </p>
+        {otherAreas.length > 0 && (
+          <p className="text-xs text-river-silt">
+            Also serves: {displayAreas}
+            {extraCount > 0 && ` +${extraCount} more`}
+          </p>
+        )}
+      </div>
 
-        <Link
-          href={`/professionals/${professional.slug}`}
-          className="inline-flex items-center gap-1 font-medium text-laterite hover:text-laterite-dark group-hover:translate-x-0.5 transition-transform"
-        >
-          <span>View Profile</span>
-          <ArrowRight className="h-3.5 w-3.5" />
-        </Link>
+      {/* FOOTER ROW */}
+      <div className="flex items-center justify-between border-t border-border-subtle px-5 py-3 min-h-[52px]">
+        {firstPrice ? (
+          <span className="text-xs text-river-silt">
+            From{" "}
+            <strong className="font-medium text-deep-slate">
+              {firstPrice.split(" ")[0]} {firstPrice.split(" ")[1]}
+            </strong>
+          </span>
+        ) : (
+          <span className="text-xs text-river-silt">Ask for a quote</span>
+        )}
+
+        {isSample ? (
+          <Link
+            href={`/professionals/${slug}`}
+            className="text-xs font-medium text-laterite hover:underline underline-offset-2 transition-colors"
+          >
+            View sample profile
+          </Link>
+        ) : (
+          /* Only rendered for real (non-sample) profiles */
+          <a
+            href={`https://wa.me/${professional.whatsappNumber}?text=${encodeURIComponent(`Hi, I found your profile on Jokkoo. I'd like to enquire about your services.`)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center justify-center rounded-full bg-laterite px-4 text-xs font-semibold text-warm-bone transition-colors hover:bg-laterite/90 min-h-[44px]"
+          >
+            WhatsApp
+          </a>
+        )}
       </div>
     </div>
   );
