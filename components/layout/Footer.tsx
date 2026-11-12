@@ -21,8 +21,9 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10">
           {/* Brand Column */}
           <div className="lg:col-span-2 space-y-4">
-            <div className="[&_span]:text-warm-bone [&_svg]:text-warm-bone">
-              <Logo />
+            {/* TODO: Replace Warm Bone container with a light logo variant when one is supplied */}
+            <div className="inline-block bg-warm-bone rounded-[var(--radius-control)] px-3 py-2">
+              <Logo size="footer" />
             </div>
             <p className="text-sm text-warm-bone/70 max-w-sm leading-relaxed">
               Connecting households and businesses across The Gambia with independent skilled trade professionals.
