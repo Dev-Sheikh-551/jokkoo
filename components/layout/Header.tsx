@@ -3,14 +3,13 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X, ArrowUpRight } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { Logo } from "@/components/common/Logo";
-import { Button } from "@/components/common/Button";
 import { cn } from "@/lib/utils";
 
 const NAV_LINKS = [
-  { href: "/explore", label: "Explore Professionals" },
-  { href: "/categories", label: "All Categories" },
+  { href: "/explore", label: "Explore" },
+  { href: "/categories", label: "Categories" },
 ];
 
 export function Header() {
@@ -24,58 +23,49 @@ export function Header() {
         <Logo />
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center gap-8 text-sm font-medium">
-          {NAV_LINKS.map((link) => {
-            const isActive = pathname.startsWith(link.href);
-            return (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={cn(
-                  "transition-colors hover:text-laterite focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-laterite rounded-[2px] py-1",
-                  isActive ? "text-laterite font-semibold" : "text-deep-slate/85"
-                )}
-              >
-                {link.label}
-              </Link>
-            );
-          })}
-        </nav>
+        <div className="hidden md:flex items-center gap-8">
+          <nav className="flex items-center gap-6 text-sm font-medium">
+            {NAV_LINKS.map((link) => {
+              const isActive = pathname.startsWith(link.href);
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={cn(
+                    "transition-colors hover:text-laterite focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-laterite rounded-[2px] py-1 text-sm font-medium",
+                    isActive ? "text-laterite font-semibold" : "text-deep-slate/85"
+                  )}
+                >
+                  {link.label}
+                </Link>
+              );
+            })}
 
-        {/* Desktop Action Buttons */}
-        <div className="hidden md:flex items-center gap-4">
+            <Link
+              href="/login"
+              className={cn(
+                "transition-colors hover:text-laterite focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-laterite rounded-[2px] py-1 text-sm font-medium",
+                pathname === "/login" ? "text-laterite font-semibold" : "text-deep-slate/85"
+              )}
+            >
+              Sign in
+            </Link>
+          </nav>
+
           <Link
-            href="/login"
-            className="text-sm font-medium text-deep-slate/80 hover:text-deep-slate px-3 py-1.5 transition-colors"
+            href="/join"
+            className="inline-flex min-h-[44px] items-center justify-center rounded-full bg-deep-slate px-5 py-2.5 text-xs font-semibold text-warm-bone transition-colors hover:bg-deep-slate/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-laterite focus-visible:ring-offset-2"
           >
-            Sign In
+            Join as a professional
           </Link>
-
-          <Button href="/join" variant="outline" size="sm" className="gap-1.5 border-deep-slate/20">
-            <span>List Your Business</span>
-            <ArrowUpRight className="h-3.5 w-3.5 text-laterite" />
-          </Button>
-
-          <Button href="/explore" variant="primary" size="sm">
-            Find a Professional
-          </Button>
         </div>
 
         {/* Mobile Menu Toggle Button */}
-        <div className="flex md:hidden items-center gap-2">
-          <Button
-            href="/join"
-            variant="subtle"
-            size="sm"
-            className="text-xs px-2.5 py-1 text-deep-slate"
-          >
-            Join as Pro
-          </Button>
-
+        <div className="flex md:hidden items-center">
           <button
             type="button"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-2 text-deep-slate hover:bg-sand-dune rounded-[3px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-laterite"
+            className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center p-2 text-deep-slate hover:bg-sand-dune rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-laterite"
             aria-expanded={mobileMenuOpen}
             aria-label="Toggle navigation menu"
           >
@@ -91,49 +81,34 @@ export function Header() {
       {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
         <div className="md:hidden border-b border-border-subtle bg-warm-bone px-4 pt-3 pb-6 animate-in fade-in-50 duration-150">
-          <nav className="flex flex-col space-y-3">
+          <nav className="flex flex-col space-y-2">
             {NAV_LINKS.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
                 onClick={() => setMobileMenuOpen(false)}
-                className="px-3 py-2 text-base font-medium text-deep-slate hover:bg-sand-dune rounded-[3px] transition-colors"
+                className="flex min-h-[44px] items-center px-3 py-2 text-base font-medium text-deep-slate hover:bg-sand-dune rounded-[3px] transition-colors"
               >
                 {link.label}
               </Link>
             ))}
 
+            <Link
+              href="/login"
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex min-h-[44px] items-center px-3 py-2 text-base font-medium text-deep-slate hover:bg-sand-dune rounded-[3px] transition-colors"
+            >
+              Sign in
+            </Link>
+
             <div className="pt-4 border-t border-border-subtle flex flex-col gap-2.5">
-              <Button
-                href="/explore"
-                variant="primary"
-                size="md"
-                className="w-full justify-center"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Find a Professional
-              </Button>
-
-              <Button
+              <Link
                 href="/join"
-                variant="outline"
-                size="md"
-                className="w-full justify-center"
                 onClick={() => setMobileMenuOpen(false)}
+                className="inline-flex min-h-[44px] w-full items-center justify-center rounded-full bg-deep-slate px-5 py-3 text-sm font-semibold text-warm-bone transition-colors hover:bg-deep-slate/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-laterite"
               >
-                Join as a Skilled Professional
-              </Button>
-
-              <div className="flex justify-between items-center px-2 pt-2 text-sm text-river-silt">
-                <span>Already registered?</span>
-                <Link
-                  href="/login"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="font-medium text-laterite hover:underline"
-                >
-                  Sign In
-                </Link>
-              </div>
+                Join as a professional
+              </Link>
             </div>
           </nav>
         </div>
