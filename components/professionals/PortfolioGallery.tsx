@@ -1,5 +1,6 @@
 import { Camera } from "lucide-react";
 import { PortfolioItem } from "@/types/professional";
+import { ImagePlaceholder } from "@/components/common/ImagePlaceholder";
 
 interface PortfolioGalleryProps {
   portfolio: PortfolioItem[];
@@ -32,14 +33,12 @@ export function PortfolioGallery({ portfolio }: PortfolioGalleryProps) {
             className="group overflow-hidden rounded-[2px] border border-border-subtle bg-sand-dune/20"
           >
             {/* Image placeholder */}
-            <div
-              className="relative aspect-[16/10] w-full overflow-hidden bg-sand-dune flex items-center justify-center"
-              role="img"
-              aria-label={`Portfolio image for ${item.title}`}
-            >
-              <span className="text-[10px] font-medium text-river-silt/50 uppercase tracking-widest">
-                Portfolio Photo
-              </span>
+            <div className="relative aspect-[16/10] w-full overflow-hidden">
+              <ImagePlaceholder
+                tone="sand"
+                label={item.tag}
+                className="rounded-[2px] border-none"
+              />
               <div className="absolute top-2.5 right-2.5 px-2 py-0.5 rounded-[2px] bg-deep-slate/85 backdrop-blur-sm text-[10px] font-semibold text-warm-bone">
                 {item.completedYear}
               </div>

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { MapPin, ArrowRight } from "lucide-react";
 import { Professional } from "@/types/professional";
 import { VerificationBadge, SampleDataBadge } from "@/components/common/Badge";
+import { ImagePlaceholder } from "@/components/common/ImagePlaceholder";
 
 interface ProfessionalCardProps {
   professional: Professional;
@@ -20,15 +21,12 @@ export function ProfessionalCard({ professional }: ProfessionalCardProps) {
 
         {/* Profile Header */}
         <div className="flex items-start gap-3.5 mb-3.5">
-          {/* Avatar placeholder */}
-          <div
-            className="relative h-14 w-14 shrink-0 overflow-hidden rounded-[2px] border border-border-subtle bg-sand-dune flex items-center justify-center"
-            role="img"
-            aria-label="Profile image placeholder"
-          >
-            <span className="text-[9px] font-medium text-river-silt/60 uppercase tracking-wide text-center leading-tight px-1">
-              Photo
-            </span>
+          <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-[2px]">
+            <ImagePlaceholder
+              tone="clay"
+              label="Photo"
+              className="rounded-[2px]"
+            />
           </div>
 
           <div className="min-w-0 flex-1">

@@ -128,14 +128,14 @@ export function ExploreClient() {
           Explore Skilled Professionals
         </h1>
         <p className="text-sm text-river-silt mt-1.5 max-w-2xl">
-          Browse verified artisans, trade contractors, and service businesses. Every professional lists their actual base workshop and confirmed geographic coverage.
+          Browse artisans, trade contractors, and service businesses. Every professional lists their actual base workshop and confirmed geographic coverage.
         </p>
 
         {/* Development Data Notice */}
         <div className="mt-4 p-3 rounded-[2px] bg-sand-dune/60 border border-border-subtle flex items-start gap-2.5 text-xs text-river-silt">
           <AlertCircle className="h-4 w-4 text-laterite shrink-0 mt-0.5" />
           <div>
-            <strong className="text-deep-slate">Milestone 1 Development Sample Data:</strong> The profiles below represent vetted trade archetypes and testing data for initial review. They illustrate verified credentials, specific location coverage limitations, and Dalasi (GMD) pricing.
+            <strong className="text-deep-slate">Sample Data:</strong> The profiles below represent trade archetypes and sample data. Free to join.
           </div>
         </div>
       </div>
@@ -298,7 +298,7 @@ export function ExploreClient() {
           {/* Results Summary Bar */}
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-warm-bone border border-border-subtle px-4 py-3 rounded-[2px]">
             <div className="text-xs text-river-silt">
-              Showing <strong className="text-deep-slate">{filteredProfessionals.length}</strong> verified professionals
+              Showing <strong className="text-deep-slate">{filteredProfessionals.length}</strong> sample {filteredProfessionals.length === 1 ? "profile" : "profiles"}
               {selectedCategory && (
                 <span> in <span className="font-semibold text-deep-slate">{CATEGORIES.find((c) => c.slug === selectedCategory)?.name || selectedCategory}</span></span>
               )}
