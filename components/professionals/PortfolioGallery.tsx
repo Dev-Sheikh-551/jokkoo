@@ -1,5 +1,4 @@
-import Image from "next/image";
-import { Camera, Calendar, Tag } from "lucide-react";
+import { Camera } from "lucide-react";
 import { PortfolioItem } from "@/types/professional";
 
 interface PortfolioGalleryProps {
@@ -15,10 +14,10 @@ export function PortfolioGallery({ portfolio }: PortfolioGalleryProps) {
         <div>
           <h3 className="text-base font-bold text-deep-slate flex items-center gap-2">
             <Camera className="h-4 w-4 text-laterite" />
-            <span>Portfolio & Documented Work</span>
+            <span>Portfolio &amp; Documented Work</span>
           </h3>
           <p className="text-xs text-river-silt mt-1">
-            Photographs of verified past installations, craftsmanship, and trade projects in The Gambia.
+            Photographs of past installations, craftsmanship, and trade projects.
           </p>
         </div>
         <span className="text-xs text-river-silt font-medium">
@@ -32,15 +31,15 @@ export function PortfolioGallery({ portfolio }: PortfolioGalleryProps) {
             key={item.id}
             className="group overflow-hidden rounded-[2px] border border-border-subtle bg-sand-dune/20"
           >
-            {/* Image Container */}
-            <div className="relative aspect-[16/10] w-full overflow-hidden bg-sand-dune">
-              <Image
-                src={item.imageUrl}
-                alt={item.title}
-                fill
-                sizes="(max-width: 640px) 100vw, 50vw"
-                className="object-cover transition-transform duration-300 group-hover:scale-105"
-              />
+            {/* Image placeholder */}
+            <div
+              className="relative aspect-[16/10] w-full overflow-hidden bg-sand-dune flex items-center justify-center"
+              role="img"
+              aria-label={`Portfolio image for ${item.title}`}
+            >
+              <span className="text-[10px] font-medium text-river-silt/50 uppercase tracking-widest">
+                Portfolio Photo
+              </span>
               <div className="absolute top-2.5 right-2.5 px-2 py-0.5 rounded-[2px] bg-deep-slate/85 backdrop-blur-sm text-[10px] font-semibold text-warm-bone">
                 {item.completedYear}
               </div>

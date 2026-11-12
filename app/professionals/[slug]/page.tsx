@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Share2, ShieldAlert } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { SAMPLE_PROFESSIONALS } from "@/data/professionals";
@@ -63,7 +63,7 @@ export default async function ProfessionalProfilePage({ params }: PageProps) {
             </Link>
 
             <span className="text-[11px] font-mono text-river-silt/80">
-              Verified Profile ID: {professional.id}
+              Sample profile
             </span>
           </div>
         </div>
@@ -85,7 +85,7 @@ export default async function ProfessionalProfilePage({ params }: PageProps) {
                   {professional.bio}
                 </p>
                 <div className="pt-2 text-xs text-river-silt font-medium">
-                  Operating in The Gambia since {2026 - professional.yearsExperience} • {professional.completedJobsCount}+ documented completed jobs.
+                  Operating in The Gambia for {professional.yearsExperience}+ years.
                 </div>
               </div>
 
@@ -101,8 +101,6 @@ export default async function ProfessionalProfilePage({ params }: PageProps) {
               {/* Reviews Section */}
               <ReviewSection
                 reviews={professional.reviews}
-                rating={professional.rating}
-                reviewCount={professional.reviewCount}
               />
             </div>
 

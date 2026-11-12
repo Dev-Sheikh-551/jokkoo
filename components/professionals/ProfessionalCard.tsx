@@ -1,6 +1,5 @@
 import Link from "next/link";
-import Image from "next/image";
-import { MapPin, Star, Briefcase, Clock, ShieldCheck, ArrowRight } from "lucide-react";
+import { MapPin, ArrowRight } from "lucide-react";
 import { Professional } from "@/types/professional";
 import { VerificationBadge, SampleDataBadge } from "@/components/common/Badge";
 
@@ -9,26 +8,27 @@ interface ProfessionalCardProps {
   featured?: boolean;
 }
 
-export function ProfessionalCard({ professional, featured = false }: ProfessionalCardProps) {
+export function ProfessionalCard({ professional }: ProfessionalCardProps) {
   return (
     <div className="group relative flex flex-col justify-between rounded-[3px] border border-border-subtle bg-warm-bone transition-all duration-200 hover:border-deep-slate/40 hover:bg-sand-dune/20">
       <div className="p-5">
         {/* Top Meta: Verification and Sample tag */}
         <div className="flex items-center justify-between gap-2 mb-4">
-          <VerificationBadge />
-          <SampleDataBadge />
+          {professional.verification.isVerified ? <VerificationBadge /> : <span />}
+          {professional.isSample && <SampleDataBadge />}
         </div>
 
         {/* Profile Header */}
         <div className="flex items-start gap-3.5 mb-3.5">
-          <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-[2px] border border-border-subtle bg-sand-dune">
-            <Image
-              src={professional.avatarUrl}
-              alt={professional.name}
-              fill
-              sizes="56px"
-              className="object-cover"
-            />
+          {/* Avatar placeholder */}
+          <div
+            className="relative h-14 w-14 shrink-0 overflow-hidden rounded-[2px] border border-border-subtle bg-sand-dune flex items-center justify-center"
+            role="img"
+            aria-label="Profile image placeholder"
+          >
+            <span className="text-[9px] font-medium text-river-silt/60 uppercase tracking-wide text-center leading-tight px-1">
+              Photo
+            </span>
           </div>
 
           <div className="min-w-0 flex-1">
@@ -56,35 +56,12 @@ export function ProfessionalCard({ professional, featured = false }: Professiona
           {professional.tagline}
         </p>
 
-        {/* Rating and Experience Stats */}
-        <div className="grid grid-cols-3 gap-2 py-2.5 border-y border-border-subtle text-center text-xs mb-4">
-          <div>
-            <span className="flex items-center justify-center gap-1 font-semibold text-deep-slate">
-              <Star className="h-3.5 w-3.5 fill-[#C29B38] text-[#C29B38]" />
-              {professional.rating.toFixed(2)}
-            </span>
-            <span className="text-[10px] text-river-silt block mt-0.5">
-              {professional.reviewCount} reviews
-            </span>
-          </div>
-
-          <div>
-            <span className="font-semibold text-deep-slate">
-              {professional.yearsExperience} yrs
-            </span>
-            <span className="text-[10px] text-river-silt block mt-0.5">
-              Experience
-            </span>
-          </div>
-
-          <div>
-            <span className="font-semibold text-deep-slate">
-              {professional.completedJobsCount}+
-            </span>
-            <span className="text-[10px] text-river-silt block mt-0.5">
-              Jobs completed
-            </span>
-          </div>
+        {/* Experience */}
+        <div className="py-2.5 border-y border-border-subtle text-xs text-center mb-4">
+          <span className="font-semibold text-deep-slate">
+            {professional.yearsExperience} yrs
+          </span>
+          <span className="text-[10px] text-river-silt block mt-0.5">Experience</span>
         </div>
 
         {/* Location & Coverage Notice */}
@@ -105,10 +82,14 @@ export function ProfessionalCard({ professional, featured = false }: Professiona
         <span className="text-river-silt">
           {professional.services[0]?.priceEstimate ? (
             <>
-              Est: <strong className="text-deep-slate font-medium">{professional.services[0].priceEstimate.split(" ")[0]} {professional.services[0].priceEstimate.split(" ")[1]}</strong>
+              Est:{" "}
+              <strong className="text-deep-slate font-medium">
+                {professional.services[0].priceEstimate.split(" ")[0]}{" "}
+                {professional.services[0].priceEstimate.split(" ")[1]}
+              </strong>
             </>
           ) : (
-            <span>Verified Rates</span>
+            <span>See profile for rates</span>
           )}
         </span>
 
