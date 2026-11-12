@@ -2,27 +2,10 @@ import { Category } from "@/types/category";
 
 export const CATEGORIES: Category[] = [
   {
-    id: "plumbing",
-    slug: "plumbing",
-    name: "Plumbing & Borehole Systems",
-    tagline: "Pipes, pumps, boreholes",
-    shortDescription:
-      "Pipefitting, water tanks, borehole pumps, leak diagnosis, and bathroom sanitary installations.",
-    fullDescription:
-      "Plumbers experienced in residential piping, solar water heating, booster pumps, and borehole installations across coastal The Gambia.",
-    iconName: "Wrench",
-    popularServices: [
-      "Borehole pump repair & installation",
-      "Overhead water tank plumbing",
-      "Bathroom sanitary ware fitting",
-      "Underground pipe leak detection",
-      "Water heater & solar collector servicing",
-    ],
-  },
-  {
     id: "electrical",
     slug: "electrical-work",
     name: "Electrical & Solar Installations",
+    shortName: "Electrical",
     tagline: "Wiring, solar, generators",
     shortDescription:
       "Residential wiring, solar inverter setups, backup generators, and safety inspections.",
@@ -38,9 +21,29 @@ export const CATEGORIES: Category[] = [
     ],
   },
   {
+    id: "plumbing",
+    slug: "plumbing",
+    name: "Plumbing & Borehole Systems",
+    shortName: "Plumbing",
+    tagline: "Pipes, pumps, boreholes",
+    shortDescription:
+      "Pipefitting, water tanks, borehole pumps, leak diagnosis, and bathroom sanitary installations.",
+    fullDescription:
+      "Plumbers experienced in residential piping, solar water heating, booster pumps, and borehole installations across coastal The Gambia.",
+    iconName: "Wrench",
+    popularServices: [
+      "Borehole pump repair & installation",
+      "Overhead water tank plumbing",
+      "Bathroom sanitary ware fitting",
+      "Underground pipe leak detection",
+      "Water heater & solar collector servicing",
+    ],
+  },
+  {
     id: "carpentry",
     slug: "carpentry",
     name: "Carpentry & Joinery",
+    shortName: "Carpentry",
     tagline: "Furniture, doors, roof timber",
     shortDescription:
       "Woodwork, roof truss framing, fitted cabinetry, and hardwood furniture.",
@@ -59,6 +62,7 @@ export const CATEGORIES: Category[] = [
     id: "mechanics",
     slug: "mechanics",
     name: "Automotive & Mechanical Repairs",
+    shortName: "Mechanical",
     tagline: "Cars, engines, repairs",
     shortDescription:
       "Vehicle computer diagnostics, suspension overhauls, engine servicing, and AC repairs.",
@@ -77,6 +81,7 @@ export const CATEGORIES: Category[] = [
     id: "tailoring",
     slug: "tailoring",
     name: "Bespoke Tailoring & Garment Design",
+    shortName: "Tailoring",
     tagline: "Clothes made and mended",
     shortDescription:
       "Traditional attire, embroidery, formal suits, and custom garment fitting.",
@@ -95,6 +100,7 @@ export const CATEGORIES: Category[] = [
     id: "painting",
     slug: "painting",
     name: "Painting & Surface Finishing",
+    shortName: "Painting",
     tagline: "Interior and exterior finishes",
     shortDescription:
       "Interior emulsion, exterior coatings, textured finishes, and waterproofing.",
@@ -113,6 +119,7 @@ export const CATEGORIES: Category[] = [
     id: "cleaning",
     slug: "cleaning",
     name: "Deep Cleaning & Facility Care",
+    shortName: "Cleaning",
     tagline: "Homes, offices, after-build cleanup",
     shortDescription:
       "Post-construction cleanup, compound grounds care, upholstery sanitation, and office turnover.",
@@ -131,6 +138,7 @@ export const CATEGORIES: Category[] = [
     id: "photography",
     slug: "photography",
     name: "Photography & Videography",
+    shortName: "Photography",
     tagline: "Events, property, portraits",
     shortDescription:
       "Architectural property showcases, commercial documentation, and family events.",
@@ -149,6 +157,7 @@ export const CATEGORIES: Category[] = [
     id: "computer-repairs",
     slug: "computer-repairs",
     name: "Computer & IT Engineering",
+    shortName: "Computer & Tech",
     tagline: "Repairs, networks, data recovery",
     shortDescription:
       "Hardware repair, data recovery, Wi-Fi networking, and system maintenance.",
