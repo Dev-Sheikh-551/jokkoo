@@ -1,20 +1,19 @@
 import Link from "next/link";
 import { Logo } from "@/components/common/Logo";
-import { ShieldCheck } from "lucide-react";
 import { CATEGORIES } from "@/data/categories";
+import { GAMBIAN_LOCATIONS } from "@/data/locations";
 
 export function Footer() {
+  const serviceAreas = GAMBIAN_LOCATIONS.filter((loc) => loc.id !== "all");
+
   return (
-    <footer className="w-full border-t border-border-subtle bg-sand-dune/40 mt-auto">
-      {/* Verification & Trust Disclaimer Banner */}
-      <div className="border-b border-border-subtle bg-sand-dune/60 py-3.5 px-4 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-7xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-xs text-river-silt">
-          <div className="flex items-center gap-2">
-            <ShieldCheck className="h-4 w-4 text-laterite shrink-0" />
-            <span>
-              <strong>Verification Policy:</strong> Jokkoo verifies government-issued identity documents and operational location of listed professionals. Verification does not guarantee workmanship or warranty services.
-            </span>
-          </div>
+    <footer className="w-full bg-deep-slate text-warm-bone mt-auto">
+      {/* Verification Policy Disclaimer */}
+      <div className="border-b border-warm-bone/10 py-6 px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl">
+          <p className="text-xs text-warm-bone/70 leading-relaxed max-w-3xl">
+            Identity verified means an administrator has checked a person&apos;s ID. It is not a guarantee of workmanship or qualifications.
+          </p>
         </div>
       </div>
 
@@ -22,105 +21,72 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10">
           {/* Brand Column */}
           <div className="lg:col-span-2 space-y-4">
-            <Logo />
-            <p className="text-sm text-river-silt max-w-sm leading-relaxed">
-              Inspired by the Wolof principle of <em>jokkoo</em> — bringing people together in mutual connection and trust. Connecting Gambian households and businesses with verified, independent trade professionals.
-            </p>
-            <div className="pt-2 text-xs text-river-silt">
-              <span className="font-semibold text-deep-slate">Initial Service Territory:</span> Greater Banjul Area, Kanifing Municipality, and West Coast Region, The Gambia.
+            <div className="[&_span]:text-warm-bone [&_svg]:text-warm-bone">
+              <Logo />
             </div>
+            <p className="text-sm text-warm-bone/70 max-w-sm leading-relaxed">
+              Connecting households and businesses across The Gambia with independent skilled trade professionals.
+            </p>
           </div>
 
-          {/* Trade Categories */}
+          {/* Trades Column */}
           <div>
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-deep-slate mb-4">
-              Featured Trades
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-warm-bone mb-4">
+              Trades
             </h3>
-            <ul className="space-y-2.5 text-sm text-river-silt">
-              {CATEGORIES.slice(0, 5).map((category) => (
+            <ul className="space-y-2.5 text-sm text-warm-bone/70">
+              {CATEGORIES.map((category) => (
                 <li key={category.slug}>
                   <Link
                     href={`/explore?category=${category.slug}`}
-                    className="hover:text-laterite transition-colors"
+                    className="hover:text-warm-bone transition-colors"
                   >
-                    {category.name}
+                    {category.shortName}
                   </Link>
                 </li>
               ))}
+            </ul>
+          </div>
+
+          {/* Areas Column */}
+          <div>
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-warm-bone mb-4">
+              Areas
+            </h3>
+            <ul className="space-y-2.5 text-sm text-warm-bone/70 max-h-60 overflow-y-auto pr-2">
+              {serviceAreas.map((loc) => (
+                <li key={loc.id}>
+                  <Link
+                    href={`/explore?location=${loc.id}`}
+                    className="hover:text-warm-bone transition-colors"
+                  >
+                    {loc.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* For Professionals Column */}
+          <div>
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-warm-bone mb-4">
+              For professionals
+            </h3>
+            <ul className="space-y-2.5 text-sm text-warm-bone/70">
               <li>
                 <Link
-                  href="/categories"
-                  className="font-medium text-laterite hover:underline inline-block pt-1 text-xs"
+                  href="/join"
+                  className="hover:text-warm-bone transition-colors"
                 >
-                  View All Categories →
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* Key Locations */}
-          <div>
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-deep-slate mb-4">
-              Service Areas
-            </h3>
-            <ul className="space-y-2.5 text-sm text-river-silt">
-              <li>
-                <Link href="/explore?location=brusubi" className="hover:text-laterite transition-colors">
-                  Brusubi & Bijilo
+                  Join as a professional
                 </Link>
               </li>
               <li>
-                <Link href="/explore?location=serekunda" className="hover:text-laterite transition-colors">
-                  Serekunda & Westfield
-                </Link>
-              </li>
-              <li>
-                <Link href="/explore?location=fajara" className="hover:text-laterite transition-colors">
-                  Fajara & Bakau
-                </Link>
-              </li>
-              <li>
-                <Link href="/explore?location=senegambia-kololi" className="hover:text-laterite transition-colors">
-                  Senegambia & Kololi
-                </Link>
-              </li>
-              <li>
-                <Link href="/explore?location=banjul" className="hover:text-laterite transition-colors">
-                  Banjul (City)
-                </Link>
-              </li>
-              <li>
-                <Link href="/explore?location=brikama" className="hover:text-laterite transition-colors">
-                  Brikama
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* For Professionals */}
-          <div>
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-deep-slate mb-4">
-              For Tradespeople
-            </h3>
-            <ul className="space-y-2.5 text-sm text-river-silt">
-              <li>
-                <Link href="/join" className="font-medium text-deep-slate hover:text-laterite transition-colors">
-                  List Your Trade Practice
-                </Link>
-              </li>
-              <li>
-                <Link href="/join#verification" className="hover:text-laterite transition-colors">
-                  Verification Requirements
-                </Link>
-              </li>
-              <li>
-                <Link href="/login" className="hover:text-laterite transition-colors">
-                  Professional Sign In
-                </Link>
-              </li>
-              <li>
-                <Link href="/register" className="hover:text-laterite transition-colors">
-                  Create Client Account
+                <Link
+                  href="/login"
+                  className="hover:text-warm-bone transition-colors"
+                >
+                  Sign in
                 </Link>
               </li>
             </ul>
@@ -128,12 +94,11 @@ export function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="mt-12 pt-8 border-t border-border-subtle flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-river-silt">
-          <p>© 2026 Jokkoo. Built for The Gambia. All rights reserved.</p>
-          <div className="flex gap-6">
-            <span className="hover:text-deep-slate cursor-default">Identity Verified Platform</span>
-            <span className="hover:text-deep-slate cursor-default">Direct WhatsApp & Call</span>
-            <span className="hover:text-deep-slate cursor-default">Free to join</span>
+        <div className="mt-12 pt-8 border-t border-warm-bone/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-warm-bone/60">
+          <p>© 2026 Jokkoo. All rights reserved.</p>
+          <div className="flex items-center gap-6">
+            <span>The Gambia</span>
+            <span>Free to join</span>
           </div>
         </div>
       </div>
