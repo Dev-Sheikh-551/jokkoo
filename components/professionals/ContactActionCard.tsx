@@ -1,6 +1,7 @@
-import { MessageSquare, Phone, ShieldCheck } from "lucide-react";
+import { MessageSquare, Phone } from "lucide-react";
 import { Professional } from "@/types/professional";
 import { Button } from "@/components/common/Button";
+import { VerificationBadge } from "@/components/common/VerificationBadge";
 
 interface ContactActionCardProps {
   professional: Professional;
@@ -75,16 +76,17 @@ export function ContactActionCard({ professional }: ContactActionCardProps) {
         </div>
       </div>
 
-      {/* Verification Transparency Disclaimer */}
+      {/* Verification Transparency Notice */}
       <div className="rounded-[2px] bg-sand-dune/60 border border-border-subtle p-3.5 space-y-2">
         <div className="flex items-center gap-1.5 text-xs font-semibold text-deep-slate">
-          <ShieldCheck className="h-4 w-4 text-laterite shrink-0" />
-          <span>
-            {professional.verification.isVerified ? "Identity Verified" : "Identity Not Yet Verified"}
-          </span>
+          {professional.verification === "phone" ? (
+            <VerificationBadge level="phone" />
+          ) : (
+            <span>Phone not yet confirmed</span>
+          )}
         </div>
         <p className="text-[11px] text-river-silt leading-relaxed">
-          {professional.verification.disclaimer}
+          Phone verified means we confirmed the number belongs to the person who registered. It is not a check of identity, qualifications or workmanship.
         </p>
       </div>
     </div>

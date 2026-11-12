@@ -1,6 +1,7 @@
 import { MapPin, Briefcase, Languages } from "lucide-react";
 import { Professional } from "@/types/professional";
-import { VerificationBadge, SampleDataBadge } from "@/components/common/Badge";
+import { SampleDataBadge } from "@/components/common/Badge";
+import { VerificationBadge } from "@/components/common/VerificationBadge";
 import { ImagePlaceholder } from "@/components/common/ImagePlaceholder";
 
 interface ProfileHeaderProps {
@@ -30,8 +31,16 @@ export function ProfileHeader({ professional }: ProfileHeaderProps) {
           {/* Main Info */}
           <div className="flex-1 space-y-2">
             <div className="flex flex-wrap items-center gap-2">
-              {professional.verification.isVerified && (
-                <VerificationBadge showDisclaimer={false} />
+              <VerificationBadge level={professional.verification} />
+              {professional.verification === "phone" && (
+                <details className="text-xs text-river-silt cursor-pointer group">
+                  <summary className="hover:text-deep-slate underline underline-offset-2">
+                    What does this mean?
+                  </summary>
+                  <p className="mt-1.5 text-[11px] text-river-silt bg-sand-dune/40 p-2 rounded border border-border-subtle max-w-sm">
+                    We confirmed this phone number belongs to the person who registered. It is not a check of identity, qualifications or workmanship.
+                  </p>
+                </details>
               )}
               {professional.isSample && <SampleDataBadge />}
             </div>

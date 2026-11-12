@@ -12,7 +12,7 @@ export function Footer() {
       <div className="border-b border-warm-bone/10 py-6 px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <p className="text-xs text-warm-bone/70 leading-relaxed max-w-3xl">
-            Identity verified means an administrator has checked a person&apos;s ID. It is not a guarantee of workmanship or qualifications.
+            Phone verified means we confirmed the number belongs to the person who registered. It is not a check of identity, qualifications or workmanship.
           </p>
         </div>
       </div>

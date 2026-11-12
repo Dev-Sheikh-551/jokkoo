@@ -119,7 +119,7 @@ export function HeroClient({
         </form>
 
         <p className="text-xs text-river-silt">
-          ID-checked profiles get a verified badge. Contact by WhatsApp or phone. Free to join.
+          Phone-verified profiles get a badge. Contact by WhatsApp or phone. Free to join.
         </p>
       </div>
 

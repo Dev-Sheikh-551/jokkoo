@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Professional } from "@/types/professional";
-import { VerificationBadge, SampleDataBadge } from "@/components/common/Badge";
+import { SampleDataBadge } from "@/components/common/Badge";
+import { VerificationBadge } from "@/components/common/VerificationBadge";
 import { ImagePlaceholder } from "@/components/common/ImagePlaceholder";
 import { categoryMedia } from "@/lib/media";
 
@@ -33,7 +34,7 @@ export function ProfessionalCard({ professional }: ProfessionalCardProps) {
         {/* Top-left chip stack */}
         <div className="absolute left-3 top-3 flex flex-col gap-1.5">
           {isSample && <SampleDataBadge />}
-          {verification.isVerified && <VerificationBadge />}
+          <VerificationBadge level={verification} />
         </div>
       </div>
 

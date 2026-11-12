@@ -6,12 +6,12 @@ export interface ServiceOffering {
 }
 
 /**
- * Verification is a simple boolean flag.
+ * Verification level:
+ * - "none": not verified
+ * - "phone": phone number confirmed to belong to the registrant
+ * - "identity": reserved for a possible future opt-in tier; not currently rendered in the UI
  */
-export interface VerificationStatus {
-  isVerified: boolean;
-  disclaimer: string;
-}
+export type VerificationLevel = "none" | "phone" | "identity";
 
 export interface LocationCoverage {
   baseLocation: string;
@@ -47,7 +47,7 @@ export interface Professional {
   yearsExperience: number;
   tagline: string;
   bio: string;
-  verification: VerificationStatus;
+  verification: VerificationLevel;
   coverage: LocationCoverage;
   services: ServiceOffering[];
   portfolio: PortfolioItem[];

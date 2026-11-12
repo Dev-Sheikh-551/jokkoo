@@ -103,7 +103,7 @@ export function ExploreClient() {
       }
 
       // 4. Verification filter
-      if (onlyVerified && !pro.verification.isVerified) {
+      if (onlyVerified && pro.verification !== "phone") {
         return false;
       }
 
@@ -284,11 +284,11 @@ export function ExploreClient() {
                 className="h-3.5 w-3.5 rounded-[2px] border-border-subtle text-laterite focus:ring-laterite accent-laterite"
               />
               <span className="text-xs text-deep-slate font-medium">
-                Identity Verified Only
+                Phone verified only
               </span>
             </label>
             <p className="text-[10px] text-river-silt mt-1 pl-5">
-              Filters for professionals with validated government ID & physical base.
+              Only shows professionals whose phone number we have confirmed.
             </p>
           </div>
         </aside>

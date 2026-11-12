@@ -24,7 +24,7 @@ export function JoinCtaSection() {
             </Link>
 
             <p className="text-xs text-warm-bone/70">
-              We check your ID before the Identity verified badge appears.
+              We confirm your phone number before the Phone verified badge appears.
             </p>
           </div>
         </div>

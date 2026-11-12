@@ -9,7 +9,7 @@ export function HowItWorks() {
       num: "2",
       title: "Look at the work",
       description:
-        "Check photos, services, where they cover, and whether their ID is verified.",
+        "Check photos, services, where they cover, and whether their phone is verified.",
     },
     {
       num: "3",

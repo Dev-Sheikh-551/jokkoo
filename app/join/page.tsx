@@ -21,7 +21,7 @@ const proApplicationSchema = z.object({
   yearsExperience: z.string().min(1, "Please enter years of experience"),
   bio: z.string().min(20, "Please provide a brief description of your trade practice (min 20 characters)"),
   acceptsVerification: z.boolean().refine((val) => val === true, {
-    message: "You must agree to the identity verification protocol",
+    message: "You must confirm this phone number is yours",
   }),
 });
 
@@ -82,7 +82,7 @@ export default function JoinPage() {
                 Application Received for Verification
               </h2>
               <p className="text-sm text-river-silt max-w-md mx-auto leading-relaxed">
-                Thank you for applying to Jokkoo. Our verification team in Kanifing will review your submission and contact you via WhatsApp to verify your Gambian identification and workshop location.
+                Thank you for applying to Jokkoo. Our team will contact you via WhatsApp to confirm your phone number before publishing your profile.
               </p>
               <div className="pt-4 flex justify-center gap-3">
                 <Button href="/explore" variant="primary" size="md">
@@ -98,7 +98,7 @@ export default function JoinPage() {
               <div className="mb-8 p-4 rounded-[2px] bg-sand-dune/40 border border-border-subtle flex items-start gap-3 text-xs text-river-silt">
                 <ShieldCheck className="h-5 w-5 text-laterite shrink-0 mt-0.5" />
                 <div>
-                  <strong className="text-deep-slate">Verification Standard:</strong> To be published on Jokkoo, all professionals must provide a valid Gambian National ID Card, Alien Registration, or Business Registration certificate. Verification does not guarantee workmanship.
+                  We confirm your phone number by WhatsApp before your profile gets the Phone verified badge.
                 </div>
               </div>
 
@@ -248,7 +248,7 @@ export default function JoinPage() {
                       className="h-4 w-4 mt-0.5 rounded-[2px] border-border-subtle text-laterite focus:ring-laterite accent-laterite"
                     />
                     <span className="text-xs text-river-silt leading-relaxed">
-                      I agree to submit a valid Gambian ID or business registration for identity verification. I understand that Jokkoo lists only verified professionals and maintains transparent standards for customer reviews.
+                      I confirm this phone number is mine and I can receive WhatsApp messages and calls.
                     </span>
                   </label>
                   {errors.acceptsVerification && (

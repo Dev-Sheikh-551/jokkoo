@@ -34,7 +34,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   return {
     title: `${pro.name} (${pro.profession}) — Jokkoo The Gambia`,
-    description: `${pro.tagline} Based in ${pro.coverage.baseLocation}, The Gambia. Direct contact and verified credentials.`,
+    description: `${pro.tagline} Based in ${pro.coverage.baseLocation}, The Gambia. Direct WhatsApp and phone contact.`,
   };
 }
 

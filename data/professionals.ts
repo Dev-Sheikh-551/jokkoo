@@ -11,11 +11,7 @@ export const SAMPLE_PROFESSIONALS: Professional[] = [
     yearsExperience: 10,
     tagline: "[Short tagline written by the professional]",
     bio: "[Short bio written by the professional]",
-    verification: {
-      isVerified: false,
-      disclaimer:
-        "Identity checks verify government-issued documents and operational location. Verification does not guarantee workmanship.",
-    },
+    verification: "none",
     coverage: {
       baseLocation: "Kanifing",
       coverageAreas: ["Serekunda", "Fajara", "Bakau", "Kotu", "Brusubi", "Bijilo"],
@@ -77,11 +73,7 @@ export const SAMPLE_PROFESSIONALS: Professional[] = [
     yearsExperience: 15,
     tagline: "[Short tagline written by the professional]",
     bio: "[Short bio written by the professional]",
-    verification: {
-      isVerified: false,
-      disclaimer:
-        "Identity checks verify government-issued documents and operational location. Verification does not guarantee workmanship.",
-    },
+    verification: "none",
     coverage: {
       baseLocation: "Bakau",
       coverageAreas: ["Bakau", "Fajara", "Kotu", "Kololi", "Senegambia", "Brusubi", "Banjul"],
@@ -142,11 +134,7 @@ export const SAMPLE_PROFESSIONALS: Professional[] = [
     yearsExperience: 12,
     tagline: "[Short tagline written by the professional]",
     bio: "[Short bio written by the professional]",
-    verification: {
-      isVerified: false,
-      disclaimer:
-        "Identity checks verify government-issued documents and operational location. Verification does not guarantee workmanship.",
-    },
+    verification: "none",
     coverage: {
       baseLocation: "Serekunda",
       coverageAreas: ["Serekunda", "Banjul", "Fajara", "Bakau", "Brusubi", "Kotu"],
@@ -207,11 +195,7 @@ export const SAMPLE_PROFESSIONALS: Professional[] = [
     yearsExperience: 10,
     tagline: "[Short tagline written by the professional]",
     bio: "[Short bio written by the professional]",
-    verification: {
-      isVerified: false,
-      disclaimer:
-        "Identity checks verify government-issued documents and operational location. Verification does not guarantee workmanship.",
-    },
+    verification: "none",
     coverage: {
       baseLocation: "Brusubi",
       coverageAreas: ["Brusubi", "Bijilo", "Sukuta", "Kerr Sering", "Kotu", "Brikama"],
@@ -265,11 +249,7 @@ export const SAMPLE_PROFESSIONALS: Professional[] = [
     yearsExperience: 8,
     tagline: "[Short tagline written by the professional]",
     bio: "[Short bio written by the professional]",
-    verification: {
-      isVerified: false,
-      disclaimer:
-        "Identity checks verify government-issued documents and operational location. Verification does not guarantee workmanship.",
-    },
+    verification: "none",
     coverage: {
       baseLocation: "Fajara",
       coverageAreas: ["Fajara", "Bakau", "Kotu", "Kololi", "Banjul", "Brusubi"],
@@ -315,11 +295,7 @@ export const SAMPLE_PROFESSIONALS: Professional[] = [
     yearsExperience: 12,
     tagline: "[Short tagline written by the professional]",
     bio: "[Short bio written by the professional]",
-    verification: {
-      isVerified: false,
-      disclaimer:
-        "Identity checks verify government-issued documents and operational location. Verification does not guarantee workmanship.",
-    },
+    verification: "none",
     coverage: {
       baseLocation: "Kanifing",
       coverageAreas: ["Kanifing", "Serekunda", "Banjul", "Bakau", "Brusubi"],
@@ -367,11 +343,7 @@ export const SAMPLE_PROFESSIONALS: Professional[] = [
     yearsExperience: 7,
     tagline: "[Short tagline written by the professional]",
     bio: "[Short bio written by the professional]",
-    verification: {
-      isVerified: false,
-      disclaimer:
-        "Identity checks verify government-issued documents and operational location. Verification does not guarantee workmanship.",
-    },
+    verification: "none",
     coverage: {
       baseLocation: "Bijilo",
       coverageAreas: ["Bijilo", "Brusubi", "Kololi", "Senegambia", "Kotu", "Fajara"],
@@ -417,11 +389,7 @@ export const SAMPLE_PROFESSIONALS: Professional[] = [
     yearsExperience: 8,
     tagline: "[Short tagline written by the professional]",
     bio: "[Short bio written by the professional]",
-    verification: {
-      isVerified: false,
-      disclaimer:
-        "Identity checks verify government-issued documents and operational location. Verification does not guarantee workmanship.",
-    },
+    verification: "none",
     coverage: {
       baseLocation: "Fajara",
       coverageAreas: ["Fajara", "Bakau", "Banjul", "Brusubi", "Bijilo", "Kotu", "Brikama"],
