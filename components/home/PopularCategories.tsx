@@ -1,66 +1,99 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { CATEGORIES } from "@/data/categories";
-import { CategoryIcon } from "@/components/common/CategoryIcon";
+import { categoryMedia } from "@/lib/media";
+import { buildExploreHref } from "@/lib/search";
+import { ImagePlaceholder } from "@/components/common/ImagePlaceholder";
+import { CategoryRevealWrapper } from "@/components/home/CategoryRevealWrapper";
+import { cn } from "@/lib/utils";
 
 export function PopularCategories() {
   return (
-    <section className="py-16 sm:py-20 lg:py-24 border-b border-border-subtle bg-warm-bone">
+    <section className="py-16 lg:py-24 border-b border-border-subtle bg-warm-bone">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
-          <div>
-            <span className="text-xs font-semibold uppercase tracking-wider text-laterite">
-              Specialist Services
-            </span>
-            <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-deep-slate mt-1">
-              Popular Service Categories
-            </h2>
-            <p className="text-sm text-river-silt mt-1.5 max-w-xl">
-              From plumbing repairs to tailoring, find trade specialists across The Gambia.
-            </p>
-          </div>
-
-          <Link
-            href="/categories"
-            className="inline-flex items-center gap-1.5 text-sm font-medium text-laterite hover:text-laterite-dark transition-colors self-start md:self-auto"
-          >
-            <span>Explore All 9 Categories</span>
-            <ArrowRight className="h-4 w-4" />
-          </Link>
+        <div className="mb-8 lg:mb-12">
+          <h2 className="font-serif text-[clamp(2rem,4vw,2.75rem)] font-bold tracking-tight text-deep-slate leading-tight">
+            What do you need done?
+          </h2>
         </div>
 
-        {/* Categories Grid - 3 columns for 9 items */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {CATEGORIES.map((category) => (
-            <Link
-              key={category.slug}
-              href={`/explore?category=${category.slug}`}
-              className="group p-5 rounded-[3px] border border-border-subtle bg-warm-bone transition-all duration-200 hover:border-deep-slate/40 hover:bg-sand-dune/40 flex flex-col justify-between"
-            >
-              <div>
-                <div className="h-10 w-10 flex items-center justify-center rounded-[2px] bg-sand-dune border border-border-subtle text-deep-slate group-hover:bg-laterite group-hover:text-white transition-colors mb-4">
-                  <CategoryIcon name={category.iconName} className="h-5 w-5" />
+        {/* Desktop: 4 columns, auto-rows ~200px, 1st tile spans 2 cols and 2 rows */}
+        <CategoryRevealWrapper className="hidden lg:grid grid-cols-4 auto-rows-[200px] gap-4">
+          {CATEGORIES.map((category, index) => {
+            const isLarge = index === 0;
+            const media = categoryMedia[category.slug];
+            const tone = media?.tone ?? (isLarge ? "clay" : "sand");
+
+            return (
+              <Link
+                key={category.slug}
+                href={buildExploreHref({ category: category.slug })}
+                className={cn(
+                  "group relative overflow-hidden rounded-[var(--radius-card,1.5rem)] border border-border-subtle bg-sand-dune/40 transition-all duration-200 hover:border-deep-slate/40",
+                  isLarge ? "col-span-2 row-span-2" : "col-span-1 row-span-1"
+                )}
+              >
+                <ImagePlaceholder
+                  tone={tone}
+                  label={category.shortName}
+                  className="h-full w-full border-none transition-transform duration-300 group-hover:scale-105"
+                />
+
+                <div className="absolute bottom-4 left-4 z-10 rounded-full bg-warm-bone px-3.5 py-1.5 shadow-xs border border-border-subtle/50">
+                  <span className="text-xs font-semibold text-deep-slate block">
+                    {category.shortName}
+                  </span>
+                  {isLarge && (
+                    <span className="text-[11px] text-river-silt block mt-0.5">
+                      {category.tagline}
+                    </span>
+                  )}
                 </div>
+              </Link>
+            );
+          })}
+        </CategoryRevealWrapper>
 
-                <h3 className="text-base font-semibold text-deep-slate group-hover:text-laterite transition-colors">
-                  {category.name}
-                </h3>
+        {/* Mobile: Horizontal scroll-snap row, ~150px wide by 190px tall, 20px edge padding */}
+        <div className="lg:hidden">
+          <CategoryRevealWrapper>
+            <div className="-mx-4 px-5 flex gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-none pb-4 pt-1">
+              {CATEGORIES.map((category) => {
+                const media = categoryMedia[category.slug];
+                const tone = media?.tone ?? "sand";
 
-                <p className="text-xs text-river-silt mt-2 line-clamp-2 leading-relaxed">
-                  {category.shortDescription}
-                </p>
-              </div>
+                return (
+                  <Link
+                    key={category.slug}
+                    href={buildExploreHref({ category: category.slug })}
+                    className="w-[150px] h-[190px] shrink-0 snap-start group relative overflow-hidden rounded-[var(--radius-card,1.5rem)] border border-border-subtle bg-sand-dune/40"
+                  >
+                    <ImagePlaceholder
+                      tone={tone}
+                      label={category.shortName}
+                      className="h-full w-full border-none transition-transform duration-300 group-hover:scale-105"
+                    />
 
-              <div className="mt-5 pt-3 border-t border-border-subtle/60 flex items-center justify-between text-xs text-river-silt">
-                <span className="text-[11px] font-medium text-river-silt/80">
-                  {category.tagline}
-                </span>
-                <span className="font-medium text-deep-slate group-hover:translate-x-1 transition-transform">
-                  Browse →
-                </span>
-              </div>
-            </Link>
-          ))}
+                    <div className="absolute bottom-3 left-3 z-10 rounded-full bg-warm-bone px-3 py-1 shadow-xs border border-border-subtle/50">
+                      <span className="text-xs font-semibold text-deep-slate block">
+                        {category.shortName}
+                      </span>
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+
+            <div className="mt-4 flex items-center justify-between">
+              <Link
+                href="/categories"
+                className="inline-flex min-h-[44px] items-center gap-1.5 text-xs font-medium text-laterite hover:text-laterite-dark transition-colors"
+              >
+                <span>See all categories</span>
+                <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
+            </div>
+          </CategoryRevealWrapper>
         </div>
       </div>
     </section>
