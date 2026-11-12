@@ -15,9 +15,6 @@ export function Footer() {
               <strong>Verification Policy:</strong> Jokkoo verifies government-issued identity documents and operational location of listed professionals. Verification does not guarantee workmanship or warranty services.
             </span>
           </div>
-          <span className="text-[11px] font-mono text-river-silt/80 shrink-0">
-            Milestone 1 Preview • Development Sample Data
-          </span>
         </div>
       </div>
 
@@ -136,7 +133,7 @@ export function Footer() {
           <div className="flex gap-6">
             <span className="hover:text-deep-slate cursor-default">Identity Verified Platform</span>
             <span className="hover:text-deep-slate cursor-default">Direct WhatsApp & Call</span>
-            <span className="hover:text-deep-slate cursor-default">Zero Booking Commissions</span>
+            <span className="hover:text-deep-slate cursor-default">Free to join</span>
           </div>
         </div>
       </div>

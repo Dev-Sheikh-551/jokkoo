@@ -18,9 +18,9 @@ const newsreader = Newsreader({
 });
 
 export const metadata: Metadata = {
-  title: "Jokkoo — Verified Skilled Professionals & Services in The Gambia",
+  title: "Jokkoo — Skilled Professionals & Services in The Gambia",
   description:
-    "Connect with vetted, independent artisans and established service businesses across The Gambia. Direct contact, authentic reviews, and verified credentials.",
+    "Connect with independent artisans and established service businesses across The Gambia. Direct contact and transparent profiles.",
 };
 
 export const viewport: Viewport = {

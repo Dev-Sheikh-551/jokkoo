@@ -17,7 +17,7 @@ export function HeroSection() {
 
           {/* Editorial Headline */}
           <h1 className="text-3xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-deep-slate leading-[1.1]">
-            Connecting you with verified skilled trades in{" "}
+            Connecting you with skilled trades in{" "}
             <span className="font-serif italic font-normal text-laterite">
               The Gambia.
             </span>
@@ -25,7 +25,7 @@ export function HeroSection() {
 
           {/* Subhead */}
           <p className="text-base sm:text-lg text-river-silt max-w-2xl mx-auto leading-relaxed">
-            Find vetted master carpenters, certified electricians, plumbers, tailors, and mechanics across Banjul, Serekunda, and the West Coast Region. Contact them directly on WhatsApp.
+            Find carpenters, electricians, plumbers, tailors, and mechanics across Banjul, Serekunda, and the West Coast Region. Contact them directly on WhatsApp.
           </p>
 
           {/* Search Box */}

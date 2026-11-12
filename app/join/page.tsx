@@ -1,11 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { ShieldCheck, CheckCircle2, ArrowRight, Upload, AlertCircle } from "lucide-react";
+import { ShieldCheck, CheckCircle2 } from "lucide-react";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { CATEGORIES } from "@/data/categories";
@@ -50,8 +49,8 @@ export default function JoinPage() {
     },
   });
 
-  const onSubmit = async (data: ProApplicationForm) => {
-    // Milestone 1 development simulation
+  const onSubmit = async (_data: ProApplicationForm) => {
+    // Application submission simulation
     await new Promise((resolve) => setTimeout(resolve, 800));
     setIsSubmitted(true);
   };

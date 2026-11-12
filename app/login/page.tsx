@@ -65,7 +65,7 @@ export default function LoginPage() {
             {isSubmitted ? (
               <div className="p-4 rounded-[2px] bg-sand-dune/60 border border-border-subtle text-center text-xs text-river-silt space-y-2">
                 <p className="font-semibold text-deep-slate">
-                  Authentication Milestone Preview
+                  Authentication Preview
                 </p>
                 <p>
                   Database and Supabase authentication integration will be connected in Phase 04.

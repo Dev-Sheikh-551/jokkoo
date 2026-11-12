@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { CATEGORIES } from "@/data/categories";
@@ -9,7 +9,7 @@ import { CategoryIcon } from "@/components/common/CategoryIcon";
 export const metadata: Metadata = {
   title: "Service Categories — Jokkoo The Gambia",
   description:
-    "Explore all trade and artisan service categories on Jokkoo: Electrical, Plumbing, Carpentry, Tailoring, Automotive, Painting, Cleaning, and IT repairs.",
+    "Explore trade service categories on Jokkoo: Electrical, Plumbing, Carpentry, Tailoring, Automotive, Painting, Cleaning, Photography, and Computer Repairs.",
 };
 
 export default function CategoriesPage() {
@@ -24,10 +24,10 @@ export default function CategoriesPage() {
               Directory Classification
             </span>
             <h1 className="text-3xl sm:text-5xl font-bold tracking-tight text-deep-slate mt-1.5">
-              Service Categories & Trades
+              Service Categories &amp; Trades
             </h1>
             <p className="text-base text-river-silt mt-3 leading-relaxed">
-              Every category on Jokkoo represents a verified trade practice in The Gambia. Browse specific skillsets, common service requests, and experienced professionals serving your area.
+              Every category on Jokkoo represents a trade practice in The Gambia. Browse specific skillsets, common service requests, and experienced professionals serving your area.
             </p>
           </div>
 
@@ -53,7 +53,7 @@ export default function CategoriesPage() {
                           {category.name}
                         </h2>
                         <span className="text-xs text-river-silt font-medium">
-                          {category.professionalCount} verified professionals
+                          {category.tagline}
                         </span>
                       </div>
                     </div>
@@ -66,7 +66,7 @@ export default function CategoriesPage() {
                   {/* Middle Column: Common Services */}
                   <div className="lg:col-span-5 border-t lg:border-t-0 lg:border-l border-border-subtle pt-4 lg:pt-0 lg:pl-6 space-y-2">
                     <span className="text-xs font-semibold uppercase tracking-wider text-deep-slate block mb-2">
-                      Common Services & Specializations
+                      Common Services &amp; Specializations
                     </span>
                     <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-river-silt">
                       {category.popularServices.map((service, idx) => (

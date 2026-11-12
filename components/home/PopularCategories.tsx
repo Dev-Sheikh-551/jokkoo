@@ -4,8 +4,6 @@ import { CATEGORIES } from "@/data/categories";
 import { CategoryIcon } from "@/components/common/CategoryIcon";
 
 export function PopularCategories() {
-  const displayCategories = CATEGORIES.slice(0, 8);
-
   return (
     <section className="py-16 sm:py-20 lg:py-24 border-b border-border-subtle bg-warm-bone">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -18,7 +16,7 @@ export function PopularCategories() {
               Popular Service Categories
             </h2>
             <p className="text-sm text-river-silt mt-1.5 max-w-xl">
-              From emergency plumbing repairs to bespoke Senegambian tailoring, find trusted trade specialists ready to assist.
+              From plumbing repairs to tailoring, find trade specialists across The Gambia.
             </p>
           </div>
 
@@ -31,9 +29,9 @@ export function PopularCategories() {
           </Link>
         </div>
 
-        {/* Categories Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {displayCategories.map((category) => (
+        {/* Categories Grid - 3 columns for 9 items */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {CATEGORIES.map((category) => (
             <Link
               key={category.slug}
               href={`/explore?category=${category.slug}`}
@@ -54,7 +52,9 @@ export function PopularCategories() {
               </div>
 
               <div className="mt-5 pt-3 border-t border-border-subtle/60 flex items-center justify-between text-xs text-river-silt">
-                <span>{category.professionalCount} verified pros</span>
+                <span className="text-[11px] font-medium text-river-silt/80">
+                  {category.tagline}
+                </span>
                 <span className="font-medium text-deep-slate group-hover:translate-x-1 transition-transform">
                   Browse →
                 </span>

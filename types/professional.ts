@@ -9,8 +9,6 @@ export interface ServiceOffering {
 
 /**
  * Verification is a simple boolean flag.
- * Previously this contained verificationType (removed):
- *   "National ID & Proof of Address" | "Single Business Registration" | "Master Trade Guild Certification"
  */
 export interface VerificationStatus {
   isVerified: boolean;

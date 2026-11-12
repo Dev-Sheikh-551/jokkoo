@@ -13,13 +13,13 @@ export function FeaturedProfessionals() {
           <div>
             <div className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-laterite">
               <Sparkles className="h-3.5 w-3.5" />
-              <span>Verified Artisans</span>
+              <span>Skilled Artisans</span>
             </div>
             <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-deep-slate mt-1">
               Featured Skilled Professionals
             </h2>
             <p className="text-sm text-river-silt mt-1.5 max-w-xl">
-              Experienced tradespeople with verified Gambian identity checks, transparent pricing estimates, and real client feedback.
+              Experienced tradespeople with transparent pricing estimates and documented craftsmanship.
             </p>
           </div>
 

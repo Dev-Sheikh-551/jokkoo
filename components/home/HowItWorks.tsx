@@ -12,16 +12,16 @@ export function HowItWorks() {
     {
       step: "02",
       icon: ShieldCheck,
-      title: "Inspect Credentials & Rates",
+      title: "Inspect Profiles & Rates",
       description:
-        "Review verified government ID checks, authentic client reviews, previous portfolio photographs, and realistic Dalasi price estimates.",
+        "Review ID verification status, client reviews, portfolio photographs, and realistic Dalasi price estimates.",
     },
     {
       step: "03",
       icon: MessageSquareCheck,
       title: "Contact Directly via WhatsApp",
       description:
-        "Call or send a pre-filled WhatsApp message directly to the artisan. Discuss your requirements and agree on schedule with zero platform fees.",
+        "Call or send a pre-filled WhatsApp message directly to the artisan. Discuss your requirements and agree on schedule. Free to join.",
     },
   ];
 
@@ -36,7 +36,7 @@ export function HowItWorks() {
             How Jokkoo Works
           </h2>
           <p className="text-sm text-river-silt mt-2">
-            No complicated apps or opaque escrow hurdles. Just verified artisans and transparent direct communication.
+            No complicated apps or opaque escrow hurdles. Just skilled artisans and transparent direct communication.
           </p>
         </div>
 

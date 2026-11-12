@@ -42,7 +42,7 @@ export default function RegisterPage() {
             {isSubmitted ? (
               <div className="p-4 rounded-[2px] bg-sand-dune/60 border border-border-subtle text-center text-xs text-river-silt space-y-2">
                 <p className="font-semibold text-deep-slate">
-                  Registration Milestone Preview
+                  Registration Preview
                 </p>
                 <p>
                   Database storage and SMS/WhatsApp OTP verification will be integrated with Supabase in the next phase.

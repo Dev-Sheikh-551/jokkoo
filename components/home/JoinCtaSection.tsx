@@ -68,7 +68,7 @@ export function JoinCtaSection() {
               </div>
               <div className="flex justify-between py-1">
                 <span className="text-warm-bone/60">Listing Fee:</span>
-                <span className="font-medium text-warm-bone">Free during Milestone 1 Preview</span>
+                <span className="font-medium text-warm-bone">Free to join</span>
               </div>
             </div>
           </div>
