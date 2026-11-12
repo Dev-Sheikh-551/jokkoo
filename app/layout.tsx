@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Plus_Jakarta_Sans, Newsreader } from "next/font/google";
+import MotionProvider from "@/components/providers/MotionProvider";
 import "./globals.css";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
@@ -12,9 +13,9 @@ const plusJakartaSans = Plus_Jakarta_Sans({
 const newsreader = Newsreader({
   subsets: ["latin"],
   variable: "--font-serif",
-  weight: ["400", "500", "600"],
   style: ["normal", "italic"],
   display: "swap",
+  axes: ["opsz"],
 });
 
 export const metadata: Metadata = {
@@ -40,7 +41,7 @@ export default function RootLayout({
       className={`${plusJakartaSans.variable} ${newsreader.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-warm-bone text-deep-slate font-sans selection:bg-laterite-light selection:text-laterite">
-        {children}
+        <MotionProvider>{children}</MotionProvider>
       </body>
     </html>
   );

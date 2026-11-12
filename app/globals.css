@@ -9,6 +9,12 @@
   --color-laterite-dark: #9C3A1C;
   --color-laterite-light: #F7EDE8;
 
+  --color-verified: #1F6B4F;
+  --color-verified-soft: #E6F0EB;
+
+  --radius-card: 1.5rem;
+  --radius-control: 0.75rem;
+
   --color-border-subtle: #E5DFD5;
   --color-card-raised: #F3EFE7;
 
@@ -34,6 +40,11 @@ body {
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.font-serif {
+  font-family: var(--font-serif);
+  font-optical-sizing: auto;
 }
 
 /* Custom selection styling reflecting Laterite brand */

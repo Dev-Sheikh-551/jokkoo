@@ -49,7 +49,7 @@ export default function JoinPage() {
     },
   });
 
-  const onSubmit = async (_data: ProApplicationForm) => {
+  const onSubmit = async () => {
     // Application submission simulation
     await new Promise((resolve) => setTimeout(resolve, 800));
     setIsSubmitted(true);
