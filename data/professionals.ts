@@ -27,8 +27,6 @@ export const SAMPLE_PROFESSIONALS: Professional[] = [
         title: "Solar Inverter & Battery System Installation",
         description:
           "Mounting of solar panels, DC/AC breaker cabling, inverter configuration, and battery protection.",
-        priceEstimate: "GMD 12,000 – GMD 28,000 (sample)",
-        pricingType: "quote",
         durationEstimate: "2–3 business days",
       },
       {
@@ -36,8 +34,6 @@ export const SAMPLE_PROFESSIONALS: Professional[] = [
         title: "Generator Changeover Switch Installation",
         description:
           "Transfer switch that swaps between grid power and private generator.",
-        priceEstimate: "GMD 3,500 (sample)",
-        pricingType: "fixed",
         durationEstimate: "4–6 hours",
       },
       {
@@ -45,8 +41,6 @@ export const SAMPLE_PROFESSIONALS: Professional[] = [
         title: "Residential Electrical Safety Audit",
         description:
           "Earth leakage testing, circuit breaker balance diagnosis, and fault isolation.",
-        priceEstimate: "GMD 1,800 (sample)",
-        pricingType: "fixed",
         durationEstimate: "2–4 hours",
       },
     ],
@@ -99,8 +93,6 @@ export const SAMPLE_PROFESSIONALS: Professional[] = [
         title: "Bespoke Hardwood Entrance Door & Jamb Fitting",
         description:
           "Solid timber entrance door with weather-sealed sub-frame and lock mortising.",
-        priceEstimate: "GMD 18,000 – GMD 35,000 (sample)",
-        pricingType: "quote",
         durationEstimate: "7–10 days fabrication",
       },
       {
@@ -108,16 +100,12 @@ export const SAMPLE_PROFESSIONALS: Professional[] = [
         title: "Fitted Modular Kitchen Cabinetry",
         description:
           "Moisture-resistant carcass timber, soft-close hinges, and hardwood fascias.",
-        priceEstimate: "From GMD 6,500 per running metre (sample)",
-        pricingType: "starting_at",
       },
       {
         id: "s2-3",
         title: "Bespoke Dining Table",
         description:
           "Single-slab or matched plank tabletop with hand-rubbed oil finish.",
-        priceEstimate: "GMD 22,000 – GMD 32,000 (sample)",
-        pricingType: "quote",
         durationEstimate: "10–14 days",
       },
     ],
@@ -171,16 +159,12 @@ export const SAMPLE_PROFESSIONALS: Professional[] = [
         title: "Bespoke Grand Boubou with Embroidery",
         description:
           "Full three-piece ceremonial ensemble on Bazin Riche with custom neckline motifs.",
-        priceEstimate: "GMD 4,500 – GMD 9,000 (sample)",
-        pricingType: "quote",
         durationEstimate: "5–7 business days",
       },
       {
         id: "s3-2",
         title: "Contemporary Tailored Linen Suit",
         description: "Breathable two-piece suit tailored for tropical wear.",
-        priceEstimate: "GMD 3,800 (sample)",
-        pricingType: "fixed",
         durationEstimate: "3–5 days",
       },
       {
@@ -188,8 +172,6 @@ export const SAMPLE_PROFESSIONALS: Professional[] = [
         title: "Express Fitting & Garment Alteration",
         description:
           "Tapering, hemming, shoulder restructuring, and zipper replacements.",
-        priceEstimate: "From GMD 400 per garment (sample)",
-        pricingType: "starting_at",
       },
     ],
     portfolio: [
@@ -242,8 +224,6 @@ export const SAMPLE_PROFESSIONALS: Professional[] = [
         title: "Borehole Submersible Pump Diagnosis & Replacement",
         description:
           "Pulling pump strings, testing motor capacitors, and installing new pump units.",
-        priceEstimate: "GMD 4,500 (sample)",
-        pricingType: "fixed",
         durationEstimate: "Same day service",
       },
       {
@@ -251,16 +231,12 @@ export const SAMPLE_PROFESSIONALS: Professional[] = [
         title: "Overhead Tank Plumbing & Float Automation",
         description:
           "Piping for overhead poly-tanks with automatic water level controller.",
-        priceEstimate: "GMD 5,500 – GMD 9,000 (sample)",
-        pricingType: "quote",
       },
       {
         id: "s4-3",
         title: "Emergency Pipe Burst & Leak Location",
         description:
           "Immediate isolation of pipe breaches and rapid fusion repair.",
-        priceEstimate: "From GMD 1,200 (sample)",
-        pricingType: "starting_at",
       },
     ],
     portfolio: [
@@ -305,16 +281,12 @@ export const SAMPLE_PROFESSIONALS: Professional[] = [
         title: "Full Compound Exterior Waterproof Coating",
         description:
           "Crack filling, damp-primer, and two coats of weather-shield acrylic.",
-        priceEstimate: "From GMD 18,000 (sample)",
-        pricingType: "quote",
       },
       {
         id: "s5-2",
         title: "Interior Emulsion Application",
         description:
           "Surface skimming, sanding, base undercoat, and dual coat application.",
-        priceEstimate: "GMD 250 per square metre (sample)",
-        pricingType: "starting_at",
       },
     ],
     portfolio: [
@@ -360,8 +332,6 @@ export const SAMPLE_PROFESSIONALS: Professional[] = [
         title: "Computerized ECU Diagnostic Scan & Report",
         description:
           "Digital readout of live sensor data, misfire counts, and transmission states.",
-        priceEstimate: "GMD 1,200 (sample)",
-        pricingType: "fixed",
         durationEstimate: "45 minutes",
       },
       {
@@ -369,8 +339,6 @@ export const SAMPLE_PROFESSIONALS: Professional[] = [
         title: "Suspension Overhaul & Bushing Replacement",
         description:
           "Replacing control arms, shock absorbers, tie rod ends, and ball joints.",
-        priceEstimate: "GMD 4,000 – GMD 7,500 (sample)",
-        pricingType: "quote",
       },
     ],
     portfolio: [
@@ -415,16 +383,12 @@ export const SAMPLE_PROFESSIONALS: Professional[] = [
         title: "Post-Construction Handover Deep Cleaning",
         description:
           "Mortar residue removal, tile de-hazing, window descaling, and dust extraction.",
-        priceEstimate: "From GMD 8,500 per property (sample)",
-        pricingType: "quote",
       },
       {
         id: "s7-2",
         title: "Steam Upholstery & Mattress Sanitization",
         description:
           "Thermal injection-extraction to eliminate dust mites and stains.",
-        priceEstimate: "GMD 1,800 per sofa (sample)",
-        pricingType: "fixed",
       },
     ],
     portfolio: [
@@ -469,8 +433,6 @@ export const SAMPLE_PROFESSIONALS: Professional[] = [
         title: "Real Estate & Architectural Interior Showcase",
         description:
           "HDR interior and exterior photography with perspective correction.",
-        priceEstimate: "GMD 6,500 – GMD 12,000 (sample)",
-        pricingType: "fixed",
         durationEstimate: "2–3 hours on site",
       },
       {
@@ -478,8 +440,6 @@ export const SAMPLE_PROFESSIONALS: Professional[] = [
         title: "Construction Progress Photo & Drone Log",
         description:
           "Scheduled photographic documentation of building progress.",
-        priceEstimate: "GMD 3,500 per inspection visit (sample)",
-        pricingType: "fixed",
       },
     ],
     portfolio: [

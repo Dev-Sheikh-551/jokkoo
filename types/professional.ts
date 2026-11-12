@@ -2,8 +2,6 @@ export interface ServiceOffering {
   id: string;
   title: string;
   description: string;
-  priceEstimate: string;
-  pricingType: "fixed" | "starting_at" | "hourly" | "quote";
   durationEstimate?: string;
 }
 

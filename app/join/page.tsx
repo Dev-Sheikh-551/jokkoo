@@ -69,7 +69,7 @@ export default function JoinPage() {
               List Your Trade Practice on Jokkoo
             </h1>
             <p className="text-sm text-river-silt leading-relaxed">
-              Join The Gambia’s verified network of skilled artisans. Showcase your past work, set your own rates, and connect directly with serious local and diaspora clients.
+              Join The Gambia’s verified network of skilled artisans. Showcase your past work and connect directly with serious local and diaspora clients.
             </p>
           </div>
 

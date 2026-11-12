@@ -9,8 +9,9 @@ interface ContactActionCardProps {
 export function ContactActionCard({ professional }: ContactActionCardProps) {
   const isSample = professional.isSample;
 
+  const firstName = professional.name.split(" ")[0];
   const whatsappMessage = encodeURIComponent(
-    `Hello, I found your profile on Jokkoo and would like to inquire about your services in The Gambia.`
+    `Hi ${professional.name}, I found you on Jokkoo. I'd like to ask about ${professional.profession}. Could you give me a quote?`
   );
   const whatsappUrl = isSample
     ? undefined
@@ -26,10 +27,10 @@ export function ContactActionCard({ professional }: ContactActionCardProps) {
           Direct Contact
         </span>
         <h3 className="text-lg font-bold text-deep-slate">
-          Connect with {professional.name.split(" ")[0]}
+          Connect with {firstName}
         </h3>
         <p className="text-xs text-river-silt mt-1">
-          Speak directly with the professional to agree on scope, timing, and Dalasi pricing. Free to join.
+          Agree the scope and price directly with {firstName}.
         </p>
       </div>
 

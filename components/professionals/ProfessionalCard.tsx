@@ -9,7 +9,7 @@ interface ProfessionalCardProps {
 }
 
 export function ProfessionalCard({ professional }: ProfessionalCardProps) {
-  const { slug, name, profession, coverage, services, verification, isSample, categorySlug } = professional;
+  const { slug, name, profession, coverage, verification, isSample, categorySlug } = professional;
 
   // Coverage areas beyond base
   const otherAreas = coverage.coverageAreas.filter(
@@ -17,9 +17,6 @@ export function ProfessionalCard({ professional }: ProfessionalCardProps) {
   );
   const displayAreas = otherAreas.slice(0, 3).join(", ");
   const extraCount = otherAreas.length - 3;
-
-  // First price estimate
-  const firstPrice = services[0]?.priceEstimate ?? null;
 
   // Category tone for placeholder
   const mediaTone = categoryMedia[categorySlug]?.tone ?? "slate";
@@ -57,18 +54,7 @@ export function ProfessionalCard({ professional }: ProfessionalCardProps) {
       </div>
 
       {/* FOOTER ROW */}
-      <div className="flex items-center justify-between border-t border-border-subtle px-5 py-3 min-h-[52px]">
-        {firstPrice ? (
-          <span className="text-xs text-river-silt">
-            From{" "}
-            <strong className="font-medium text-deep-slate">
-              {firstPrice.split(" ")[0]} {firstPrice.split(" ")[1]}
-            </strong>
-          </span>
-        ) : (
-          <span className="text-xs text-river-silt">Ask for a quote</span>
-        )}
-
+      <div className="flex items-center justify-end border-t border-border-subtle px-5 py-3 min-h-[52px]">
         {isSample ? (
           <Link
             href={`/professionals/${slug}`}
