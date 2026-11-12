@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { CATEGORIES } from "@/data/categories";
@@ -33,11 +34,30 @@ export function PopularCategories() {
                   isLarge ? "col-span-2 row-span-2" : "col-span-1 row-span-1"
                 )}
               >
-                <ImagePlaceholder
-                  tone={tone}
-                  label={category.shortName}
-                  className="h-full w-full border-none transition-transform duration-300 group-hover:scale-105"
-                />
+                {/* ImagePlaceholder renders as background fallback if the photo fails to load */}
+                <div aria-hidden="true" className="absolute inset-0 h-full w-full">
+                  <ImagePlaceholder
+                    tone={tone}
+                    label=""
+                    className="h-full w-full border-none"
+                  />
+                </div>
+                {media?.src && (
+                  <Image
+                    src={media.src}
+                    alt={media.alt}
+                    fill
+                    sizes={
+                      isLarge
+                        ? "(min-width: 1024px) 600px, 100vw"
+                        : "(min-width: 1024px) 280px, 50vw"
+                    }
+                    quality={75}
+                    priority={index === 0}
+                    className="object-cover transition-transform duration-300 group-hover:scale-105"
+                    style={{ objectPosition: media.objectPosition ?? "center" }}
+                  />
+                )}
 
                 <div className="absolute bottom-4 left-4 z-10 rounded-full bg-warm-bone px-3.5 py-1.5 shadow-xs border border-border-subtle/50">
                   <span className="text-xs font-semibold text-deep-slate block">
@@ -68,11 +88,25 @@ export function PopularCategories() {
                     href={buildExploreHref({ category: category.slug })}
                     className="w-[150px] h-[190px] shrink-0 snap-start group relative overflow-hidden rounded-[var(--radius-card,1.5rem)] border border-border-subtle bg-sand-dune/40"
                   >
-                    <ImagePlaceholder
-                      tone={tone}
-                      label={category.shortName}
-                      className="h-full w-full border-none transition-transform duration-300 group-hover:scale-105"
-                    />
+                    {/* ImagePlaceholder as background fallback */}
+                    <div aria-hidden="true" className="absolute inset-0 h-full w-full">
+                      <ImagePlaceholder
+                        tone={tone}
+                        label=""
+                        className="h-full w-full border-none"
+                      />
+                    </div>
+                    {media?.src && (
+                      <Image
+                        src={media.src}
+                        alt={media.alt}
+                        fill
+                        sizes="150px"
+                        quality={75}
+                        className="object-cover"
+                        style={{ objectPosition: media.objectPosition ?? "center" }}
+                      />
+                    )}
 
                     <div className="absolute bottom-3 left-3 z-10 rounded-full bg-warm-bone px-3 py-1 shadow-xs border border-border-subtle/50">
                       <span className="text-xs font-semibold text-deep-slate block">

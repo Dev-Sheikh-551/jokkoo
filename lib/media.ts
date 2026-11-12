@@ -2,53 +2,65 @@ export interface CategoryMediaItem {
   src?: string;
   alt: string;
   tone: "clay" | "sand" | "slate";
+  /** CSS object-position value to frame the subject in every crop context */
+  objectPosition?: string;
 }
 
-// When real photos exist, put them in public/images/ and set src; render with next/image (sizes set, quality 75).
+// When real photos exist, put them in public/images/mock/ and set src here.
+// Render with next/image (fill, sizes set per context, quality 75).
 export const categoryMedia: Record<string, CategoryMediaItem> = {
   "electrical-work": {
-    src: undefined,
-    alt: "Electrical and solar installation work in The Gambia",
+    src: "/images/mock/electrical.jpg",
+    alt: "Hands working inside an electrical breaker panel",
     tone: "clay",
+    objectPosition: "center",
   },
   plumbing: {
-    src: undefined,
-    alt: "Plumbing, borehole, and piping installations",
+    src: "/images/mock/plumbing.jpg",
+    alt: "Hands turning a wrench on copper pipe fittings",
     tone: "sand",
+    objectPosition: "center",
   },
   carpentry: {
-    src: undefined,
-    alt: "Custom timber joinery and woodwork",
+    src: "/images/mock/carpentry.jpg",
+    alt: "Hands planing wood shavings at a workbench",
     tone: "sand",
+    objectPosition: "center 30%",
   },
   mechanics: {
-    src: undefined,
-    alt: "Automotive repair and diagnostics",
-    tone: "sand",
+    src: "/images/mock/mechanical.jpg",
+    alt: "Mechanic working with tools under a car engine",
+    tone: "slate",
+    objectPosition: "center",
   },
   tailoring: {
-    src: undefined,
-    alt: "Tailoring, boubous, and garment design",
+    src: "/images/mock/tailoring.jpg",
+    alt: "Hands guiding fabric through a sewing machine",
     tone: "sand",
+    objectPosition: "center",
   },
   painting: {
-    src: undefined,
-    alt: "Interior and exterior surface finishing",
-    tone: "sand",
+    src: "/images/mock/painting.jpg",
+    alt: "Hand applying paint with a roller on a wall",
+    tone: "clay",
+    objectPosition: "center 40%",
   },
   cleaning: {
-    src: undefined,
-    alt: "Post-construction and deep sanitation cleaning",
+    src: "/images/mock/cleaning.jpg",
+    alt: "Person cleaning a surface",
     tone: "sand",
+    objectPosition: "center",
   },
   photography: {
-    src: undefined,
-    alt: "Architectural and event photography",
-    tone: "sand",
+    src: "/images/mock/photography.jpg",
+    alt: "Hands holding a camera focused on a subject",
+    tone: "slate",
+    objectPosition: "center",
   },
   "computer-repairs": {
-    src: undefined,
-    alt: "Computer diagnostics and network engineering",
-    tone: "sand",
+    src: "/images/mock/computer.jpg",
+    alt: "Hands working on a computer circuit board",
+    tone: "slate",
+    objectPosition: "center",
   },
 };

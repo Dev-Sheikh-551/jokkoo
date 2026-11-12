@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "motion/react";
+import Image from "next/image";
 import { Category } from "@/types/category";
 import { LocationItem } from "@/data/locations";
 import { categoryMedia } from "@/lib/media";
@@ -133,18 +134,35 @@ export function HeroClient({
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.25 }}
-              className="h-full w-full"
+              className="relative h-full w-full"
             >
-              <ImagePlaceholder
-                tone={categoryMedia[selectedTrade]?.tone ?? "clay"}
-                label={`Photo placeholder: ${currentCategory?.shortName ?? "Trade"}`}
-                className="h-full w-full border-none"
-              />
+              {/* ImagePlaceholder as background fallback if photo fails to load */}
+              <div aria-hidden="true" className="absolute inset-0 h-full w-full">
+                <ImagePlaceholder
+                  tone={categoryMedia[selectedTrade]?.tone ?? "clay"}
+                  label=""
+                  className="h-full w-full border-none"
+                />
+              </div>
+              {categoryMedia[selectedTrade]?.src && (
+                <Image
+                  src={categoryMedia[selectedTrade].src!}
+                  alt={categoryMedia[selectedTrade].alt}
+                  fill
+                  sizes="(min-width: 1024px) 50vw, 100vw"
+                  quality={75}
+                  priority={selectedTrade === (categories[0]?.slug ?? "electrical-work")}
+                  className="object-cover"
+                  style={{
+                    objectPosition: categoryMedia[selectedTrade]?.objectPosition ?? "center",
+                  }}
+                />
+              )}
             </motion.div>
           </AnimatePresence>
 
           <div className="absolute bottom-3 left-3 sm:bottom-4 sm:left-4 z-10 max-w-[calc(100%-1.5rem)] px-3 py-1 rounded-[2px] bg-deep-slate/90 text-[10px] sm:text-xs font-mono uppercase tracking-wider text-warm-bone backdrop-blur-xs">
-            Photo placeholder: {currentCategory?.shortName ?? "Trade"}
+            {currentCategory?.shortName ?? "Trade"}
           </div>
         </div>
       </div>
