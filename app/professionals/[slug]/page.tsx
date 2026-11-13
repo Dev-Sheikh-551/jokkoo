@@ -156,7 +156,7 @@ export default async function ProfessionalProfilePage({ params }: PageProps) {
             </div>
 
             {/* Desktop Sticky Sidebar (380px, top offset 24px) */}
-            <div className="hidden lg:block lg:col-span-4 lg:w-[380px] lg:ml-auto">
+            <div className="hidden lg:block lg:col-span-4 w-full">
               <ContactActionCard professional={professional} />
             </div>
           </div>
