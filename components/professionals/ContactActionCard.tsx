@@ -2,6 +2,7 @@ import { MessageSquare, Phone } from "lucide-react";
 import { Professional } from "@/types/professional";
 import { Button } from "@/components/common/Button";
 import { VerificationBadge } from "@/components/common/VerificationBadge";
+import { CATEGORIES } from "@/data/categories";
 
 interface ContactActionCardProps {
   professional: Professional;
@@ -10,16 +11,22 @@ interface ContactActionCardProps {
 export function ContactActionCard({ professional }: ContactActionCardProps) {
   const isSample = professional.isSample;
 
-  const firstName = professional.name.split(" ")[0];
+  const firstName = professional.displayName.split(" ")[0];
+  const categoryName =
+    CATEGORIES.find((c) => c.slug === professional.primaryCategorySlug)
+      ?.name ?? professional.primaryCategorySlug;
+  const callNumber = professional.callNumber ?? professional.whatsappNumber;
+  const languages = professional.languages ?? [];
+
   const whatsappMessage = encodeURIComponent(
-    `Hi ${professional.name}, I found you on Jokkoo. I'd like to ask about ${professional.profession}. Could you give me a quote?`
+    `Hi ${professional.displayName}, I found you on Jokkoo. I'd like to ask about ${categoryName}. Could you give me a quote?`
   );
   const whatsappUrl = isSample
     ? undefined
     : `https://wa.me/${professional.whatsappNumber}?text=${whatsappMessage}`;
   const phoneUrl = isSample
     ? undefined
-    : `tel:${professional.phone.replace(/\s+/g, "")}`;
+    : `tel:${callNumber.replace(/\s+/g, "")}`;
 
   return (
     <div className="rounded-[3px] border border-border-subtle bg-warm-bone p-6 shadow-sm space-y-6 sticky top-28">
@@ -38,8 +45,26 @@ export function ContactActionCard({ professional }: ContactActionCardProps) {
       {/* Main Action Buttons */}
       <div className="space-y-3">
         {isSample ? (
-          <div className="rounded-[2px] bg-sand-dune border border-border-subtle p-4 text-center text-xs text-river-silt">
-            Contact is available on real profiles.
+          <div className="space-y-2">
+            <span
+              role="button"
+              aria-disabled="true"
+              className="w-full flex items-center justify-center rounded-full bg-laterite/40 px-4 py-2.5 text-xs font-semibold text-warm-bone/60 cursor-not-allowed min-h-[44px] gap-2"
+            >
+              <MessageSquare className="h-4 w-4" />
+              <span>Chat on WhatsApp</span>
+            </span>
+            <span
+              role="button"
+              aria-disabled="true"
+              className="w-full flex items-center justify-center rounded-full border border-border-subtle bg-sand-dune/40 px-4 py-2 text-xs font-medium text-river-silt/60 cursor-not-allowed min-h-[44px] gap-2"
+            >
+              <Phone className="h-4 w-4" />
+              <span>Call</span>
+            </span>
+            <p className="text-[11px] text-river-silt text-center">
+              Sample profile: contact is disabled
+            </p>
           </div>
         ) : (
           <>
@@ -62,19 +87,21 @@ export function ContactActionCard({ professional }: ContactActionCardProps) {
               className="w-full justify-center gap-2"
             >
               <Phone className="h-4 w-4" />
-              <span>Call {professional.phone}</span>
+              <span>Call {callNumber}</span>
             </Button>
           </>
         )}
       </div>
 
       {/* Languages */}
-      <div className="border-t border-border-subtle pt-4 text-xs text-river-silt">
-        <div className="flex items-center justify-between">
-          <span className="text-deep-slate font-medium">Languages:</span>
-          <span>{professional.languages.join(", ")}</span>
+      {languages.length > 0 && (
+        <div className="border-t border-border-subtle pt-4 text-xs text-river-silt">
+          <div className="flex items-center justify-between">
+            <span className="text-deep-slate font-medium">Languages:</span>
+            <span>{languages.join(", ")}</span>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Verification Transparency Notice */}
       <div className="rounded-[2px] bg-sand-dune/60 border border-border-subtle p-3.5 space-y-2">
@@ -86,7 +113,9 @@ export function ContactActionCard({ professional }: ContactActionCardProps) {
           )}
         </div>
         <p className="text-[11px] text-river-silt leading-relaxed">
-          Phone verified means we confirmed the number belongs to the person who registered. It is not a check of identity, qualifications or workmanship.
+          Phone verified means we confirmed the number belongs to the person who
+          registered. It is not a check of identity, qualifications or
+          workmanship.
         </p>
       </div>
     </div>

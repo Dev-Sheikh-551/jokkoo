@@ -3,12 +3,17 @@ import { Professional } from "@/types/professional";
 import { SampleDataBadge } from "@/components/common/Badge";
 import { VerificationBadge } from "@/components/common/VerificationBadge";
 import { ImagePlaceholder } from "@/components/common/ImagePlaceholder";
+import { CATEGORIES } from "@/data/categories";
 
 interface ProfileHeaderProps {
   professional: Professional;
 }
 
 export function ProfileHeader({ professional }: ProfileHeaderProps) {
+  const categoryName =
+    CATEGORIES.find((c) => c.slug === professional.primaryCategorySlug)
+      ?.name ?? professional.primaryCategorySlug;
+
   return (
     <div className="border-b border-border-subtle bg-warm-bone">
       {/* Cover placeholder */}
@@ -38,7 +43,9 @@ export function ProfileHeader({ professional }: ProfileHeaderProps) {
                     What does this mean?
                   </summary>
                   <p className="mt-1.5 text-[11px] text-river-silt bg-sand-dune/40 p-2 rounded border border-border-subtle max-w-sm">
-                    We confirmed this phone number belongs to the person who registered. It is not a check of identity, qualifications or workmanship.
+                    We confirmed this phone number belongs to the person who
+                    registered. It is not a check of identity, qualifications or
+                    workmanship.
                   </p>
                 </details>
               )}
@@ -47,7 +54,7 @@ export function ProfileHeader({ professional }: ProfileHeaderProps) {
 
             <div className="flex flex-col">
               <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-deep-slate">
-                {professional.name}
+                {professional.displayName}
               </h1>
               {professional.businessName && (
                 <span className="text-sm font-medium text-river-silt">
@@ -57,25 +64,29 @@ export function ProfileHeader({ professional }: ProfileHeaderProps) {
             </div>
 
             <p className="text-sm font-semibold text-laterite">
-              {professional.profession}
+              {categoryName}
             </p>
 
             {/* Quick Meta Stats */}
             <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-river-silt pt-1">
               <div className="flex items-center gap-1.5">
                 <MapPin className="h-4 w-4 text-laterite" />
-                <span>Base: {professional.coverage.baseLocation}, The Gambia</span>
+                <span>Base: {professional.baseLocation}, The Gambia</span>
               </div>
 
-              <div className="flex items-center gap-1.5">
-                <Briefcase className="h-4 w-4 text-river-silt" />
-                <span>{professional.yearsExperience} Years Experience</span>
-              </div>
+              {professional.yearsExperience != null && (
+                <div className="flex items-center gap-1.5">
+                  <Briefcase className="h-4 w-4 text-river-silt" />
+                  <span>{professional.yearsExperience} Years Experience</span>
+                </div>
+              )}
 
-              <div className="flex items-center gap-1.5">
-                <Languages className="h-4 w-4 text-river-silt" />
-                <span>{professional.languages.join(", ")}</span>
-              </div>
+              {(professional.languages ?? []).length > 0 && (
+                <div className="flex items-center gap-1.5">
+                  <Languages className="h-4 w-4 text-river-silt" />
+                  <span>{(professional.languages ?? []).join(", ")}</span>
+                </div>
+              )}
             </div>
           </div>
         </div>

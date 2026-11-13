@@ -4,7 +4,9 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
-import { SAMPLE_PROFESSIONALS } from "@/data/professionals";
+import { getProfessionals } from "@/data/professionals";
+import { CATEGORIES } from "@/data/categories";
+import { SHOW_MOCK } from "@/lib/mock";
 import { ProfileHeader } from "@/components/professionals/ProfileHeader";
 import { ContactActionCard } from "@/components/professionals/ContactActionCard";
 import { LocationCoverageCard } from "@/components/professionals/LocationCoverageCard";
@@ -17,14 +19,14 @@ interface PageProps {
 }
 
 export async function generateStaticParams() {
-  return SAMPLE_PROFESSIONALS.map((pro) => ({
+  return getProfessionals().map((pro) => ({
     slug: pro.slug,
   }));
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const pro = SAMPLE_PROFESSIONALS.find((p) => p.slug === slug);
+  const pro = getProfessionals().find((p) => p.slug === slug);
 
   if (!pro) {
     return {
@@ -32,17 +34,26 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     };
   }
 
+  const categoryName =
+    CATEGORIES.find((c) => c.slug === pro.primaryCategorySlug)?.name ??
+    pro.primaryCategorySlug;
+
   return {
-    title: `${pro.name} (${pro.profession}) — Jokkoo The Gambia`,
-    description: `${pro.tagline} Based in ${pro.coverage.baseLocation}, The Gambia. Direct WhatsApp and phone contact.`,
+    title: `${pro.displayName} (${categoryName}) — Jokkoo The Gambia`,
+    description: `${pro.bio.slice(0, 150)}... Based in ${pro.baseLocation}, The Gambia.`,
   };
 }
 
 export default async function ProfessionalProfilePage({ params }: PageProps) {
   const { slug } = await params;
-  const professional = SAMPLE_PROFESSIONALS.find((p) => p.slug === slug);
+  const professional = getProfessionals().find((p) => p.slug === slug);
 
   if (!professional) {
+    notFound();
+  }
+
+  // If sample profile and mock mode is off, 404
+  if (professional.isSample && !SHOW_MOCK) {
     notFound();
   }
 
@@ -62,9 +73,11 @@ export default async function ProfessionalProfilePage({ params }: PageProps) {
               <span>Back to Explore</span>
             </Link>
 
-            <span className="text-[11px] font-mono text-river-silt/80">
-              Sample profile
-            </span>
+            {professional.isSample && (
+              <span className="text-[11px] font-mono text-river-silt/80">
+                Sample profile
+              </span>
+            )}
           </div>
         </div>
 
@@ -79,29 +92,43 @@ export default async function ProfessionalProfilePage({ params }: PageProps) {
               {/* Bio / About Section */}
               <div className="rounded-[3px] border border-border-subtle bg-warm-bone p-6 space-y-3">
                 <h2 className="text-base font-bold text-deep-slate">
-                  About {professional.name}
+                  About {professional.displayName}
                 </h2>
                 <p className="text-sm text-river-silt leading-relaxed">
                   {professional.bio}
                 </p>
-                <div className="pt-2 text-xs text-river-silt font-medium">
-                  Operating in The Gambia for {professional.yearsExperience}+ years.
-                </div>
+                {professional.yearsExperience != null && (
+                  <div className="pt-2 text-xs text-river-silt font-medium">
+                    Operating in The Gambia for {professional.yearsExperience}+ years.
+                  </div>
+                )}
+                {professional.workingHours && (
+                  <div className="pt-1 text-xs text-river-silt">
+                    <span className="font-semibold text-deep-slate">Hours: </span>
+                    {professional.workingHours}
+                  </div>
+                )}
               </div>
 
               {/* Location & Coverage Section */}
-              <LocationCoverageCard coverage={professional.coverage} />
+              <LocationCoverageCard
+                displayName={professional.displayName}
+                baseLocation={professional.baseLocation}
+                regularAreas={professional.regularAreas}
+                byArrangementAreas={professional.byArrangementAreas}
+              />
 
               {/* Services Offered Section */}
               <ServicesList services={professional.services} />
 
-              {/* Portfolio Showcase */}
-              <PortfolioGallery portfolio={professional.portfolio} />
+              {/* Work Photos Gallery */}
+              <PortfolioGallery
+                workPhotos={professional.workPhotos}
+                isSample={professional.isSample}
+              />
 
               {/* Reviews Section */}
-              <ReviewSection
-                reviews={professional.reviews}
-              />
+              <ReviewSection reviews={[]} />
             </div>
 
             {/* Sticky Sidebar Action Column (4 cols) */}
