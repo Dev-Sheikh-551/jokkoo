@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "node -e \"if(process.env.CI || process.env.VERCEL){require('child_process').execSync('node scripts/predeploy-check.mjs', {stdio:'inherit'})}\" && next build",
+    "predeploy": "node scripts/predeploy-check.mjs",
     "start": "next start",
     "lint": "eslint"
   },
