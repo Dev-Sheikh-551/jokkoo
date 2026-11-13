@@ -10,6 +10,7 @@ import { OnboardingStepper } from "@/components/onboarding/OnboardingStepper";
 import { Step1AboutYou } from "@/components/onboarding/Step1AboutYou";
 import { Step2WhereYouWork } from "@/components/onboarding/Step2WhereYouWork";
 import { Step3YourWork } from "@/components/onboarding/Step3YourWork";
+import { Step4Photos } from "@/components/onboarding/Step4Photos";
 import {
   onboardingFormSchema,
   type OnboardingFormValues,
@@ -154,6 +155,7 @@ export default function JoinPage() {
                       {currentStep === 1 && <Step1AboutYou />}
                       {currentStep === 2 && <Step2WhereYouWork />}
                       {currentStep === 3 && <Step3YourWork />}
+                      {currentStep === 4 && <Step4Photos />}
                     </div>
 
                     {/* Desktop Step Navigation */}
