@@ -106,7 +106,7 @@ export function ProfessionalCard({
             <span
               role="presentation"
               aria-hidden="true"
-              className="inline-flex items-center justify-center rounded-full bg-laterite/40 px-4 py-2 text-xs font-semibold text-warm-bone/70 pointer-events-none select-none min-h-[44px]"
+              className="inline-flex items-center justify-center rounded-full bg-laterite-light text-laterite-dark border border-laterite/20 px-4 py-2 text-xs font-semibold pointer-events-none select-none min-h-[44px]"
             >
               WhatsApp
             </span>
@@ -123,7 +123,7 @@ export function ProfessionalCard({
               <span
                 role="button"
                 aria-disabled="true"
-                className="inline-flex items-center justify-center rounded-full bg-laterite/40 px-3.5 py-1.5 text-xs font-semibold text-warm-bone/60 cursor-not-allowed min-h-[36px]"
+                className="inline-flex items-center justify-center rounded-full bg-laterite-light text-laterite-dark border border-laterite/20 px-3.5 py-1.5 text-xs font-semibold cursor-not-allowed min-h-[36px]"
               >
                 WhatsApp
               </span>
