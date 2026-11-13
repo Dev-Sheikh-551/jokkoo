@@ -58,7 +58,7 @@ export function ProfileHeader({ professional }: ProfileHeaderProps) {
 
       {/* Main H1 Title */}
       <div className="space-y-1">
-        <h1 className="font-serif text-[clamp(2.25rem,5vw,4rem)] leading-[1.05] tracking-tight text-deep-slate">
+        <h1 className="font-serif font-medium text-[clamp(2.25rem,5vw,4rem)] leading-[1.05] tracking-tight text-deep-slate">
           {professional.displayName}
         </h1>
 

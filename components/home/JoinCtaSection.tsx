@@ -6,7 +6,7 @@ export function JoinCtaSection() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-start lg:items-center">
           <div>
-            <h2 className="font-serif text-[clamp(2rem,4vw,3rem)] tracking-tight leading-tight">
+            <h2 className="font-serif font-medium text-[clamp(2rem,4vw,3rem)] tracking-tight leading-tight">
               Do good work? <span className="italic">Let people find you.</span>
             </h2>
           </div>

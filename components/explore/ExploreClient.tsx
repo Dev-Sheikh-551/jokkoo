@@ -118,7 +118,7 @@ export function ExploreClient() {
   if (allProfessionals.length === 0) {
     return (
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 lg:py-24 text-center space-y-6">
-        <h1 className="font-serif text-3xl sm:text-4xl font-bold tracking-tight text-deep-slate">
+        <h1 className="font-serif font-medium text-3xl sm:text-4xl tracking-tight text-deep-slate">
           Directory of Professionals
         </h1>
         <p className="text-sm text-river-silt max-w-md mx-auto leading-relaxed">

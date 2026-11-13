@@ -14,7 +14,7 @@ export function ServicesList({ services }: ServicesListProps) {
     <section aria-labelledby="services-heading" className="space-y-4 pt-4">
       <h2
         id="services-heading"
-        className="font-serif text-2xl font-bold tracking-tight text-deep-slate"
+        className="font-serif font-medium text-2xl tracking-tight text-deep-slate"
       >
         Services
       </h2>

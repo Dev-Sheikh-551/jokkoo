@@ -136,7 +136,7 @@ export default async function ProfessionalProfilePage({ params }: PageProps) {
                 >
                   <h2
                     id="hours-heading"
-                    className="font-serif text-2xl font-bold tracking-tight text-deep-slate"
+                    className="font-serif font-medium text-2xl tracking-tight text-deep-slate"
                   >
                     Working hours
                   </h2>

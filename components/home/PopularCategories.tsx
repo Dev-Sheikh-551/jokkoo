@@ -13,7 +13,7 @@ export function PopularCategories() {
     <section className="py-16 lg:py-24 border-b border-border-subtle bg-warm-bone">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-8 lg:mb-12">
-          <h2 className="font-serif text-[clamp(2rem,4vw,2.75rem)] tracking-tight text-deep-slate leading-tight">
+          <h2 className="font-serif font-medium text-[clamp(2rem,4vw,2.75rem)] tracking-tight text-deep-slate leading-tight">
             What do you need done?
           </h2>
         </div>

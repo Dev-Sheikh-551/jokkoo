@@ -46,7 +46,7 @@ export function HeroClient({
           <span className="text-xs sm:text-sm font-semibold uppercase tracking-wider text-river-silt block mb-3">
             Connecting people across The Gambia
           </span>
-          <h1 className="font-serif text-[clamp(2.75rem,6.5vw,5.25rem)] leading-[0.98] tracking-tight text-deep-slate">
+          <h1 className="font-serif font-medium text-[clamp(2.75rem,6.5vw,5.25rem)] leading-[0.98] tracking-tight text-deep-slate">
             Skilled hands,{" "}
             <span className="italic font-normal text-laterite">
               close to home.

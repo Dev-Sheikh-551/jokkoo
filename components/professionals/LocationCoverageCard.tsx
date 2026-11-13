@@ -20,7 +20,7 @@ export function LocationCoverageCard({
     <section aria-labelledby="coverage-heading" className="space-y-4 pt-4">
       <h2
         id="coverage-heading"
-        className="font-serif text-2xl font-bold tracking-tight text-deep-slate"
+        className="font-serif font-medium text-2xl tracking-tight text-deep-slate"
       >
         Where {displayName} works
       </h2>
