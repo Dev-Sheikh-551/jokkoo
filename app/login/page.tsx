@@ -146,12 +146,12 @@ export default function LoginPage() {
                 </Link>
               </p>
               <p>
-                Are you an artisan?{" "}
+                Are you an artisan or business?{" "}
                 <Link
                   href="/join"
                   className="font-medium text-deep-slate hover:text-laterite hover:underline"
                 >
-                  Apply to List Your Services
+                  Join as a professional
                 </Link>
               </p>
             </div>

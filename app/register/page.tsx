@@ -174,7 +174,7 @@ export default function RegisterPage() {
                   href="/join"
                   className="font-medium text-deep-slate hover:text-laterite hover:underline"
                 >
-                  List Your Trade Practice
+                  Join as a professional
                 </Link>
               </p>
             </div>
