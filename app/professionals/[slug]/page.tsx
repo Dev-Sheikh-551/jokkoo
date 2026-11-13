@@ -19,7 +19,13 @@ interface PageProps {
 }
 
 export async function generateStaticParams() {
-  return getProfessionals().map((pro) => ({
+  const pros = getProfessionals();
+  if (pros.length === 0) {
+    // When no professionals exist (e.g. mock data removed in prod before real users exist),
+    // Next.js with cacheComponents requires at least one static param fallback to validate prerendering.
+    return [{ slug: "_empty" }];
+  }
+  return pros.map((pro) => ({
     slug: pro.slug,
   }));
 }
