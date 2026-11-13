@@ -99,7 +99,7 @@ export function PortfolioGallery({
                 fill
                 priority={i === 0}
                 className="object-cover"
-                sizes="(max-width: 1023px) 100vw, 50vw"
+                sizes="(max-width: 1023px) 100vw, 1px"
                 quality={75}
               />
             </button>
@@ -135,7 +135,7 @@ export function PortfolioGallery({
                 fill
                 priority
                 className="object-cover transition-transform duration-300 group-hover:scale-[1.01]"
-                sizes="1280px"
+                sizes="(min-width: 1024px) 1280px, 1px"
                 quality={75}
               />
             </button>
@@ -158,7 +158,7 @@ export function PortfolioGallery({
                   fill
                   priority={i === 0}
                   className="object-cover transition-transform duration-300 group-hover:scale-105"
-                  sizes="(min-width: 1024px) 640px, 50vw"
+                  sizes="(min-width: 1024px) 640px, 1px"
                   quality={75}
                 />
               </button>
@@ -181,7 +181,7 @@ export function PortfolioGallery({
                 fill
                 priority
                 className="object-cover transition-transform duration-300 group-hover:scale-105"
-                sizes="(min-width: 1024px) 800px, 66vw"
+                sizes="(min-width: 1024px) 800px, 1px"
                 quality={75}
               />
             </button>
@@ -203,7 +203,7 @@ export function PortfolioGallery({
                       alt={photo.caption || `${displayName}: work photo ${actualIndex + 1}`}
                       fill
                       className="object-cover transition-transform duration-300 group-hover:scale-105"
-                      sizes="(min-width: 1024px) 440px, 33vw"
+                      sizes="(min-width: 1024px) 440px, 1px"
                       quality={75}
                     />
                   </button>
@@ -228,7 +228,7 @@ export function PortfolioGallery({
                 fill
                 priority
                 className="object-cover transition-transform duration-300 group-hover:scale-105"
-                sizes="(min-width: 1024px) 750px, 58vw"
+                sizes="(min-width: 1024px) 750px, 1px"
                 quality={75}
               />
             </button>
@@ -257,7 +257,7 @@ export function PortfolioGallery({
                       alt={photo.caption || `${displayName}: work photo ${actualIndex + 1}`}
                       fill
                       className="object-cover transition-transform duration-300 group-hover:scale-105"
-                      sizes="(min-width: 1024px) 250px, 20vw"
+                      sizes="(min-width: 1024px) 250px, 1px"
                       quality={75}
                     />
 
