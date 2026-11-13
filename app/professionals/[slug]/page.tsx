@@ -89,12 +89,6 @@ export default async function ProfessionalProfilePage({ params }: PageProps) {
               <ArrowLeft className="h-4 w-4" />
               <span>Back to Explore</span>
             </Link>
-
-            {professional.isSample && (
-              <span className="text-[11px] font-mono text-river-silt/80">
-                Sample profile
-              </span>
-            )}
           </div>
         </div>
 

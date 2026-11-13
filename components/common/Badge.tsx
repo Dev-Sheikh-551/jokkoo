@@ -13,7 +13,7 @@ export function SampleDataBadge({ className }: SampleDataBadgeProps) {
       )}
       title="This is demonstration data for testing and preview"
     >
-      Sample Data
+      Sample profile
     </span>
   );
 }
