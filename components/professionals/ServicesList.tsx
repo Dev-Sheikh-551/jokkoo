@@ -1,5 +1,3 @@
-import { Check } from "lucide-react";
-
 interface ServiceItem {
   title: string;
   description?: string;
@@ -10,33 +8,31 @@ interface ServicesListProps {
 }
 
 export function ServicesList({ services }: ServicesListProps) {
+  if (!services || services.length === 0) return null;
+
   return (
-    <div className="rounded-[3px] border border-border-subtle bg-warm-bone p-6 space-y-6">
-      <div>
-        <h3 className="text-base font-bold text-deep-slate">Services</h3>
-      </div>
+    <section aria-labelledby="services-heading" className="space-y-4 pt-4">
+      <h2
+        id="services-heading"
+        className="font-serif text-2xl font-bold tracking-tight text-deep-slate"
+      >
+        Services
+      </h2>
 
-      <div className="space-y-4">
+      <div className="divide-y divide-border-subtle border-y border-border-subtle">
         {services.map((service, i) => (
-          <div
-            key={service.title + i}
-            className="p-4 rounded-[2px] border border-border-subtle bg-sand-dune/20 hover:border-deep-slate/30 transition-colors space-y-2.5"
-          >
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-              <h4 className="text-sm font-semibold text-deep-slate flex items-start gap-2">
-                <Check className="h-4 w-4 text-laterite shrink-0 mt-0.5" />
-                <span>{service.title}</span>
-              </h4>
-            </div>
-
+          <div key={service.title + i} className="py-4 space-y-1">
+            <h3 className="text-base font-semibold text-deep-slate leading-snug">
+              {service.title}
+            </h3>
             {service.description && (
-              <p className="text-xs text-river-silt pl-6 leading-relaxed">
+              <p className="text-sm text-river-silt leading-relaxed max-w-2xl">
                 {service.description}
               </p>
             )}
           </div>
         ))}
       </div>
-    </div>
+    </section>
   );
 }

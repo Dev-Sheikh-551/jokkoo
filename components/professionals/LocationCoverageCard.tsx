@@ -1,4 +1,4 @@
-import { MapPin, Navigation } from "lucide-react";
+import { GAMBIAN_LOCATIONS } from "@/data/locations";
 
 interface LocationCoverageCardProps {
   displayName: string;
@@ -13,70 +13,82 @@ export function LocationCoverageCard({
   regularAreas = [],
   byArrangementAreas = [],
 }: LocationCoverageCardProps) {
+  const getLocationName = (slug: string) =>
+    GAMBIAN_LOCATIONS.find((l) => l.id === slug)?.name ?? slug;
+
   return (
-    <div className="rounded-[3px] border border-border-subtle bg-warm-bone p-6 space-y-4">
-      <div className="flex items-center gap-2">
-        <MapPin className="h-5 w-5 text-laterite" />
-        <h3 className="text-base font-bold text-deep-slate">
-          Where {displayName} works
-        </h3>
+    <section aria-labelledby="coverage-heading" className="space-y-4 pt-4">
+      <h2
+        id="coverage-heading"
+        className="font-serif text-2xl font-bold tracking-tight text-deep-slate"
+      >
+        Where {displayName} works
+      </h2>
+
+      {/* FUTURE MAP COMPONENT SLOT:
+          When district vector maps or interactive SVG boundaries are ready,
+          insert the map visualization component here. Keep fallback chip layout below.
+      */}
+      <div className="hidden" aria-hidden="true">
+        {/* Map visualization slot placeholder */}
       </div>
 
-      <p className="text-xs text-river-silt leading-relaxed">
-        To maintain punctuality and reliable project delivery, this professional
-        operates within the specific Gambian districts listed below.
-      </p>
+      <div className="space-y-4 pt-1">
+        {/* Based in */}
+        <div className="space-y-1.5">
+          <span className="text-xs font-semibold uppercase tracking-wider text-river-silt block">
+            Based in
+          </span>
+          <div className="flex flex-wrap gap-2">
+            <span className="inline-flex items-center px-3 py-1.5 rounded-full bg-laterite text-white text-xs font-medium">
+              {getLocationName(baseLocation)}
+            </span>
+          </div>
+        </div>
 
-      {/* Primary Workshop / Base */}
-      <div className="p-3 rounded-[2px] bg-sand-dune/40 border border-border-subtle text-xs">
-        <span className="font-semibold text-deep-slate block mb-0.5">
-          Primary Workshop / Base:
-        </span>
-        <span className="text-river-silt">{baseLocation}, The Gambia</span>
+        {/* Regular areas */}
+        {regularAreas.length > 0 && (
+          <div className="space-y-1.5">
+            <span className="text-xs font-semibold uppercase tracking-wider text-river-silt block">
+              Regular areas
+            </span>
+            <div className="flex flex-wrap gap-2">
+              {regularAreas.map((slug) => (
+                <span
+                  key={slug}
+                  className="inline-flex items-center px-3 py-1.5 rounded-full bg-laterite-soft text-laterite-dark text-xs font-medium"
+                >
+                  {getLocationName(slug)}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* By arrangement */}
+        {byArrangementAreas.length > 0 && (
+          <div className="space-y-1.5">
+            <span className="text-xs font-semibold uppercase tracking-wider text-river-silt block">
+              By arrangement
+            </span>
+            <div className="flex flex-wrap gap-2">
+              {byArrangementAreas.map((slug) => (
+                <span
+                  key={slug}
+                  className="inline-flex items-center px-3 py-1.5 rounded-full border border-border-subtle bg-transparent text-deep-slate text-xs font-medium"
+                >
+                  {getLocationName(slug)}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
 
-      {/* Regular areas */}
-      {regularAreas.length > 0 && (
-        <div>
-          <span className="text-xs font-semibold text-deep-slate block mb-2">
-            Regular areas
-          </span>
-          <div className="flex flex-wrap gap-1.5">
-            {regularAreas.map((area) => (
-              <span
-                key={area}
-                className="px-2.5 py-1 rounded-[2px] bg-sand-dune text-xs font-medium text-deep-slate border border-border-subtle flex items-center gap-1"
-              >
-                <Navigation className="h-3 w-3 text-laterite" />
-                <span>{area}</span>
-              </span>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* By arrangement areas */}
-      {byArrangementAreas.length > 0 && (
-        <div>
-          <span className="text-xs font-semibold text-deep-slate block mb-2">
-            By arrangement
-          </span>
-          <div className="flex flex-wrap gap-1.5">
-            {byArrangementAreas.map((area) => (
-              <span
-                key={area}
-                className="px-2.5 py-1 rounded-[2px] bg-sand-dune/40 text-xs text-deep-slate border border-border-subtle"
-              >
-                {area}
-              </span>
-            ))}
-          </div>
-        </div>
-      )}
-
-      <p className="text-[11px] text-river-silt italic">
-        Illustrative area names. Real district boundaries come with the build.
+      {/* Legend / explanation */}
+      <p className="text-xs text-river-silt pt-1 leading-relaxed">
+        Solid shows their workshop base, soft shows towns they visit regularly, and outline shows areas available by advance arrangement.
       </p>
-    </div>
+    </section>
   );
 }
