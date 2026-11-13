@@ -150,7 +150,7 @@ export default async function ProfessionalProfilePage({ params }: PageProps) {
               <ReviewSection displayName={professional.displayName} />
 
               {/* Disclaimer note */}
-              <p className="text-xs text-river-silt/70 pt-2 border-t border-border-subtle">
+              <p className="text-xs text-river-silt pt-2 border-t border-border-subtle">
                 Details on this profile are provided by the professional.
               </p>
             </div>

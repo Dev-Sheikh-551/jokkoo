@@ -76,7 +76,7 @@ export function ProfileHeader({ professional }: ProfileHeaderProps) {
 
       {/* Optional languages and years in the trade */}
       {metaItems.length > 0 && (
-        <p className="text-xs sm:text-sm text-river-silt/80 pt-0.5">
+        <p className="text-xs sm:text-sm text-river-silt pt-0.5">
           {metaItems.join(" · ")}
         </p>
       )}

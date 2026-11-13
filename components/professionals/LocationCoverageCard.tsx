@@ -56,7 +56,7 @@ export function LocationCoverageCard({
               {regularAreas.map((slug) => (
                 <span
                   key={slug}
-                  className="inline-flex items-center px-3 py-1.5 rounded-full bg-laterite-soft text-laterite-dark text-xs font-medium"
+                  className="inline-flex items-center px-3 py-1.5 rounded-full bg-laterite-light text-laterite-dark text-xs font-medium"
                 >
                   {getLocationName(slug)}
                 </span>

@@ -104,7 +104,7 @@ export function ProfessionalCard({ professional }: ProfessionalCardProps) {
               >
                 WhatsApp
               </span>
-              <span className="text-[10px] text-river-silt/80 mt-0.5">
+              <span className="text-[10px] text-river-silt mt-0.5">
                 Sample profile: contact is disabled
               </span>
             </div>

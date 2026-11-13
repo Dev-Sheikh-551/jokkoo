@@ -14,7 +14,7 @@ const plusJakartaSans = Plus_Jakarta_Sans({
 const newsreader = Newsreader({
   subsets: ["latin"],
   variable: "--font-serif",
-  weight: ["400", "500", "600"],
+  weight: "variable",
   style: ["normal", "italic"],
   display: "swap",
   axes: ["opsz"],

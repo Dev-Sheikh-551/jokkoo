@@ -77,8 +77,6 @@ export function PortfolioGallery({
     }
   };
 
-  const count = workPhotos.length;
-
   return (
     <section aria-label="Work photos gallery" className="w-full">
       {/* MOBILE LAYOUT (< lg): Single large view or swipeable carousel with 1 / N chip */}

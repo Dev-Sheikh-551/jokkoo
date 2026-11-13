@@ -246,7 +246,7 @@ export function ExploreClient() {
                     }`}
                   >
                     <span className="truncate pr-2">{cat.name}</span>
-                    <span className="text-[10px] text-river-silt/70">{count}</span>
+                    <span className="text-[10px] text-river-silt">{count}</span>
                   </button>
                 );
               })}
