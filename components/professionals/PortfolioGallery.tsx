@@ -1,61 +1,56 @@
-import { Camera } from "lucide-react";
-import { PortfolioItem } from "@/types/professional";
+import Image from "next/image";
 import { ImagePlaceholder } from "@/components/common/ImagePlaceholder";
 
-interface PortfolioGalleryProps {
-  portfolio: PortfolioItem[];
+interface WorkPhoto {
+  src: string;
+  caption?: string;
 }
 
-export function PortfolioGallery({ portfolio }: PortfolioGalleryProps) {
-  if (portfolio.length === 0) return null;
+interface PortfolioGalleryProps {
+  workPhotos: WorkPhoto[];
+  isSample?: boolean;
+}
+
+export function PortfolioGallery({
+  workPhotos,
+}: PortfolioGalleryProps) {
+  if (workPhotos.length === 0) return null;
 
   return (
     <div className="rounded-[3px] border border-border-subtle bg-warm-bone p-6 space-y-6">
       <div className="flex items-center justify-between">
-        <div>
-          <h3 className="text-base font-bold text-deep-slate flex items-center gap-2">
-            <Camera className="h-4 w-4 text-laterite" />
-            <span>Portfolio &amp; Documented Work</span>
-          </h3>
-          <p className="text-xs text-river-silt mt-1">
-            Photographs of past installations, craftsmanship, and trade projects.
-          </p>
-        </div>
-        <span className="text-xs text-river-silt font-medium">
-          {portfolio.length} Projects
+        <h3 className="text-base font-bold text-deep-slate">Work photos</h3>
+        <span className="text-xs text-river-silt">
+          {workPhotos.length} photo{workPhotos.length !== 1 ? "s" : ""}
         </span>
       </div>
-
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        {portfolio.map((item) => (
+        {workPhotos.map((photo, i) => (
           <div
-            key={item.id}
+            key={i}
             className="group overflow-hidden rounded-[2px] border border-border-subtle bg-sand-dune/20"
           >
-            {/* Image placeholder */}
             <div className="relative aspect-[16/10] w-full overflow-hidden">
-              <ImagePlaceholder
-                tone="sand"
-                label={item.tag}
-                className="rounded-[2px] border-none"
-              />
-              <div className="absolute top-2.5 right-2.5 px-2 py-0.5 rounded-[2px] bg-deep-slate/85 backdrop-blur-sm text-[10px] font-semibold text-warm-bone">
-                {item.completedYear}
-              </div>
+              {photo.src ? (
+                <Image
+                  src={photo.src}
+                  alt={photo.caption ?? "Work photo"}
+                  fill
+                  className="object-cover"
+                  sizes="(min-width: 1024px) 400px, 100vw"
+                  quality={75}
+                />
+              ) : (
+                <ImagePlaceholder
+                  tone="sand"
+                  label={photo.caption ?? "Work photo"}
+                  className="rounded-[2px] border-none"
+                />
+              )}
             </div>
-
-            {/* Details */}
-            <div className="p-4 space-y-1.5">
-              <span className="text-[10px] uppercase tracking-wider font-semibold text-laterite">
-                {item.tag}
-              </span>
-              <h4 className="text-sm font-semibold text-deep-slate leading-snug">
-                {item.title}
-              </h4>
-              <p className="text-xs text-river-silt leading-relaxed">
-                {item.description}
-              </p>
-            </div>
+            {photo.caption && (
+              <div className="p-3 text-xs text-river-silt">{photo.caption}</div>
+            )}
           </div>
         ))}
       </div>

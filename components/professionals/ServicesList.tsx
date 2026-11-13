@@ -1,23 +1,25 @@
-import { Check, Clock } from "lucide-react";
-import { ServiceOffering } from "@/types/professional";
+import { Check } from "lucide-react";
+
+interface ServiceItem {
+  title: string;
+  description?: string;
+}
 
 interface ServicesListProps {
-  services: ServiceOffering[];
+  services: ServiceItem[];
 }
 
 export function ServicesList({ services }: ServicesListProps) {
   return (
     <div className="rounded-[3px] border border-border-subtle bg-warm-bone p-6 space-y-6">
       <div>
-        <h3 className="text-base font-bold text-deep-slate">
-          Services
-        </h3>
+        <h3 className="text-base font-bold text-deep-slate">Services</h3>
       </div>
 
       <div className="space-y-4">
-        {services.map((service) => (
+        {services.map((service, i) => (
           <div
-            key={service.id}
+            key={service.title + i}
             className="p-4 rounded-[2px] border border-border-subtle bg-sand-dune/20 hover:border-deep-slate/30 transition-colors space-y-2.5"
           >
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
@@ -27,15 +29,10 @@ export function ServicesList({ services }: ServicesListProps) {
               </h4>
             </div>
 
-            <p className="text-xs text-river-silt pl-6 leading-relaxed">
-              {service.description}
-            </p>
-
-            {service.durationEstimate && (
-              <div className="flex items-center gap-1 text-[11px] text-river-silt pl-6">
-                <Clock className="h-3 w-3 text-river-silt/70" />
-                <span>Typical timeframe: {service.durationEstimate}</span>
-              </div>
+            {service.description && (
+              <p className="text-xs text-river-silt pl-6 leading-relaxed">
+                {service.description}
+              </p>
             )}
           </div>
         ))}

@@ -33,10 +33,8 @@ export function ReviewSection({ reviews }: ReviewSectionProps) {
             >
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-xs">
                 <div className="flex items-center gap-2">
-                  <span className="font-semibold text-deep-slate">{rev.author}</span>
-                  <span className="text-river-silt/60">•</span>
-                  <span className="text-river-silt">
-                    {rev.clientType} ({rev.location})
+                  <span className="font-semibold text-deep-slate">
+                    {rev.author}
                   </span>
                 </div>
                 <span className="text-[11px] text-river-silt">{rev.date}</span>
