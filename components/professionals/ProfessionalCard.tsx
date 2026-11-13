@@ -9,9 +9,13 @@ import { CATEGORIES } from "@/data/categories";
 
 interface ProfessionalCardProps {
   professional: Professional;
+  previewMode?: boolean;
 }
 
-export function ProfessionalCard({ professional }: ProfessionalCardProps) {
+export function ProfessionalCard({
+  professional,
+  previewMode = false,
+}: ProfessionalCardProps) {
   const {
     slug,
     displayName,
@@ -65,8 +69,16 @@ export function ProfessionalCard({ professional }: ProfessionalCardProps) {
         )}
         {/* Top-left chip stack */}
         <div className="absolute left-3 top-3 flex flex-col gap-1.5 z-10">
-          {isSample && <SampleDataBadge />}
-          <VerificationBadge level={verification} />
+          {previewMode ? (
+            <span className="inline-flex items-center px-2 py-0.5 rounded-[2px] bg-sand-dune/90 text-[10px] uppercase tracking-wider text-river-silt font-semibold border border-border-subtle shadow-xs">
+              Preview
+            </span>
+          ) : (
+            <>
+              {isSample && <SampleDataBadge />}
+              <VerificationBadge level={verification} />
+            </>
+          )}
         </div>
       </div>
 
@@ -88,7 +100,18 @@ export function ProfessionalCard({ professional }: ProfessionalCardProps) {
 
       {/* FOOTER ROW */}
       <div className="flex items-center justify-between border-t border-border-subtle px-5 py-3 min-h-[52px]">
-        {isSample ? (
+        {previewMode ? (
+          <div className="w-full flex items-center justify-between">
+            <span className="text-xs text-river-silt">Profile card preview</span>
+            <span
+              role="presentation"
+              aria-hidden="true"
+              className="inline-flex items-center justify-center rounded-full bg-laterite/40 px-4 py-2 text-xs font-semibold text-warm-bone/70 pointer-events-none select-none min-h-[44px]"
+            >
+              WhatsApp
+            </span>
+          </div>
+        ) : isSample ? (
           <>
             <Link
               href={`/professionals/${slug}`}
