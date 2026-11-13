@@ -7,6 +7,8 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { OnboardingBanner } from "@/components/onboarding/OnboardingBanner";
 import { OnboardingStepper } from "@/components/onboarding/OnboardingStepper";
+import { Step1AboutYou } from "@/components/onboarding/Step1AboutYou";
+import { Step2WhereYouWork } from "@/components/onboarding/Step2WhereYouWork";
 import {
   onboardingFormSchema,
   type OnboardingFormValues,
@@ -146,9 +148,10 @@ export default function JoinPage() {
                       {STEPS[currentStep - 1].title}
                     </h2>
 
-                    {/* Step Containers (wired in Tasks 2-5) */}
+                    {/* Step Containers */}
                     <div id={`step-${currentStep}-panel`}>
-                      {/* Step content will render here */}
+                      {currentStep === 1 && <Step1AboutYou />}
+                      {currentStep === 2 && <Step2WhereYouWork />}
                     </div>
 
                     {/* Desktop Step Navigation */}
