@@ -56,10 +56,12 @@ export function PortfolioGallery({
     );
   }
 
+  const count = workPhotos.length;
+
   const lightboxPhotos: LightboxPhoto[] = workPhotos.map((photo, i) => ({
     src: photo.src,
-    caption: photo.caption,
-    alt: photo.caption || `${displayName}: work photo ${i + 1}`,
+    caption: photo.caption || `${displayName}: work photo ${i + 1} of ${count}`,
+    alt: photo.caption || `${displayName}: work photo ${i + 1} of ${count}`,
   }));
 
   const openLightbox = (index: number, triggerEl?: HTMLButtonElement | null) => {
