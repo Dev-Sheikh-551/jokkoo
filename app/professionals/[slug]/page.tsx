@@ -130,7 +130,7 @@ export default async function ProfessionalProfilePage({ params }: PageProps) {
               {/* Work Photos Gallery */}
               <PortfolioGallery
                 workPhotos={professional.workPhotos}
-                isSample={professional.isSample}
+                displayName={professional.displayName}
               />
 
               {/* Reviews Section */}
