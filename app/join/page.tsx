@@ -9,6 +9,7 @@ import { OnboardingBanner } from "@/components/onboarding/OnboardingBanner";
 import { OnboardingStepper } from "@/components/onboarding/OnboardingStepper";
 import { Step1AboutYou } from "@/components/onboarding/Step1AboutYou";
 import { Step2WhereYouWork } from "@/components/onboarding/Step2WhereYouWork";
+import { Step3YourWork } from "@/components/onboarding/Step3YourWork";
 import {
   onboardingFormSchema,
   type OnboardingFormValues,
@@ -152,6 +153,7 @@ export default function JoinPage() {
                     <div id={`step-${currentStep}-panel`}>
                       {currentStep === 1 && <Step1AboutYou />}
                       {currentStep === 2 && <Step2WhereYouWork />}
+                      {currentStep === 3 && <Step3YourWork />}
                     </div>
 
                     {/* Desktop Step Navigation */}
