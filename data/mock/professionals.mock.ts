@@ -1,4 +1,26 @@
 import type { Professional } from "@/types/professional";
+import { MOCK_IMAGES_MAP } from "@/data/mock/mock-images.generated";
+
+// Helper to assemble work photos: existing category photo first, then any work-N files found from sync
+function buildMockWorkPhotos(
+  slug: string,
+  initialPhotos: { src: string; caption?: string }[]
+): { src: string; caption?: string }[] {
+  const syncedWorks = MOCK_IMAGES_MAP[slug]?.works ?? [];
+  const photos = [...initialPhotos];
+  for (let i = 0; i < syncedWorks.length; i++) {
+    photos.push({
+      src: syncedWorks[i],
+      caption: `Work photo ${photos.length + 1}`,
+    });
+  }
+  return photos;
+}
+
+// Helper to resolve avatar
+function getMockAvatar(slug: string): string | undefined {
+  return MOCK_IMAGES_MAP[slug]?.avatar;
+}
 
 // In development, validate mock profiles against schema asynchronously
 if (process.env.NODE_ENV === "development") {
@@ -54,13 +76,13 @@ export const MOCK_PROFESSIONALS: Professional[] = [
         description: "Finding and fixing shorts, tripped breakers, and earthing faults.",
       },
     ],
-    workPhotos: [
+    workPhotos: buildMockWorkPhotos("lamin-ceesay", [
       {
         src: "/images/categories/electrical.jpg",
         caption: "Electrical breaker panel installation",
       },
-    ],
-    avatar: undefined,
+    ]),
+    avatar: getMockAvatar("lamin-ceesay"),
     languages: ["English", "Wolof", "Mandinka"],
     yearsExperience: 9,
     workingHours: undefined,
@@ -104,13 +126,13 @@ export const MOCK_PROFESSIONALS: Professional[] = [
         description: "Taking in, letting out, hemming, and repairs.",
       },
     ],
-    workPhotos: [
+    workPhotos: buildMockWorkPhotos("fatou-darboe", [
       {
         src: "/images/categories/tailoring.jpg",
         caption: "Tailoring and garment construction",
       },
-    ],
-    avatar: undefined,
+    ]),
+    avatar: getMockAvatar("fatou-darboe"),
     languages: ["Wolof", "Mandinka", "English"],
     yearsExperience: 11,
     workingHours: undefined,
@@ -154,13 +176,13 @@ export const MOCK_PROFESSIONALS: Professional[] = [
         description: "Fitted to your wall dimensions.",
       },
     ],
-    workPhotos: [
+    workPhotos: buildMockWorkPhotos("ousman-bojang", [
       {
         src: "/images/categories/carpentry.jpg",
         caption: "Hands planing hardwood joinery",
       },
-    ],
-    avatar: undefined,
+    ]),
+    avatar: getMockAvatar("ousman-bojang"),
     languages: ["English", "Wolof"],
     yearsExperience: 14,
     workingHours: undefined,
@@ -204,13 +226,13 @@ export const MOCK_PROFESSIONALS: Professional[] = [
         description: "Varnish, primer, and enamel on wood and ironwork.",
       },
     ],
-    workPhotos: [
+    workPhotos: buildMockWorkPhotos("mariama-sowe", [
       {
         src: "/images/categories/painting.jpg",
         caption: "Wall surface painting finish",
       },
-    ],
-    avatar: undefined,
+    ]),
+    avatar: getMockAvatar("mariama-sowe"),
     languages: ["English", "Wolof", "Fula"],
     yearsExperience: 6,
     workingHours: undefined,
@@ -254,13 +276,13 @@ export const MOCK_PROFESSIONALS: Professional[] = [
         description: "Oil change, filters, belts, and plug replacement.",
       },
     ],
-    workPhotos: [
+    workPhotos: buildMockWorkPhotos("bakary-jammeh", [
       {
         src: "/images/categories/mechanical.jpg",
         caption: "Vehicle diagnostics and mechanical repair",
       },
-    ],
-    avatar: undefined,
+    ]),
+    avatar: getMockAvatar("bakary-jammeh"),
     languages: ["English", "Wolof", "Mandinka"],
     yearsExperience: 12,
     workingHours: undefined,
@@ -304,13 +326,13 @@ export const MOCK_PROFESSIONALS: Professional[] = [
         description: "Scheduled daily or weekly service.",
       },
     ],
-    workPhotos: [
+    workPhotos: buildMockWorkPhotos("adama-sallah", [
       {
         src: "/images/categories/cleaning.jpg",
         caption: "Deep cleaning and sanitation",
       },
-    ],
-    avatar: undefined,
+    ]),
+    avatar: getMockAvatar("adama-sallah"),
     languages: ["English", "Wolof"],
     yearsExperience: 7,
     workingHours: undefined,
@@ -354,13 +376,13 @@ export const MOCK_PROFESSIONALS: Professional[] = [
         description: "Naming ceremonies, weddings, and corporate events.",
       },
     ],
-    workPhotos: [
+    workPhotos: buildMockWorkPhotos("ndey-touray", [
       {
         src: "/images/categories/photography.jpg",
         caption: "Architectural and event photography",
       },
-    ],
-    avatar: undefined,
+    ]),
+    avatar: getMockAvatar("ndey-touray"),
     languages: ["English", "Wolof", "Mandinka"],
     yearsExperience: 8,
     workingHours: undefined,
@@ -408,7 +430,7 @@ export const MOCK_PROFESSIONALS: Professional[] = [
         description: "Leak tracing, pipe replacement, and sanitary fittings.",
       },
     ],
-    workPhotos: [
+    workPhotos: buildMockWorkPhotos("sunrise-electrical-services", [
       {
         src: "/images/categories/electrical.jpg",
         caption: "Electrical installation",
@@ -417,8 +439,8 @@ export const MOCK_PROFESSIONALS: Professional[] = [
         src: "/images/categories/plumbing.jpg",
         caption: "Plumbing and pipework installation",
       },
-    ],
-    avatar: undefined,
+    ]),
+    avatar: getMockAvatar("sunrise-electrical-services"),
     languages: ["English", "Wolof"],
     yearsExperience: 5,
     workingHours: "Monday to Saturday, 8am–6pm",

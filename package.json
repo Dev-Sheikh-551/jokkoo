@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "predev": "node scripts/sync-mock-images.mjs",
+    "prebuild": "node scripts/sync-mock-images.mjs",
     "dev": "next dev",
     "build": "node -e \"if(process.env.CI || process.env.VERCEL){require('child_process').execSync('node scripts/predeploy-check.mjs', {stdio:'inherit'})}\" && next build",
     "predeploy": "node scripts/predeploy-check.mjs",
