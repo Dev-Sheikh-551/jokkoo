@@ -6,13 +6,15 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { getProfessionals } from "@/data/professionals";
 import { CATEGORIES } from "@/data/categories";
+import { GAMBIAN_LOCATIONS } from "@/data/locations";
 import { SHOW_MOCK } from "@/lib/mock";
-import { ProfileHeader } from "@/components/professionals/ProfileHeader";
-import { ContactActionCard } from "@/components/professionals/ContactActionCard";
-import { LocationCoverageCard } from "@/components/professionals/LocationCoverageCard";
-import { ServicesList } from "@/components/professionals/ServicesList";
 import { PortfolioGallery } from "@/components/professionals/PortfolioGallery";
+import { ProfileHeader } from "@/components/professionals/ProfileHeader";
+import { ServicesList } from "@/components/professionals/ServicesList";
+import { LocationCoverageCard } from "@/components/professionals/LocationCoverageCard";
 import { ReviewSection } from "@/components/professionals/ReviewSection";
+import { ContactActionCard } from "@/components/professionals/ContactActionCard";
+import { MobileContactBar } from "@/components/professionals/MobileContactBar";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -40,13 +42,22 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     };
   }
 
-  const categoryName =
-    CATEGORIES.find((c) => c.slug === pro.primaryCategorySlug)?.name ??
+  const primaryTrade =
+    CATEGORIES.find((c) => c.slug === pro.primaryCategorySlug)?.shortName ??
     pro.primaryCategorySlug;
 
+  const baseName =
+    GAMBIAN_LOCATIONS.find((l) => l.id === pro.baseLocation)?.name ??
+    pro.baseLocation;
+
+  const title = `${pro.displayName}, ${primaryTrade} in ${baseName} | Jokkoo`;
+  const description =
+    pro.bio.length > 150 ? `${pro.bio.slice(0, 147)}...` : pro.bio;
+
   return {
-    title: `${pro.displayName} (${categoryName}) — Jokkoo The Gambia`,
-    description: `${pro.bio.slice(0, 150)}... Based in ${pro.baseLocation}, The Gambia.`,
+    title,
+    description,
+    robots: pro.isSample ? { index: false, follow: false } : undefined,
   };
 }
 
@@ -64,18 +75,18 @@ export default async function ProfessionalProfilePage({ params }: PageProps) {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-warm-bone text-deep-slate">
+    <div className="min-h-screen flex flex-col bg-warm-bone text-deep-slate pb-24 lg:pb-16 [scroll-padding-bottom:5.5rem] lg:[scroll-padding-bottom:2rem]">
       <Header />
 
-      <main className="flex-1 pb-16">
-        {/* Breadcrumb Navigation */}
-        <div className="border-b border-border-subtle bg-warm-bone/80 px-4 sm:px-6 lg:px-8 py-3">
+      <main className="flex-1">
+        {/* Top Breadcrumb Navigation */}
+        <div className="border-b border-border-subtle bg-warm-bone/80 px-4 sm:px-6 lg:px-8 py-3.5">
           <div className="mx-auto max-w-7xl flex items-center justify-between text-xs text-river-silt">
             <Link
               href="/explore"
-              className="inline-flex items-center gap-1.5 hover:text-laterite transition-colors font-medium"
+              className="inline-flex items-center gap-1.5 hover:text-laterite transition-colors font-medium min-h-[44px]"
             >
-              <ArrowLeft className="h-3.5 w-3.5" />
+              <ArrowLeft className="h-4 w-4" />
               <span>Back to Explore</span>
             </Link>
 
@@ -87,36 +98,35 @@ export default async function ProfessionalProfilePage({ params }: PageProps) {
           </div>
         </div>
 
-        {/* Profile Header */}
-        <ProfileHeader professional={professional} />
+        {/* Outer container */}
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-6 sm:pt-8 space-y-8 sm:space-y-10">
+          {/* Gallery: full width on desktop */}
+          <PortfolioGallery
+            workPhotos={professional.workPhotos}
+            displayName={professional.displayName}
+          />
 
-        {/* Profile Content Body */}
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-8">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-            {/* Main Content Column (8 cols) */}
-            <div className="lg:col-span-8 space-y-8">
-              {/* Bio / About Section */}
-              <div className="rounded-[3px] border border-border-subtle bg-warm-bone p-6 space-y-3">
-                <h2 className="text-base font-bold text-deep-slate">
+          {/* Desktop Two-column grid / Mobile sequential stack */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start">
+            {/* Left Content Column */}
+            <div className="lg:col-span-8 space-y-10 sm:space-y-12">
+              {/* Header block */}
+              <ProfileHeader professional={professional} />
+
+              {/* Bio section */}
+              <section aria-labelledby="bio-heading" className="space-y-3 pt-2">
+                <h2 id="bio-heading" className="sr-only">
                   About {professional.displayName}
                 </h2>
-                <p className="text-sm text-river-silt leading-relaxed">
+                <p className="text-[17px] leading-[1.7] text-deep-slate/90 max-w-[640px]">
                   {professional.bio}
                 </p>
-                {professional.yearsExperience != null && (
-                  <div className="pt-2 text-xs text-river-silt font-medium">
-                    Operating in The Gambia for {professional.yearsExperience}+ years.
-                  </div>
-                )}
-                {professional.workingHours && (
-                  <div className="pt-1 text-xs text-river-silt">
-                    <span className="font-semibold text-deep-slate">Hours: </span>
-                    {professional.workingHours}
-                  </div>
-                )}
-              </div>
+              </section>
 
-              {/* Location & Coverage Section */}
+              {/* Services section */}
+              <ServicesList services={professional.services} />
+
+              {/* Location & Coverage section */}
               <LocationCoverageCard
                 displayName={professional.displayName}
                 baseLocation={professional.baseLocation}
@@ -124,26 +134,43 @@ export default async function ProfessionalProfilePage({ params }: PageProps) {
                 byArrangementAreas={professional.byArrangementAreas}
               />
 
-              {/* Services Offered Section */}
-              <ServicesList services={professional.services} />
+              {/* Working Hours (only if provided) */}
+              {professional.workingHours && (
+                <section
+                  aria-labelledby="hours-heading"
+                  className="space-y-2 pt-2"
+                >
+                  <h2
+                    id="hours-heading"
+                    className="font-serif text-2xl font-bold tracking-tight text-deep-slate"
+                  >
+                    Working hours
+                  </h2>
+                  <p className="text-sm text-river-silt leading-relaxed">
+                    {professional.workingHours}
+                  </p>
+                </section>
+              )}
 
-              {/* Work Photos Gallery */}
-              <PortfolioGallery
-                workPhotos={professional.workPhotos}
-                displayName={professional.displayName}
-              />
+              {/* Reviews section */}
+              <ReviewSection displayName={professional.displayName} />
 
-              {/* Reviews Section */}
-              <ReviewSection reviews={[]} />
+              {/* Disclaimer note */}
+              <p className="text-xs text-river-silt/70 pt-2 border-t border-border-subtle">
+                Details on this profile are provided by the professional.
+              </p>
             </div>
 
-            {/* Sticky Sidebar Action Column (4 cols) */}
-            <div className="lg:col-span-4">
+            {/* Desktop Sticky Sidebar (380px, top offset 24px) */}
+            <div className="hidden lg:block lg:col-span-4 lg:w-[380px] lg:ml-auto">
               <ContactActionCard professional={professional} />
             </div>
           </div>
         </div>
       </main>
+
+      {/* Mobile Sticky Contact Bar */}
+      <MobileContactBar professional={professional} />
 
       <Footer />
     </div>
