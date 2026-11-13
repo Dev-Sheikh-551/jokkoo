@@ -54,8 +54,8 @@ export function Footer() {
             <h3 className="text-xs font-semibold uppercase tracking-wider text-warm-bone mb-4">
               Areas
             </h3>
-            <ul className="space-y-2.5 text-sm text-warm-bone/70 max-h-60 overflow-y-auto pr-2">
-              {serviceAreas.map((loc) => (
+            <ul className="space-y-2.5 text-sm text-warm-bone/70">
+              {serviceAreas.slice(0, 6).map((loc) => (
                 <li key={loc.id}>
                   <Link
                     href={`/explore?location=${loc.id}`}
@@ -65,6 +65,14 @@ export function Footer() {
                   </Link>
                 </li>
               ))}
+              <li>
+                <Link
+                  href="/explore"
+                  className="inline-flex items-center gap-1 text-xs font-medium text-warm-bone underline underline-offset-4 hover:text-laterite transition-colors pt-1"
+                >
+                  All areas →
+                </Link>
+              </li>
             </ul>
           </div>
 
