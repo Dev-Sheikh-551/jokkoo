@@ -24,11 +24,22 @@ if (process.env.NEXT_PUBLIC_SHOW_MOCK_DATA === "true") {
 
 // 2. Check .env.local
 const envLocalPath = join(ROOT, ".env.local");
+let envLocalContent = "";
 if (existsSync(envLocalPath)) {
-  const content = readFileSync(envLocalPath, "utf8");
-  if (/NEXT_PUBLIC_SHOW_MOCK_DATA\s*=\s*["']?true["']?/i.test(content)) {
+  envLocalContent = readFileSync(envLocalPath, "utf8");
+  if (/NEXT_PUBLIC_SHOW_MOCK_DATA\s*=\s*["']?true["']?/i.test(envLocalContent)) {
     error(".env.local has NEXT_PUBLIC_SHOW_MOCK_DATA=true. Set to false or remove before deployment.");
   }
+}
+
+// 2b. Check NEXT_PUBLIC_ONBOARDING_LIVE
+let onboardingLive = process.env.NEXT_PUBLIC_ONBOARDING_LIVE;
+if (!onboardingLive && envLocalContent) {
+  const match = envLocalContent.match(/NEXT_PUBLIC_ONBOARDING_LIVE\s*=\s*["']?([^"'\r\n]+)["']?/i);
+  if (match) onboardingLive = match[1];
+}
+if (onboardingLive !== "true") {
+  error("NEXT_PUBLIC_ONBOARDING_LIVE is not 'true'. Onboarding must be live before deployment.");
 }
 
 // 3. Check data/mock directory

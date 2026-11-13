@@ -1,278 +1,230 @@
 "use client";
 
-import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useState, useRef, useEffect } from "react";
+import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-import { ShieldCheck, CheckCircle2 } from "lucide-react";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
-import { CATEGORIES } from "@/data/categories";
-import { GAMBIAN_LOCATIONS } from "@/data/locations";
-import { Button } from "@/components/common/Button";
+import { OnboardingBanner } from "@/components/onboarding/OnboardingBanner";
+import { OnboardingStepper } from "@/components/onboarding/OnboardingStepper";
+import {
+  onboardingFormSchema,
+  type OnboardingFormValues,
+} from "@/lib/onboarding/schema";
 
-const proApplicationSchema = z.object({
-  fullName: z.string().min(2, "Full name must be at least 2 characters"),
-  businessName: z.string().optional(),
-  categorySlug: z.string().min(1, "Please select your primary trade category"),
-  baseLocation: z.string().min(1, "Please select your primary operational base"),
-  phone: z.string().min(7, "Please enter a valid phone number"),
-  whatsappNumber: z.string().min(7, "Please enter a valid WhatsApp contact"),
-  yearsExperience: z.string().min(1, "Please enter years of experience"),
-  bio: z.string().min(20, "Please provide a brief description of your trade practice (min 20 characters)"),
-  acceptsVerification: z.boolean().refine((val) => val === true, {
-    message: "You must confirm this phone number is yours",
-  }),
-});
+const STEPS = [
+  { number: 1, title: "About you" },
+  { number: 2, title: "Where you work" },
+  { number: 3, title: "Your work" },
+  { number: 4, title: "Photos" },
+  { number: 5, title: "Contact and review" },
+] as const;
 
-type ProApplicationForm = z.infer<typeof proApplicationSchema>;
+const STEP_FIELDS: Record<number, (keyof OnboardingFormValues)[]> = {
+  1: ["accountType", "displayName", "businessName", "categories"],
+  2: ["baseLocation", "regularAreas", "byArrangementAreas", "workingHours"],
+  3: ["bio", "services", "yearsExperience", "languages"],
+  4: ["workPhotos", "avatar"],
+  5: ["whatsappNumber", "callNumber", "confirmsPhone"],
+};
 
 export default function JoinPage() {
-  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [currentStep, setCurrentStep] = useState(1);
+  const stepHeadingRef = useRef<HTMLHeadingElement | null>(null);
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-  } = useForm<ProApplicationForm>({
-    resolver: zodResolver(proApplicationSchema),
+  const methods = useForm<OnboardingFormValues>({
+    resolver: zodResolver(onboardingFormSchema),
+    mode: "onTouched",
     defaultValues: {
-      fullName: "",
+      accountType: "individual",
+      displayName: "",
       businessName: "",
-      categorySlug: "",
+      categories: [],
       baseLocation: "",
-      phone: "+220 ",
-      whatsappNumber: "+220 ",
-      yearsExperience: "3",
+      regularAreas: [],
+      byArrangementAreas: [],
+      whatsappNumber: "",
+      callNumber: "",
+      useSameNumberForCalls: true,
       bio: "",
-      acceptsVerification: false,
+      services: [{ title: "", description: "" }],
+      workPhotos: [],
+      avatar: "",
+      languages: [],
+      yearsExperience: undefined,
+      workingHours: "",
+      confirmsPhone: false as unknown as true,
     },
   });
 
-  const onSubmit = async () => {
-    // Application submission simulation
-    await new Promise((resolve) => setTimeout(resolve, 800));
-    setIsSubmitted(true);
+  const { trigger } = methods;
+
+  // Move focus and scroll to top on step change
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    if (stepHeadingRef.current) {
+      stepHeadingRef.current.focus();
+    }
+  }, [currentStep]);
+
+  const handleNext = async () => {
+    const fieldsToValidate = STEP_FIELDS[currentStep];
+    const isValid = await trigger(fieldsToValidate);
+
+    if (isValid) {
+      if (currentStep < 5) {
+        setCurrentStep((prev) => prev + 1);
+      }
+    } else {
+      // Focus first invalid field
+      const currentErrors = methods.formState.errors;
+      const firstErrorField = fieldsToValidate.find(
+        (field) => currentErrors[field as keyof typeof currentErrors]
+      );
+      if (firstErrorField) {
+        const element = document.querySelector(
+          `[name="${firstErrorField}"], #${firstErrorField}`
+        ) as HTMLElement | null;
+        if (element) {
+          element.focus();
+          element.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+      }
+    }
   };
 
+  const handleBack = () => {
+    if (currentStep > 1) {
+      setCurrentStep((prev) => prev - 1);
+    }
+  };
+
+  const _jumpToStep = (stepNumber: number) => {
+    if (stepNumber >= 1 && stepNumber <= 5) {
+      setCurrentStep(stepNumber);
+    }
+  };
+  void _jumpToStep;
+
   return (
-    <div className="min-h-screen flex flex-col bg-warm-bone text-deep-slate">
+    <div className="min-h-screen bg-warm-bone text-deep-slate flex flex-col">
+      <OnboardingBanner />
       <Header />
-      <main className="flex-1 py-12 lg:py-16">
-        <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
-          {/* Header */}
-          <div className="mb-10 text-center max-w-2xl mx-auto space-y-3">
-            <span className="text-xs font-semibold uppercase tracking-wider text-laterite">
-              Professional Partnership
-            </span>
-            <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-deep-slate">
-              List Your Trade Practice on Jokkoo
+
+      <main className="flex-1 pb-28 lg:pb-16" id="main-content">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
+          {/* Header intro */}
+          <div className="max-w-[640px] mb-8 space-y-2">
+            <h1 className="font-serif font-medium text-3xl sm:text-4xl lg:text-5xl tracking-tight text-deep-slate">
+              Let people find you
             </h1>
-            <p className="text-sm text-river-silt leading-relaxed">
-              Join The Gambia’s verified network of skilled artisans. Showcase your past work and connect directly with serious local and diaspora clients.
+            <p className="text-base text-river-silt leading-relaxed">
+              Build your profile in about five minutes. You can do it from your phone.
             </p>
           </div>
 
-          {isSubmitted ? (
-            <div className="rounded-[3px] border border-border-subtle bg-warm-bone p-8 text-center space-y-4 shadow-sm animate-in fade-in-50">
-              <div className="h-14 w-14 mx-auto rounded-full bg-sand-dune flex items-center justify-center text-laterite">
-                <CheckCircle2 className="h-8 w-8" />
-              </div>
-              <h2 className="text-2xl font-bold text-deep-slate">
-                Application Received for Verification
-              </h2>
-              <p className="text-sm text-river-silt max-w-md mx-auto leading-relaxed">
-                Thank you for applying to Jokkoo. Our team will contact you via WhatsApp to confirm your phone number before publishing your profile.
-              </p>
-              <div className="pt-4 flex justify-center gap-3">
-                <Button href="/explore" variant="primary" size="md">
-                  Explore Directory
-                </Button>
-                <Button href="/" variant="outline" size="md">
-                  Return to Homepage
-                </Button>
-              </div>
-            </div>
-          ) : (
-            <div className="rounded-[3px] border border-border-subtle bg-warm-bone p-6 sm:p-10 shadow-sm">
-              <div className="mb-8 p-4 rounded-[2px] bg-sand-dune/40 border border-border-subtle flex items-start gap-3 text-xs text-river-silt">
-                <ShieldCheck className="h-5 w-5 text-laterite shrink-0 mt-0.5" />
-                <div>
-                  We confirm your phone number by WhatsApp before your profile gets the Phone verified badge.
-                </div>
-              </div>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+            {/* Form Column (max 640px) */}
+            <div className="lg:col-span-7 xl:col-span-7 max-w-[640px] w-full">
+              <div className="bg-card-raised/40 rounded-[var(--radius-card,1.5rem)] border border-border-subtle p-5 sm:p-8 space-y-6">
+                <OnboardingStepper currentStep={currentStep} steps={STEPS} />
 
-              <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                  {/* Full Name */}
-                  <div className="space-y-1.5">
-                    <label className="text-xs font-semibold text-deep-slate block">
-                      Full Legal Name *
-                    </label>
-                    <input
-                      type="text"
-                      {...register("fullName")}
-                      placeholder="e.g. Modou Camara"
-                      className="w-full px-3 py-2 text-sm bg-sand-dune/30 border border-border-subtle rounded-[2px] text-deep-slate focus:outline-none focus:border-laterite"
-                    />
-                    {errors.fullName && (
-                      <p className="text-[11px] text-laterite">{errors.fullName.message}</p>
-                    )}
-                  </div>
-
-                  {/* Business Name */}
-                  <div className="space-y-1.5">
-                    <label className="text-xs font-semibold text-deep-slate block">
-                      Business or Workshop Name (Optional)
-                    </label>
-                    <input
-                      type="text"
-                      {...register("businessName")}
-                      placeholder="e.g. Camara Power Systems"
-                      className="w-full px-3 py-2 text-sm bg-sand-dune/30 border border-border-subtle rounded-[2px] text-deep-slate focus:outline-none focus:border-laterite"
-                    />
-                  </div>
-
-                  {/* Primary Trade Category */}
-                  <div className="space-y-1.5">
-                    <label className="text-xs font-semibold text-deep-slate block">
-                      Primary Trade Category *
-                    </label>
-                    <select
-                      {...register("categorySlug")}
-                      className="w-full px-3 py-2 text-sm bg-sand-dune/30 border border-border-subtle rounded-[2px] text-deep-slate focus:outline-none focus:border-laterite cursor-pointer"
-                    >
-                      <option value="">Select your craft</option>
-                      {CATEGORIES.map((cat) => (
-                        <option key={cat.slug} value={cat.slug}>
-                          {cat.name}
-                        </option>
-                      ))}
-                    </select>
-                    {errors.categorySlug && (
-                      <p className="text-[11px] text-laterite">{errors.categorySlug.message}</p>
-                    )}
-                  </div>
-
-                  {/* Primary Operational Base */}
-                  <div className="space-y-1.5">
-                    <label className="text-xs font-semibold text-deep-slate block">
-                      Operational Base in The Gambia *
-                    </label>
-                    <select
-                      {...register("baseLocation")}
-                      className="w-full px-3 py-2 text-sm bg-sand-dune/30 border border-border-subtle rounded-[2px] text-deep-slate focus:outline-none focus:border-laterite cursor-pointer"
-                    >
-                      <option value="">Select primary town / area</option>
-                      {GAMBIAN_LOCATIONS.filter((l) => l.id !== "all").map((loc) => (
-                        <option key={loc.id} value={loc.name}>
-                          {loc.name} ({loc.region})
-                        </option>
-                      ))}
-                    </select>
-                    {errors.baseLocation && (
-                      <p className="text-[11px] text-laterite">{errors.baseLocation.message}</p>
-                    )}
-                  </div>
-
-                  {/* Phone */}
-                  <div className="space-y-1.5">
-                    <label className="text-xs font-semibold text-deep-slate block">
-                      Phone Number (Direct Calls) *
-                    </label>
-                    <input
-                      type="text"
-                      {...register("phone")}
-                      className="w-full px-3 py-2 text-sm bg-sand-dune/30 border border-border-subtle rounded-[2px] text-deep-slate focus:outline-none focus:border-laterite"
-                    />
-                    {errors.phone && (
-                      <p className="text-[11px] text-laterite">{errors.phone.message}</p>
-                    )}
-                  </div>
-
-                  {/* WhatsApp */}
-                  <div className="space-y-1.5">
-                    <label className="text-xs font-semibold text-deep-slate block">
-                      WhatsApp Contact Number *
-                    </label>
-                    <input
-                      type="text"
-                      {...register("whatsappNumber")}
-                      className="w-full px-3 py-2 text-sm bg-sand-dune/30 border border-border-subtle rounded-[2px] text-deep-slate focus:outline-none focus:border-laterite"
-                    />
-                    {errors.whatsappNumber && (
-                      <p className="text-[11px] text-laterite">{errors.whatsappNumber.message}</p>
-                    )}
-                  </div>
-                </div>
-
-                {/* Years Experience */}
-                <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-deep-slate block">
-                    Years of Professional Experience in This Trade *
-                  </label>
-                  <input
-                    type="number"
-                    min="1"
-                    max="60"
-                    {...register("yearsExperience")}
-                    className="w-full max-w-xs px-3 py-2 text-sm bg-sand-dune/30 border border-border-subtle rounded-[2px] text-deep-slate focus:outline-none focus:border-laterite"
-                  />
-                  {errors.yearsExperience && (
-                    <p className="text-[11px] text-laterite">{errors.yearsExperience.message}</p>
-                  )}
-                </div>
-
-                {/* Bio / Services */}
-                <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-deep-slate block">
-                    Describe Your Trade Practice & Typical Services *
-                  </label>
-                  <textarea
-                    rows={4}
-                    {...register("bio")}
-                    placeholder="Describe your training, certifications, equipment, and typical projects you handle across The Gambia..."
-                    className="w-full px-3 py-2 text-sm bg-sand-dune/30 border border-border-subtle rounded-[2px] text-deep-slate focus:outline-none focus:border-laterite"
-                  />
-                  {errors.bio && (
-                    <p className="text-[11px] text-laterite">{errors.bio.message}</p>
-                  )}
-                </div>
-
-                {/* Verification Agreement */}
-                <div className="pt-2 border-t border-border-subtle">
-                  <label className="flex items-start gap-2.5 cursor-pointer select-none">
-                    <input
-                      type="checkbox"
-                      {...register("acceptsVerification")}
-                      className="h-4 w-4 mt-0.5 rounded-[2px] border-border-subtle text-laterite focus:ring-laterite accent-laterite"
-                    />
-                    <span className="text-xs text-river-silt leading-relaxed">
-                      I confirm this phone number is mine and I can receive WhatsApp messages and calls.
-                    </span>
-                  </label>
-                  {errors.acceptsVerification && (
-                    <p className="text-[11px] text-laterite mt-1">{errors.acceptsVerification.message}</p>
-                  )}
-                </div>
-
-                {/* Submit Button */}
-                <div className="pt-4">
-                  <Button
-                    type="submit"
-                    disabled={isSubmitting}
-                    variant="primary"
-                    size="lg"
-                    className="w-full sm:w-auto"
+                <FormProvider {...methods}>
+                  <form
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                    }}
+                    noValidate
+                    className="space-y-6 pt-2"
                   >
-                    {isSubmitting ? "Submitting Application..." : "Submit Application for Verification"}
-                  </Button>
-                </div>
-              </form>
+                    {/* Step Heading with focus management */}
+                    <h2
+                      ref={stepHeadingRef}
+                      tabIndex={-1}
+                      className="font-serif font-medium text-2xl sm:text-3xl tracking-tight text-deep-slate focus:outline-none"
+                    >
+                      {STEPS[currentStep - 1].title}
+                    </h2>
+
+                    {/* Step Containers (wired in Tasks 2-5) */}
+                    <div id={`step-${currentStep}-panel`}>
+                      {/* Step content will render here */}
+                    </div>
+
+                    {/* Desktop Step Navigation */}
+                    <div className="hidden lg:flex items-center justify-between pt-6 border-t border-border-subtle">
+                      {currentStep > 1 ? (
+                        <button
+                          type="button"
+                          onClick={handleBack}
+                          className="inline-flex min-h-[44px] items-center justify-center rounded-full border border-border-subtle bg-warm-bone px-6 py-2.5 text-sm font-semibold text-deep-slate hover:bg-sand-dune/60 transition-colors cursor-pointer"
+                        >
+                          Back
+                        </button>
+                      ) : (
+                        <div />
+                      )}
+
+                      {currentStep < 5 && (
+                        <button
+                          type="button"
+                          onClick={handleNext}
+                          className="inline-flex min-h-[44px] items-center justify-center rounded-full bg-laterite px-8 py-2.5 text-sm font-semibold text-white hover:bg-laterite-dark transition-colors cursor-pointer shadow-xs"
+                        >
+                          Next: {STEPS[currentStep].title}
+                        </button>
+                      )}
+                    </div>
+                  </form>
+                </FormProvider>
+              </div>
             </div>
-          )}
+
+            {/* Desktop Sticky Live Preview Column (Task 6) */}
+            <div className="hidden lg:block lg:col-span-5 xl:col-span-5">
+              <div className="sticky top-6 space-y-3">
+                <span className="text-xs font-semibold uppercase tracking-wider text-river-silt block">
+                  Live profile card preview
+                </span>
+                <div
+                  id="desktop-live-preview"
+                  className="rounded-[var(--radius-card,1.5rem)] border border-border-subtle bg-warm-bone p-4"
+                >
+                  <p className="text-xs text-river-silt">
+                    Your profile preview updates as you fill in each step.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </main>
+
+      {/* Mobile Sticky Bottom Bar */}
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-30 bg-warm-bone/95 backdrop-blur-md border-t border-border-subtle px-4 py-3 pb-[calc(0.75rem+env(safe-area-inset-bottom,0px))] flex items-center gap-3 justify-between">
+        {currentStep > 1 ? (
+          <button
+            type="button"
+            onClick={handleBack}
+            className="flex-1 min-h-[44px] inline-flex items-center justify-center rounded-full border border-border-subtle bg-warm-bone px-4 py-2 text-sm font-semibold text-deep-slate active:bg-sand-dune/60 cursor-pointer"
+          >
+            Back
+          </button>
+        ) : (
+          <div className="flex-1" />
+        )}
+
+        {currentStep < 5 && (
+          <button
+            type="button"
+            onClick={handleNext}
+            className="flex-1 min-h-[44px] inline-flex items-center justify-center rounded-full bg-laterite px-6 py-2 text-sm font-semibold text-white active:bg-laterite-dark cursor-pointer shadow-xs"
+          >
+            Next
+          </button>
+        )}
+      </div>
+
       <Footer />
     </div>
   );
