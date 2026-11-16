@@ -417,7 +417,7 @@ export function Step5ContactReview({
                 <strong className="text-deep-slate">
                   {formValues.displayName || "Name not entered"}
                 </strong>
-                {formValues.businessName && ` (${formValues.businessName})`} Â·{" "}
+                {formValues.businessName && ` (${formValues.businessName})`} ·{" "}
                 {formValues.accountType === "business"
                   ? "Business or team"
                   : "Works on own"}

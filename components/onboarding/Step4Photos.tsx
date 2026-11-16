@@ -187,7 +187,7 @@ export function Step4Photos() {
                 Add photos of your work
               </span>
               <span className="text-xs text-river-silt mt-1">
-                JPEG, PNG, or WebP Â· Max 8 MB per photo Â· {8 - workPhotos.length} slots remaining
+                JPEG, PNG, or WebP · Max 8 MB per photo · {8 - workPhotos.length} slots remaining
               </span>
             </label>
           </div>
