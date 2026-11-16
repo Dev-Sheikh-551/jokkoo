@@ -1,13 +1,15 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { CATEGORIES } from "@/data/categories";
-import { CategoryIcon } from "@/components/common/CategoryIcon";
+import { categoryMedia } from "@/lib/media";
+import { ImagePlaceholder } from "@/components/common/ImagePlaceholder";
 
 export const metadata: Metadata = {
-  title: "Service Categories — Jokkoo The Gambia",
+  title: "Browse by Kind of Work — Jokkoo The Gambia",
   description:
     "Explore trade service categories on Jokkoo: Electrical, Plumbing, Carpentry, Tailoring, Automotive, Painting, Cleaning, Photography, and Computer Repairs.",
 };
@@ -16,81 +18,89 @@ export default function CategoriesPage() {
   return (
     <div className="min-h-screen flex flex-col bg-warm-bone text-deep-slate">
       <Header />
-      <main className="flex-1 py-12 lg:py-16">
+      <main className="flex-1 py-8 sm:py-12">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          {/* Header */}
-          <div className="max-w-3xl mb-12 border-b border-border-subtle pb-8">
-            <span className="text-xs font-semibold uppercase tracking-wider text-laterite">
-              Directory Classification
-            </span>
-            <h1 className="text-3xl sm:text-5xl font-bold tracking-tight text-deep-slate mt-1.5">
-              Service Categories &amp; Trades
+          {/* Intro */}
+          <div className="max-w-3xl border-b border-border-subtle pb-6 mb-8 space-y-2">
+            <h1 className="font-serif font-medium text-3xl sm:text-4xl tracking-tight text-deep-slate">
+              Browse by kind of work
             </h1>
-            <p className="text-base text-river-silt mt-3 leading-relaxed">
-              Every category on Jokkoo represents a trade practice in The Gambia. Browse specific skillsets, common service requests, and experienced professionals serving your area.
+            <p className="text-base text-river-silt leading-relaxed">
+              Find skilled trade professionals and workshops across The Gambia by service category.
             </p>
           </div>
 
-          {/* Detailed Categories List */}
-          <div className="space-y-6">
-            {CATEGORIES.map((category) => (
-              <div
-                key={category.slug}
-                className="group p-6 sm:p-8 rounded-[3px] border border-border-subtle bg-warm-bone hover:border-deep-slate/40 hover:bg-sand-dune/20 transition-all duration-200"
-              >
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-                  {/* Left Column: Icon + Category Info */}
-                  <div className="lg:col-span-5 space-y-3">
-                    <div className="flex items-center gap-3">
-                      <div className="h-12 w-12 flex items-center justify-center rounded-[2px] bg-sand-dune border border-border-subtle text-deep-slate group-hover:bg-laterite group-hover:text-white transition-colors">
-                        <CategoryIcon
-                          name={category.iconName}
-                          className="h-6 w-6"
-                        />
-                      </div>
-                      <div>
-                        <h2 className="text-xl font-bold text-deep-slate group-hover:text-laterite transition-colors">
-                          {category.name}
-                        </h2>
-                        <span className="text-xs text-river-silt font-medium">
-                          {category.tagline}
-                        </span>
-                      </div>
+          {/* Grid of Category Cards (1 / 2 / 3 columns) */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+            {CATEGORIES.map((category) => {
+              const media = categoryMedia[category.slug];
+              const popularServices = (category.popularServices ?? []).slice(0, 4);
+
+              return (
+                <div
+                  key={category.slug}
+                  className="group flex flex-col overflow-hidden rounded-[3px] border border-border-subtle bg-white hover:border-deep-slate/40 transition-colors shadow-2xs"
+                >
+                  {/* Category Image */}
+                  <div className="relative aspect-[16/10] overflow-hidden bg-sand-dune">
+                    {media?.src ? (
+                      <Image
+                        src={media.src}
+                        alt={media.alt}
+                        fill
+                        sizes="(min-width: 1024px) 380px, (min-width: 768px) 50vw, 100vw"
+                        quality={75}
+                        style={{ objectPosition: media.objectPosition || "center" }}
+                        className="object-cover transition-transform duration-300 group-hover:scale-105"
+                      />
+                    ) : (
+                      <ImagePlaceholder
+                        tone={media?.tone || "slate"}
+                        label={category.shortName}
+                        className="h-full w-full"
+                      />
+                    )}
+                  </div>
+
+                  {/* Card Content */}
+                  <div className="flex flex-1 flex-col p-5 sm:p-6 space-y-4">
+                    <div>
+                      <h2 className="font-serif font-medium text-2xl text-deep-slate group-hover:text-laterite transition-colors">
+                        {category.name}
+                      </h2>
+                      <p className="text-sm text-river-silt mt-1">
+                        {category.tagline}
+                      </p>
                     </div>
 
-                    <p className="text-sm text-river-silt leading-relaxed">
-                      {category.fullDescription}
-                    </p>
-                  </div>
+                    {/* Up to 4 example services as small text chips */}
+                    {popularServices.length > 0 && (
+                      <div className="flex flex-wrap gap-1.5 pt-1">
+                        {popularServices.map((service) => (
+                          <span
+                            key={service}
+                            className="inline-flex items-center rounded-full bg-sand-dune/60 px-2.5 py-1 text-xs text-river-silt font-medium border border-border-subtle/60"
+                          >
+                            {service}
+                          </span>
+                        ))}
+                      </div>
+                    )}
 
-                  {/* Middle Column: Common Services */}
-                  <div className="lg:col-span-5 border-t lg:border-t-0 lg:border-l border-border-subtle pt-4 lg:pt-0 lg:pl-6 space-y-2">
-                    <span className="text-xs font-semibold uppercase tracking-wider text-deep-slate block mb-2">
-                      Common Services &amp; Specializations
-                    </span>
-                    <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-river-silt">
-                      {category.popularServices.map((service, idx) => (
-                        <li key={idx} className="flex items-start gap-1.5">
-                          <span className="text-laterite font-bold">•</span>
-                          <span>{service}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  {/* Right Column: CTA */}
-                  <div className="lg:col-span-2 flex lg:flex-col items-center lg:items-end justify-between lg:justify-center border-t lg:border-t-0 pt-4 lg:pt-0 gap-3">
-                    <Link
-                      href={`/explore?category=${category.slug}`}
-                      className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-[2px] bg-deep-slate hover:bg-laterite text-warm-bone text-xs font-medium transition-colors w-full justify-center"
-                    >
-                      <span>Explore Pros</span>
-                      <ArrowRight className="h-3.5 w-3.5" />
-                    </Link>
+                    {/* Action link */}
+                    <div className="pt-2 mt-auto">
+                      <Link
+                        href={`/explore?category=${category.slug}`}
+                        className="inline-flex min-h-[44px] items-center justify-center gap-2 rounded-full bg-laterite px-6 py-2.5 text-sm font-semibold text-white hover:bg-laterite-dark transition-colors shadow-xs w-full sm:w-auto"
+                      >
+                        <span>See professionals</span>
+                        <ArrowRight className="h-4 w-4" />
+                      </Link>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </main>
