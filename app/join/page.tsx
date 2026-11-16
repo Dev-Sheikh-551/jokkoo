@@ -15,7 +15,7 @@ import { Step5ContactReview } from "@/components/onboarding/Step5ContactReview";
 import { OnboardingSuccess } from "@/components/onboarding/OnboardingSuccess";
 import { ProfessionalCard } from "@/components/professionals/ProfessionalCard";
 import { Professional } from "@/types/professional";
-import type { ProfessionalProfileInput } from "@/lib/profile/schema";
+import { isPublishable, type ProfessionalProfileInput } from "@/lib/profile/schema";
 import {
   onboardingFormSchema,
   type OnboardingFormValues,
@@ -114,6 +114,41 @@ function buildPreviewProfessional(values: PreviewFormInput): Professional {
   };
 }
 
+function extractCleanProfile(vals: Partial<OnboardingFormValues>): ProfessionalProfileInput {
+  return {
+    accountType: vals.accountType ?? "individual",
+    displayName: vals.displayName?.trim() ?? "",
+    businessName: vals.businessName?.trim() || undefined,
+    categories: (vals.categories || []) as ProfessionalProfileInput["categories"],
+    baseLocation: (vals.baseLocation || "") as ProfessionalProfileInput["baseLocation"],
+    regularAreas: (vals.regularAreas || []) as ProfessionalProfileInput["regularAreas"],
+    byArrangementAreas: (vals.byArrangementAreas || []) as ProfessionalProfileInput["byArrangementAreas"],
+    whatsappNumber: vals.whatsappNumber ?? "",
+    callNumber: vals.useSameNumberForCalls
+      ? vals.whatsappNumber
+      : vals.callNumber || undefined,
+    bio: vals.bio?.trim() ?? "",
+    services: (vals.services || [])
+      .filter((s) => Boolean(s?.title?.trim()))
+      .map((s) => ({
+        title: s.title.trim(),
+        description: s.description?.trim() || undefined,
+      })),
+    workPhotos: (vals.workPhotos || []).map((p) => ({
+      src: p.src,
+      caption: p.caption?.trim() || undefined,
+    })),
+    avatar: vals.avatar || undefined,
+    languages: (vals.languages || []) as ProfessionalProfileInput["languages"],
+    yearsExperience:
+      typeof vals.yearsExperience === "number" && !isNaN(vals.yearsExperience)
+        ? vals.yearsExperience
+        : undefined,
+    workingHours: vals.workingHours?.trim() || undefined,
+    confirmsPhone: vals.confirmsPhone === true ? true : (false as unknown as true),
+  };
+}
+
 export default function JoinPage() {
   const [currentStep, setCurrentStep] = useState(1);
   const [submittedDraft, setSubmittedDraft] = useState<Professional | null>(null);
@@ -187,6 +222,10 @@ export default function JoinPage() {
   );
   const [previewPro, setPreviewPro] = useState<Professional>(initialPreview);
 
+  const [canPublish, setCanPublish] = useState(() =>
+    isPublishable(extractCleanProfile(methods.getValues()))
+  );
+
   useEffect(() => {
     let timeoutId: NodeJS.Timeout;
     // eslint-disable-next-line react-hooks/incompatible-library
@@ -194,6 +233,7 @@ export default function JoinPage() {
       clearTimeout(timeoutId);
       timeoutId = setTimeout(() => {
         setPreviewPro(buildPreviewProfessional(values as PreviewFormInput));
+        setCanPublish(isPublishable(extractCleanProfile(values as Partial<OnboardingFormValues>)));
       }, 150);
     });
     return () => {
@@ -251,6 +291,42 @@ export default function JoinPage() {
   const handleDraftSubmit = (draft: Professional) => {
     setSubmittedDraft(draft);
     window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const handlePublish = async () => {
+    const valid = await trigger(STEP_FIELDS[5]);
+    const cleanInput = extractCleanProfile(methods.getValues());
+    const publishable = isPublishable(cleanInput);
+
+    if (!valid || !publishable) {
+      const currentErrors = methods.formState.errors;
+      const firstErrorField = STEP_FIELDS[5].find(
+        (field) => currentErrors[field as keyof typeof currentErrors]
+      );
+      if (firstErrorField) {
+        const element = document.querySelector(
+          `[name="${firstErrorField}"], #${firstErrorField}`
+        ) as HTMLElement | null;
+        if (element) {
+          element.focus();
+          element.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+      }
+      return;
+    }
+    const name = cleanInput.displayName || "Your Name";
+    const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+    const draft: Professional = {
+      ...cleanInput,
+      id: `pro-draft-${slug}`,
+      slug,
+      primaryCategorySlug: cleanInput.categories[0] || "electrical-work",
+      verification: "none",
+      status: "published",
+      createdAt: new Date().toISOString(),
+      isSample: false,
+    };
+    handleDraftSubmit(draft);
   };
 
   return (
@@ -363,28 +439,44 @@ export default function JoinPage() {
         </div>
       </main>
 
-      {/* Mobile Sticky Bottom Bar (Only on Steps 1-4, not on success or step 5 where submit handles it) */}
-      {!submittedDraft && currentStep < 5 && (
-        <div className="lg:hidden fixed bottom-0 left-0 right-0 z-30 bg-warm-bone/95 backdrop-blur-md border-t border-border-subtle px-4 py-3 pb-[calc(0.75rem+env(safe-area-inset-bottom,0px))] flex items-center gap-3 justify-between">
+      {/* Mobile Sticky Bottom Bar (Steps 1-5, short labels, 48px buttons, safe area insets) */}
+      {!submittedDraft && (
+        <div className="lg:hidden fixed bottom-0 left-0 right-0 z-30 bg-warm-bone/95 backdrop-blur-md border-t border-border-subtle px-4 pl-[calc(1rem+env(safe-area-inset-left,0px))] pr-[calc(1rem+env(safe-area-inset-right,0px))] py-3 pb-[calc(0.75rem+env(safe-area-inset-bottom,0px))] flex items-center gap-3 justify-between">
           {currentStep > 1 ? (
             <button
               type="button"
               onClick={handleBack}
-              className="flex-1 min-h-[44px] inline-flex items-center justify-center rounded-full border border-border-subtle bg-warm-bone px-4 py-2 text-sm font-semibold text-deep-slate active:bg-sand-dune/60 cursor-pointer"
+              aria-label={`Back: ${STEPS[currentStep - 2].title}`}
+              className="shrink-0 min-w-[84px] h-12 min-h-[48px] inline-flex items-center justify-center rounded-full border border-border-subtle bg-warm-bone px-5 text-sm font-semibold text-deep-slate active:bg-sand-dune/60 cursor-pointer whitespace-nowrap transition-colors"
             >
               Back
             </button>
-          ) : (
-            <div className="flex-1" />
-          )}
+          ) : null}
 
-          <button
-            type="button"
-            onClick={handleNext}
-            className="flex-1 min-h-[44px] inline-flex items-center justify-center rounded-full bg-laterite px-6 py-2 text-sm font-semibold text-white active:bg-laterite-dark cursor-pointer shadow-xs"
-          >
-            Next: {STEPS[currentStep].title}
-          </button>
+          {currentStep < 5 ? (
+            <button
+              type="button"
+              onClick={handleNext}
+              aria-label={`Next: ${STEPS[currentStep].title}`}
+              className="flex-1 h-12 min-h-[48px] inline-flex items-center justify-center rounded-full bg-laterite px-6 text-sm font-semibold text-white active:bg-laterite-dark cursor-pointer shadow-xs whitespace-nowrap transition-colors"
+            >
+              Next
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={handlePublish}
+              disabled={!canPublish}
+              aria-label="Publish my profile"
+              className={`flex-1 h-12 min-h-[48px] inline-flex items-center justify-center rounded-full px-6 text-sm font-semibold shadow-xs whitespace-nowrap transition-all ${
+                canPublish
+                  ? "bg-laterite text-white active:bg-laterite-dark cursor-pointer"
+                  : "bg-sand-dune border border-border-subtle text-river-silt/60 cursor-not-allowed opacity-60"
+              }`}
+            >
+              Publish my profile
+            </button>
+          )}
         </div>
       )}
 
