@@ -12,7 +12,7 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import { CATEGORIES } from "@/data/categories";
-import { GAMBIAN_LOCATIONS, getLocationLabel } from "@/data/locations";
+import { getLocationLabel } from "@/data/locations";
 import { Professional } from "@/types/professional";
 import { ProfessionalCard } from "@/components/professionals/ProfessionalCard";
 import {

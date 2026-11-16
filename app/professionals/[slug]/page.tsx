@@ -6,7 +6,7 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { getProfessionals } from "@/data/professionals";
 import { CATEGORIES } from "@/data/categories";
-import { GAMBIAN_LOCATIONS, getLocationLabel } from "@/data/locations";
+import { getLocationLabel } from "@/data/locations";
 import { SHOW_MOCK } from "@/lib/mock";
 import { PortfolioGallery } from "@/components/professionals/PortfolioGallery";
 import { ProfileHeader } from "@/components/professionals/ProfileHeader";

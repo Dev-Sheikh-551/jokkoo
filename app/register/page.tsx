@@ -169,7 +169,7 @@ export default function RegisterPage() {
                 </Link>
               </p>
               <p>
-                Are you an artisan or contractor?{" "}
+                Are you a professional or business?{" "}
                 <Link
                   href="/join"
                   className="font-medium text-deep-slate hover:text-laterite hover:underline"

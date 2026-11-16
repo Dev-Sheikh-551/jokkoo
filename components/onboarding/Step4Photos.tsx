@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import { useFormContext } from "react-hook-form";
 import { Upload, X, Star, Image as ImageIcon, Info, AlertCircle } from "lucide-react";
 import { ONBOARDING_LIVE } from "@/lib/onboarding";

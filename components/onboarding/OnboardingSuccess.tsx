@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { CheckCircle2, ArrowRight, Home, Search, Info } from "lucide-react";
+import { CheckCircle2, ArrowRight, Home, Search } from "lucide-react";
 import { Professional } from "@/types/professional";
 import { ProfessionalCard } from "@/components/professionals/ProfessionalCard";
 import { ONBOARDING_LIVE } from "@/lib/onboarding";
