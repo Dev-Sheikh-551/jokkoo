@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect, useMemo } from "react";
+import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Header } from "@/components/layout/Header";
@@ -118,6 +118,40 @@ export default function JoinPage() {
   const [currentStep, setCurrentStep] = useState(1);
   const [submittedDraft, setSubmittedDraft] = useState<Professional | null>(null);
   const stepHeadingRef = useRef<HTMLHeadingElement | null>(null);
+  const createdObjectUrlsRef = useRef<string[]>([]);
+
+  const registerObjectUrl = useCallback((url: string) => {
+    if (url.startsWith("blob:")) {
+      createdObjectUrlsRef.current.push(url);
+    }
+  }, []);
+
+  const revokeObjectUrl = useCallback((url: string) => {
+    if (url.startsWith("blob:")) {
+      try {
+        URL.revokeObjectURL(url);
+      } catch {
+        // ignore
+      }
+      createdObjectUrlsRef.current = createdObjectUrlsRef.current.filter((u) => u !== url);
+    }
+  }, []);
+
+  // Revoke all managed object URLs only when JoinPage unmounts completely
+  useEffect(() => {
+    return () => {
+      createdObjectUrlsRef.current.forEach((url) => {
+        if (url.startsWith("blob:")) {
+          try {
+            URL.revokeObjectURL(url);
+          } catch {
+            // ignore
+          }
+        }
+      });
+      createdObjectUrlsRef.current = [];
+    };
+  }, []);
 
   const methods = useForm<OnboardingFormValues>({
     resolver: zodResolver(onboardingFormSchema),
@@ -268,7 +302,12 @@ export default function JoinPage() {
                           {currentStep === 1 && <Step1AboutYou />}
                           {currentStep === 2 && <Step2WhereYouWork />}
                           {currentStep === 3 && <Step3YourWork />}
-                          {currentStep === 4 && <Step4Photos />}
+                          {currentStep === 4 && (
+                            <Step4Photos
+                              onRegisterObjectUrl={registerObjectUrl}
+                              onRevokeObjectUrl={revokeObjectUrl}
+                            />
+                          )}
                           {currentStep === 5 && (
                             <Step5ContactReview
                               onEditStep={jumpToStep}

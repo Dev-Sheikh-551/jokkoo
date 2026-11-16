@@ -22,7 +22,12 @@ export async function uploadProfilePhotosStub(
 const ALLOWED_MIME_TYPES = ["image/jpeg", "image/png", "image/webp"];
 const MAX_FILE_SIZE_BYTES = 8 * 1024 * 1024; // 8 MB
 
-export function Step4Photos() {
+interface Step4PhotosProps {
+  onRegisterObjectUrl?: (url: string) => void;
+  onRevokeObjectUrl?: (url: string) => void;
+}
+
+export function Step4Photos({ onRegisterObjectUrl, onRevokeObjectUrl }: Step4PhotosProps = {}) {
   const {
     watch,
     setValue,
@@ -33,21 +38,8 @@ export function Step4Photos() {
   const avatar = watch("avatar") || "";
 
   const [fileError, setFileError] = useState<string | null>(null);
-  const createdUrlsRef = useRef<string[]>([]);
   const workFileInputRef = useRef<HTMLInputElement | null>(null);
   const avatarFileInputRef = useRef<HTMLInputElement | null>(null);
-
-  // Revoke created object URLs on unmount
-  useEffect(() => {
-    const urls = createdUrlsRef.current;
-    return () => {
-      urls.forEach((url) => {
-        if (url.startsWith("blob:")) {
-          URL.revokeObjectURL(url);
-        }
-      });
-    };
-  }, []);
 
   const handleWorkFilesSelected = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFileError(null);
@@ -80,7 +72,7 @@ export function Step4Photos() {
       }
 
       const objectUrl = URL.createObjectURL(file);
-      createdUrlsRef.current.push(objectUrl);
+      onRegisterObjectUrl?.(objectUrl);
       newItems.push({ src: objectUrl, caption: "" });
     }
 
@@ -104,15 +96,18 @@ export function Step4Photos() {
       return;
     }
 
+    if (avatar.startsWith("blob:")) {
+      onRevokeObjectUrl?.(avatar);
+    }
     const objectUrl = URL.createObjectURL(file);
-    createdUrlsRef.current.push(objectUrl);
+    onRegisterObjectUrl?.(objectUrl);
     setValue("avatar", objectUrl, { shouldValidate: true, shouldDirty: true });
   };
 
   const handleRemovePhoto = (index: number) => {
     const removed = workPhotos[index];
     if (removed?.src?.startsWith("blob:")) {
-      URL.revokeObjectURL(removed.src);
+      onRevokeObjectUrl?.(removed.src);
     }
     const updated = workPhotos.filter((_, i) => i !== index);
     setValue("workPhotos", updated, { shouldValidate: true, shouldDirty: true });
@@ -136,7 +131,7 @@ export function Step4Photos() {
 
   const handleRemoveAvatar = () => {
     if (avatar.startsWith("blob:")) {
-      URL.revokeObjectURL(avatar);
+      onRevokeObjectUrl?.(avatar);
     }
     setValue("avatar", "", { shouldValidate: true, shouldDirty: true });
   };
