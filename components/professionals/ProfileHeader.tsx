@@ -2,7 +2,7 @@ import { Professional } from "@/types/professional";
 import { SampleDataBadge } from "@/components/common/Badge";
 import { VerificationBadge } from "@/components/common/VerificationBadge";
 import { CATEGORIES } from "@/data/categories";
-import { GAMBIAN_LOCATIONS } from "@/data/locations";
+import { getLocationLabel } from "@/data/locations";
 
 interface ProfileHeaderProps {
   professional: Professional;
@@ -13,9 +13,7 @@ export function ProfileHeader({ professional }: ProfileHeaderProps) {
     .map((slug) => CATEGORIES.find((c) => c.slug === slug)?.shortName ?? slug)
     .join(" · ");
 
-  const baseLocationName =
-    GAMBIAN_LOCATIONS.find((l) => l.id === professional.baseLocation)?.name ??
-    professional.baseLocation;
+  const baseLocationName = getLocationLabel(professional.baseLocation);
 
   const hasSubtitle =
     professional.businessName &&

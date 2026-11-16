@@ -12,7 +12,7 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import { CATEGORIES } from "@/data/categories";
-import { GAMBIAN_LOCATIONS } from "@/data/locations";
+import { GAMBIAN_LOCATIONS, getLocationLabel } from "@/data/locations";
 import { Professional } from "@/types/professional";
 import { ProfessionalCard } from "@/components/professionals/ProfessionalCard";
 import {
@@ -182,7 +182,7 @@ export function Step5ContactReview({
   };
 
   const getLocationName = (slug?: string) =>
-    GAMBIAN_LOCATIONS.find((l) => l.id === slug)?.name ?? slug ?? "None";
+    getLocationLabel(slug) || "None";
 
   const getCategoryName = (slug?: string) =>
     CATEGORIES.find((c) => c.slug === slug)?.name ?? slug ?? "None";

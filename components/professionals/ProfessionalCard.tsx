@@ -6,6 +6,7 @@ import { VerificationBadge } from "@/components/common/VerificationBadge";
 import { ImagePlaceholder } from "@/components/common/ImagePlaceholder";
 import { categoryMedia } from "@/lib/media";
 import { CATEGORIES } from "@/data/categories";
+import { getLocationLabel } from "@/data/locations";
 
 interface ProfessionalCardProps {
   professional: Professional;
@@ -34,7 +35,10 @@ export function ProfessionalCard({
     ...(regularAreas ?? []),
     ...(byArrangementAreas ?? []),
   ].filter((a) => a !== baseLocation);
-  const displayAreas = allOtherAreas.slice(0, 3).join(", ");
+  const displayAreas = allOtherAreas
+    .slice(0, 3)
+    .map((a) => getLocationLabel(a))
+    .join(", ");
   const extraCount = allOtherAreas.length - 3;
 
   // Category display name
@@ -89,7 +93,7 @@ export function ProfessionalCard({
           {displayName}
         </h3>
         <p className="text-sm text-river-silt">
-          {categoryName} · Based in {baseLocation}
+          {categoryName} · Based in {getLocationLabel(baseLocation)}
         </p>
         {allOtherAreas.length > 0 && (
           <p className="text-xs text-river-silt">

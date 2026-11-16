@@ -1,4 +1,4 @@
-import { GAMBIAN_LOCATIONS } from "@/data/locations";
+import { getLocationLabel } from "@/data/locations";
 
 interface LocationCoverageCardProps {
   displayName: string;
@@ -13,8 +13,7 @@ export function LocationCoverageCard({
   regularAreas = [],
   byArrangementAreas = [],
 }: LocationCoverageCardProps) {
-  const getLocationName = (slug: string) =>
-    GAMBIAN_LOCATIONS.find((l) => l.id === slug)?.name ?? slug;
+  const getLocationName = (slug: string) => getLocationLabel(slug);
 
   return (
     <section aria-labelledby="coverage-heading" className="space-y-4 pt-4">

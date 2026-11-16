@@ -6,7 +6,7 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { getProfessionals } from "@/data/professionals";
 import { CATEGORIES } from "@/data/categories";
-import { GAMBIAN_LOCATIONS } from "@/data/locations";
+import { GAMBIAN_LOCATIONS, getLocationLabel } from "@/data/locations";
 import { SHOW_MOCK } from "@/lib/mock";
 import { PortfolioGallery } from "@/components/professionals/PortfolioGallery";
 import { ProfileHeader } from "@/components/professionals/ProfileHeader";
@@ -46,9 +46,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     CATEGORIES.find((c) => c.slug === pro.primaryCategorySlug)?.shortName ??
     pro.primaryCategorySlug;
 
-  const baseName =
-    GAMBIAN_LOCATIONS.find((l) => l.id === pro.baseLocation)?.name ??
-    pro.baseLocation;
+  const baseName = getLocationLabel(pro.baseLocation);
 
   const title = `${pro.displayName}, ${primaryTrade} in ${baseName} | Jokkoo`;
   const description =

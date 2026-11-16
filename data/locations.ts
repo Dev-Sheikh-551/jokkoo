@@ -21,3 +21,13 @@ export const GAMBIAN_LOCATIONS: LocationItem[] = [
   { id: "yundum-lamin", name: "Yundum / Lamin", region: "West Coast Region" },
   { id: "kerr-sering", name: "Kerr Sering", region: "West Coast Region" },
 ];
+
+export function getLocationLabel(slug?: string): string {
+  if (!slug) return "";
+  const found = GAMBIAN_LOCATIONS.find((loc) => loc.id === slug);
+  if (found) return found.name;
+  return slug
+    .split("-")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+}
