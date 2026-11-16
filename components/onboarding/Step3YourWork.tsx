@@ -40,16 +40,29 @@ export function Step3YourWork() {
   ).slice(0, 6);
 
   const handleAddSuggestion = (suggestionTitle: string) => {
-    // If services has only 1 row and its title is empty, fill it in
-    if (fields.length === 1 && !watch("services.0.title")) {
-      setValue("services.0.title", suggestionTitle, {
+    // Check if suggestion already exists in any row
+    const exists = fields.some(
+      (_, idx) =>
+        (watch(`services.${idx}.title`) || "").trim().toLowerCase() ===
+        suggestionTitle.trim().toLowerCase()
+    );
+    if (exists) return;
+
+    // Find the first row where title is empty
+    const firstEmptyIndex = fields.findIndex(
+      (_, idx) => !(watch(`services.${idx}.title`) || "").trim()
+    );
+
+    if (firstEmptyIndex !== -1) {
+      // Fill the service TITLE of the first empty row
+      setValue(`services.${firstEmptyIndex}.title`, suggestionTitle, {
         shouldValidate: true,
         shouldDirty: true,
       });
       return;
     }
 
-    // Otherwise, append if under 8
+    // Otherwise add a new row if under 8
     if (fields.length < 8) {
       append({ title: suggestionTitle, description: "" });
     }
@@ -133,27 +146,27 @@ export function Step3YourWork() {
               <span>Tap a popular service to add it quickly:</span>
             </div>
             <div className="flex flex-wrap gap-2">
-              {suggestionServices.map((suggestion) => {
-                const alreadyAdded = fields.some(
-                  (f, idx) => watch(`services.${idx}.title`) === suggestion
-                );
-                return (
+              {suggestionServices
+                .filter((suggestion) => {
+                  const alreadyAdded = fields.some(
+                    (_, idx) =>
+                      (watch(`services.${idx}.title`) || "").trim().toLowerCase() ===
+                      suggestion.trim().toLowerCase()
+                  );
+                  return !alreadyAdded;
+                })
+                .map((suggestion) => (
                   <button
                     key={suggestion}
                     type="button"
                     onClick={() => handleAddSuggestion(suggestion)}
-                    disabled={alreadyAdded || fields.length >= 8}
-                    className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs transition-colors cursor-pointer min-h-[36px] ${
-                      alreadyAdded
-                        ? "bg-sand-dune border border-border-subtle text-river-silt/50 cursor-not-allowed opacity-60"
-                        : "bg-warm-bone border border-border-subtle text-deep-slate hover:border-laterite hover:text-laterite active:bg-sand-dune"
-                    }`}
+                    disabled={fields.length >= 8}
+                    className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs transition-colors cursor-pointer min-h-[36px] bg-warm-bone border border-border-subtle text-deep-slate hover:border-laterite hover:text-laterite active:bg-sand-dune disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <Plus className="h-3 w-3 shrink-0" aria-hidden="true" />
                     <span>{suggestion}</span>
                   </button>
-                );
-              })}
+                ))}
             </div>
           </div>
         )}
