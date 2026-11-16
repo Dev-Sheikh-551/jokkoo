@@ -17,8 +17,8 @@ export const onboardingFormSchema = z
       .or(z.literal("")),
     categories: z
       .array(z.string())
-      .min(1, "Please choose your main trade")
-      .max(3, "You can select up to 3 trades"),
+      .min(1, "Please choose your main work")
+      .max(3, "You can select up to 3 areas of work"),
     baseLocation: z.string().min(1, "Please choose the town or area where you are based"),
     regularAreas: z.array(z.string()).default([]),
     byArrangementAreas: z.array(z.string()).default([]),

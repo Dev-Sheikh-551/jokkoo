@@ -105,7 +105,7 @@ export function Step3YourWork() {
           id="bio"
           rows={4}
           maxLength={500}
-          placeholder="Describe what you do, how you learned your trade, the tools you use, and what kind of jobs you take on across The Gambia..."
+          placeholder="Describe what you do, how you learned your skills, the equipment you use, and what kind of jobs you take on across The Gambia..."
           aria-invalid={!!errors.bio}
           aria-describedby={errors.bio ? "bio-error" : "bio-hint"}
           {...register("bio")}
@@ -315,7 +315,7 @@ export function Step3YourWork() {
             className="w-full max-w-xs min-h-[44px] px-3.5 py-2.5 rounded-[var(--radius-control,0.75rem)] bg-warm-bone border border-border-subtle text-sm text-deep-slate placeholder:text-river-silt/60 focus:outline-none focus:border-laterite focus:ring-2 focus:ring-laterite/20 transition-colors"
           />
           <p id="yearsExperience-hint" className="text-xs text-river-silt">
-            How many years you have been practicing your trade (0 to 60).
+            How many years you have been practicing your profession or craft (0 to 60).
           </p>
           {errors.yearsExperience && (
             <p

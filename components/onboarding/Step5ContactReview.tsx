@@ -166,7 +166,7 @@ export function Step5ContactReview({
   const missingLabelsMap: Record<string, string> = {
     accountType: "Account type (Step 1)",
     displayName: "Your name or business name (Step 1)",
-    categories: "Main trade (Step 1)",
+    categories: "Main work (Step 1)",
     baseLocation: "Where you are based (Step 2)",
     whatsappNumber: "7-digit WhatsApp number (Step 5)",
     bio: "Tell people about your work (min 40 characters) (Step 3)",
@@ -420,10 +420,10 @@ export function Step5ContactReview({
                 {formValues.businessName && ` (${formValues.businessName})`} ·{" "}
                 {formValues.accountType === "business"
                   ? "Business or team"
-                  : "Works on own"}
+                  : "Works on their own"}
               </p>
               <p className="text-river-silt">
-                Trade: {getCategoryName(formValues.categories?.[0])}
+                Main work: {getCategoryName(formValues.categories?.[0])}
                 {formValues.categories && formValues.categories.length > 1 && (
                   <span>
                     {" "}

@@ -93,7 +93,7 @@ function buildPreviewProfessional(values: PreviewFormInput): Professional {
     callNumber: values.useSameNumberForCalls
       ? values.whatsappNumber || "+2200000000"
       : values.callNumber || undefined,
-    bio: values.bio?.trim() || "Your bio and trade experience will appear here.",
+    bio: values.bio?.trim() || "Your bio and work experience will appear here.",
     services:
       validServices.length > 0
         ? validServices

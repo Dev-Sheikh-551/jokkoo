@@ -80,7 +80,7 @@ export function Step1AboutYou() {
                 <span>I work on my own</span>
               </div>
               <p className="text-xs text-river-silt leading-relaxed">
-                Independent technician or solo professional
+                Independent craftsperson or solo professional
               </p>
             </div>
           </label>
@@ -195,15 +195,15 @@ export function Step1AboutYou() {
         </div>
       )}
 
-      {/* 4. Trade Chooser */}
+      {/* 4. Work Chooser */}
       <div className="space-y-4 pt-2 border-t border-border-subtle">
-        {/* Main trade required select */}
+        {/* Main work required select */}
         <div className="space-y-1.5">
           <label
             htmlFor="primaryCategory"
             className="text-sm font-semibold text-deep-slate block"
           >
-            Your main trade <span className="text-laterite">*</span>
+            Your main work <span className="text-laterite">*</span>
           </label>
           <select
             id="primaryCategory"
@@ -284,7 +284,7 @@ export function Step1AboutYou() {
             </div>
             {otherCategories.length > 0 && (
               <p className="text-xs text-river-silt pt-1">
-                Selected: {otherCategories.length} of 2 additional trades.
+                Selected: {otherCategories.length} of 2 additional areas.
               </p>
             )}
           </fieldset>
