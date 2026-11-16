@@ -292,7 +292,13 @@ export function Step3YourWork() {
                 ? "yearsExperience-error"
                 : "yearsExperience-hint"
             }
-            {...register("yearsExperience", { valueAsNumber: true })}
+            {...register("yearsExperience", {
+              setValueAs: (v) => {
+                if (v === "" || v === null || v === undefined) return undefined;
+                const n = Number(v);
+                return Number.isNaN(n) ? undefined : n;
+              },
+            })}
             className="w-full max-w-xs min-h-[44px] px-3.5 py-2.5 rounded-[var(--radius-control,0.75rem)] bg-warm-bone border border-border-subtle text-sm text-deep-slate placeholder:text-river-silt/60 focus:outline-none focus:border-laterite focus:ring-2 focus:ring-laterite/20 transition-colors"
           />
           <p id="yearsExperience-hint" className="text-xs text-river-silt">

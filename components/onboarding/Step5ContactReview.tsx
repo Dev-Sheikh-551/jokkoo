@@ -508,11 +508,15 @@ export function Step5ContactReview({
                   .map((s) => s.title)
                   .join(", ") || "None"}
               </p>
-              {typeof formValues.yearsExperience === "number" && (
-                <p className="text-river-silt">
-                  Experience: {formValues.yearsExperience} years
-                </p>
-              )}
+              <p className="text-river-silt">
+                Years in this work:{" "}
+                {typeof formValues.yearsExperience === "number" &&
+                !isNaN(formValues.yearsExperience)
+                  ? `${formValues.yearsExperience} ${
+                      formValues.yearsExperience === 1 ? "year" : "years"
+                    }`
+                  : "Not provided"}
+              </p>
               {formValues.languages && formValues.languages.length > 0 && (
                 <p className="text-river-silt">
                   Languages: {formValues.languages.join(", ")}
