@@ -84,7 +84,7 @@ export function Step2WhereYouWork() {
           }
           className="w-full min-h-[44px] px-3.5 py-2.5 rounded-[var(--radius-control,0.75rem)] bg-warm-bone border border-border-subtle text-sm text-deep-slate focus:outline-none focus:border-laterite focus:ring-2 focus:ring-laterite/20 transition-colors cursor-pointer"
         >
-          <option value="">Select your main town or operational area...</option>
+          <option value="">Select your town or area</option>
           {selectableLocations.map((loc) => (
             <option key={loc.id} value={loc.id}>
               {loc.name} ({loc.region})
@@ -126,7 +126,7 @@ export function Step2WhereYouWork() {
               <label
                 key={loc.id}
                 htmlFor={`regular-${loc.id}`}
-                className={`flex items-center gap-2 px-3 py-2.5 rounded-[var(--radius-control,0.75rem)] border min-h-[44px] transition-colors ${
+                className={`flex items-center gap-2 px-2.5 sm:px-3 py-2 rounded-[var(--radius-control,0.75rem)] border min-h-[44px] transition-colors ${
                   isChecked
                     ? "bg-laterite-light border-laterite text-deep-slate font-medium"
                     : isDisabled
@@ -141,9 +141,9 @@ export function Step2WhereYouWork() {
                   checked={isChecked}
                   disabled={isDisabled}
                   onChange={() => handleRegularToggle(loc.id)}
-                  className="h-4 w-4 rounded text-laterite focus:ring-laterite cursor-pointer disabled:cursor-not-allowed"
+                  className="h-4 w-4 shrink-0 rounded text-laterite focus:ring-laterite cursor-pointer disabled:cursor-not-allowed"
                 />
-                <span className="text-xs truncate">
+                <span className="text-xs leading-tight break-words">
                   {loc.name}
                   {isBase && " (Base)"}
                 </span>
@@ -174,7 +174,7 @@ export function Step2WhereYouWork() {
               <label
                 key={loc.id}
                 htmlFor={`byarr-${loc.id}`}
-                className={`flex items-center gap-2 px-3 py-2.5 rounded-[var(--radius-control,0.75rem)] border min-h-[44px] transition-colors ${
+                className={`flex items-center gap-2 px-2.5 sm:px-3 py-2 rounded-[var(--radius-control,0.75rem)] border min-h-[44px] transition-colors ${
                   isChecked
                     ? "bg-sand-dune border-river-silt text-deep-slate font-medium"
                     : isDisabled
@@ -189,9 +189,9 @@ export function Step2WhereYouWork() {
                   checked={isChecked}
                   disabled={isDisabled}
                   onChange={() => handleByArrangementToggle(loc.id)}
-                  className="h-4 w-4 rounded text-laterite focus:ring-laterite cursor-pointer disabled:cursor-not-allowed"
+                  className="h-4 w-4 shrink-0 rounded text-laterite focus:ring-laterite cursor-pointer disabled:cursor-not-allowed"
                 />
-                <span className="text-xs truncate">
+                <span className="text-xs leading-tight break-words">
                   {loc.name}
                   {isBase && " (Base)"}
                 </span>

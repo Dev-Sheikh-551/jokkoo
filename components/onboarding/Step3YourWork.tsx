@@ -334,7 +334,7 @@ export function Step3YourWork() {
                 <label
                   key={lang}
                   htmlFor={`lang-${lang}`}
-                  className={`flex items-center gap-2.5 px-3 py-2.5 rounded-[var(--radius-control,0.75rem)] border min-h-[44px] transition-colors ${
+                  className={`flex items-center gap-2 px-2.5 sm:px-3 py-2 rounded-[var(--radius-control,0.75rem)] border min-h-[44px] transition-colors ${
                     isChecked
                       ? "bg-laterite-light border-laterite text-deep-slate font-medium"
                       : "bg-warm-bone border-border-subtle text-deep-slate hover:border-river-silt/40 cursor-pointer"
@@ -346,9 +346,9 @@ export function Step3YourWork() {
                     value={lang}
                     checked={isChecked}
                     onChange={() => handleLanguageToggle(lang)}
-                    className="h-4 w-4 rounded text-laterite focus:ring-laterite cursor-pointer"
+                    className="h-4 w-4 shrink-0 rounded text-laterite focus:ring-laterite cursor-pointer"
                   />
-                  <span className="text-xs">{lang}</span>
+                  <span className="text-xs leading-tight break-words">{lang}</span>
                 </label>
               );
             })}

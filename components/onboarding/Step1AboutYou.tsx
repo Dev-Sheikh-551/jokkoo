@@ -215,7 +215,7 @@ export function Step1AboutYou() {
             }
             className="w-full min-h-[44px] px-3.5 py-2.5 rounded-[var(--radius-control,0.75rem)] bg-warm-bone border border-border-subtle text-sm text-deep-slate focus:outline-none focus:border-laterite focus:ring-2 focus:ring-laterite/20 transition-colors cursor-pointer"
           >
-            <option value="">Select your main trade...</option>
+            <option value="">Select your main work</option>
             {CATEGORIES.map((cat) => (
               <option key={cat.slug} value={cat.slug}>
                 {cat.name} ({cat.shortName})
@@ -274,9 +274,9 @@ export function Step1AboutYou() {
                         checked={isChecked}
                         disabled={isMaxReached}
                         onChange={() => handleOtherCategoryToggle(cat.slug)}
-                        className="h-4 w-4 rounded text-laterite focus:ring-laterite cursor-pointer disabled:cursor-not-allowed"
+                        className="h-4 w-4 shrink-0 rounded text-laterite focus:ring-laterite cursor-pointer disabled:cursor-not-allowed"
                       />
-                      <span className="text-xs">{cat.shortName}</span>
+                      <span className="text-xs leading-tight break-words">{cat.shortName}</span>
                     </label>
                   );
                 }
