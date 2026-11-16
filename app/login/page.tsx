@@ -2,156 +2,228 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ArrowRight, Lock, Phone } from "lucide-react";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
-import { Button } from "@/components/common/Button";
+import { ONBOARDING_LIVE } from "@/lib/onboarding";
+import { Info, AlertCircle, Eye, EyeOff } from "lucide-react";
+import { z } from "zod";
+
+const loginSchema = z.object({
+  identifier: z
+    .string()
+    .min(1, "Please enter your phone number or email")
+    .min(3, "Phone number or email must be at least 3 characters"),
+  password: z
+    .string()
+    .min(1, "Please enter your password")
+    .min(8, "Password must be at least 8 characters"),
+});
+
+type LoginFormErrors = {
+  identifier?: string;
+  password?: string;
+};
 
 export default function LoginPage() {
-  const [accountType, setAccountType] = useState<"client" | "professional">("client");
-  const [phone, setPhone] = useState("+220 ");
+  const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
-  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [errors, setErrors] = useState<LoginFormErrors>({});
+  const [submittedMessage, setSubmittedMessage] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setIsSubmitted(true);
+    setSubmittedMessage(null);
+
+    const result = loginSchema.safeParse({ identifier, password });
+    if (!result.success) {
+      const fieldErrors: LoginFormErrors = {};
+      for (const issue of result.error.issues) {
+        if (issue.path[0] === "identifier" && !fieldErrors.identifier) {
+          fieldErrors.identifier = issue.message;
+        } else if (issue.path[0] === "password" && !fieldErrors.password) {
+          fieldErrors.password = issue.message;
+        }
+      }
+      setErrors(fieldErrors);
+      return;
+    }
+
+    setErrors({});
+
+    // While ONBOARDING_LIVE is false, preview only — no network request
+    if (!ONBOARDING_LIVE) {
+      setSubmittedMessage("Preview only: sign in is not available yet. Accounts will launch soon.");
+      return;
+    }
   };
 
   return (
     <div className="min-h-screen flex flex-col bg-warm-bone text-deep-slate">
       <Header />
-      <main className="flex-1 py-16 sm:py-20 flex items-center justify-center">
-        <div className="w-full max-w-md px-4 sm:px-6">
-          <div className="rounded-[3px] border border-border-subtle bg-warm-bone p-8 shadow-sm space-y-6">
-            <div className="text-center space-y-1.5">
-              <span className="text-xs font-semibold uppercase tracking-wider text-laterite">
-                Jokkoo Account
-              </span>
-              <h1 className="text-2xl font-bold tracking-tight text-deep-slate">
-                Sign In to Your Account
+      <main className="flex-1 py-12 sm:py-20 flex items-center justify-center px-4">
+        <div className="w-full max-w-[440px] space-y-6">
+          <div className="rounded-2xl border border-border-subtle bg-white p-6 sm:p-8 shadow-xs space-y-6">
+            <div className="text-center space-y-1">
+              <h1 className="font-serif font-medium text-3xl text-deep-slate">
+                Sign in
               </h1>
-              <p className="text-xs text-river-silt">
-                Access your bookings, saved artisans, or manage your professional listing.
-              </p>
             </div>
 
-            {/* Account Type Toggle */}
-            <div className="grid grid-cols-2 p-1 bg-sand-dune rounded-[2px] text-xs font-medium border border-border-subtle">
-              <button
-                type="button"
-                onClick={() => setAccountType("client")}
-                className={`py-1.5 rounded-[2px] transition-colors ${
-                  accountType === "client"
-                    ? "bg-warm-bone text-deep-slate font-semibold shadow-xs"
-                    : "text-river-silt hover:text-deep-slate"
-                }`}
-              >
-                Customer / Client
-              </button>
-              <button
-                type="button"
-                onClick={() => setAccountType("professional")}
-                className={`py-1.5 rounded-[2px] transition-colors ${
-                  accountType === "professional"
-                    ? "bg-warm-bone text-deep-slate font-semibold shadow-xs"
-                    : "text-river-silt hover:text-deep-slate"
-                }`}
-              >
-                Trade Professional
-              </button>
-            </div>
-
-            {isSubmitted ? (
-              <div className="p-4 rounded-[2px] bg-sand-dune/60 border border-border-subtle text-center text-xs text-river-silt space-y-2">
-                <p className="font-semibold text-deep-slate">
-                  Authentication Preview
-                </p>
-                <p>
-                  Database and Supabase authentication integration will be connected in Phase 04.
-                </p>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setIsSubmitted(false)}
-                  className="mt-2"
-                >
-                  Return to Form
-                </Button>
+            {/* Preview Banner while ONBOARDING_LIVE is false */}
+            {!ONBOARDING_LIVE && (
+              <div className="rounded-xl border border-border-subtle bg-sand-dune/40 p-4 text-xs text-river-silt flex items-start gap-2.5">
+                <Info className="h-4 w-4 text-river-silt shrink-0 mt-0.5" />
+                <p>Preview only: sign in is not available yet.</p>
               </div>
-            ) : (
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-deep-slate block">
-                    Phone Number or Email
-                  </label>
-                  <div className="relative">
-                    <Phone className="h-3.5 w-3.5 text-river-silt absolute left-3 top-3 pointer-events-none" />
-                    <input
-                      type="text"
-                      value={phone}
-                      onChange={(e) => setPhone(e.target.value)}
-                      required
-                      placeholder="+220 700 0000"
-                      className="w-full pl-9 pr-3 py-2 text-sm bg-sand-dune/30 border border-border-subtle rounded-[2px] text-deep-slate focus:outline-none focus:border-laterite"
-                    />
-                  </div>
-                </div>
-
-                <div className="space-y-1.5">
-                  <div className="flex justify-between items-center text-xs">
-                    <label className="font-semibold text-deep-slate">
-                      Password
-                    </label>
-                    <Link
-                      href="#"
-                      className="text-river-silt hover:text-laterite hover:underline"
-                    >
-                      Forgot password?
-                    </Link>
-                  </div>
-                  <div className="relative">
-                    <Lock className="h-3.5 w-3.5 text-river-silt absolute left-3 top-3 pointer-events-none" />
-                    <input
-                      type="password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      required
-                      placeholder="••••••••"
-                      className="w-full pl-9 pr-3 py-2 text-sm bg-sand-dune/30 border border-border-subtle rounded-[2px] text-deep-slate focus:outline-none focus:border-laterite"
-                    />
-                  </div>
-                </div>
-
-                <Button
-                  type="submit"
-                  variant="primary"
-                  size="md"
-                  className="w-full justify-center"
-                >
-                  <span>Sign In</span>
-                  <ArrowRight className="h-4 w-4" />
-                </Button>
-              </form>
             )}
 
-            <div className="text-center pt-2 border-t border-border-subtle text-xs text-river-silt space-y-2">
+            {/* Submission Feedback Message (Preview Mode) */}
+            {submittedMessage && (
+              <div
+                role="status"
+                className="rounded-xl border border-laterite/20 bg-laterite-light p-4 text-xs text-laterite-dark flex items-start gap-2.5"
+              >
+                <Info className="h-4 w-4 shrink-0 mt-0.5" />
+                <p>{submittedMessage}</p>
+              </div>
+            )}
+
+            <form onSubmit={handleSubmit} noValidate className="space-y-5">
+              {/* Identifier Field */}
+              <div className="space-y-1.5">
+                <label
+                  htmlFor="login-identifier"
+                  className="block text-sm font-semibold text-deep-slate"
+                >
+                  Phone number or email
+                </label>
+                <input
+                  id="login-identifier"
+                  type="text"
+                  autoComplete="username"
+                  value={identifier}
+                  onChange={(e) => {
+                    setIdentifier(e.target.value);
+                    if (errors.identifier) {
+                      setErrors((prev) => ({ ...prev, identifier: undefined }));
+                    }
+                  }}
+                  aria-describedby={errors.identifier ? "login-identifier-error" : undefined}
+                  aria-invalid={Boolean(errors.identifier)}
+                  placeholder="e.g. +220 700 1234 or email"
+                  className={`w-full h-12 min-h-[44px] rounded-xl border bg-white px-3.5 text-sm text-deep-slate placeholder:text-river-silt/60 outline-none transition-colors ${
+                    errors.identifier
+                      ? "border-laterite focus:ring-1 focus:ring-laterite"
+                      : "border-border-subtle focus:border-laterite focus:ring-1 focus:ring-laterite"
+                  }`}
+                />
+                {errors.identifier && (
+                  <p
+                    id="login-identifier-error"
+                    className="text-xs text-laterite flex items-center gap-1 mt-1"
+                  >
+                    <AlertCircle className="h-3.5 w-3.5 shrink-0" />
+                    <span>{errors.identifier}</span>
+                  </p>
+                )}
+              </div>
+
+              {/* Password Field */}
+              <div className="space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <label
+                    htmlFor="login-password"
+                    className="text-sm font-semibold text-deep-slate"
+                  >
+                    Password
+                  </label>
+                  <Link
+                    href="/login/help"
+                    className="text-xs font-medium text-laterite hover:underline underline-offset-2 min-h-[44px] inline-flex items-center"
+                  >
+                    Forgot password?
+                  </Link>
+                </div>
+                <div className="relative">
+                  <input
+                    id="login-password"
+                    type={showPassword ? "text" : "password"}
+                    autoComplete="current-password"
+                    value={password}
+                    onChange={(e) => {
+                      setPassword(e.target.value);
+                      if (errors.password) {
+                        setErrors((prev) => ({ ...prev, password: undefined }));
+                      }
+                    }}
+                    aria-describedby={errors.password ? "login-password-error" : undefined}
+                    aria-invalid={Boolean(errors.password)}
+                    placeholder="Enter your password"
+                    className={`w-full h-12 min-h-[44px] rounded-xl border bg-white pl-3.5 pr-20 text-sm text-deep-slate placeholder:text-river-silt/60 outline-none transition-colors ${
+                      errors.password
+                        ? "border-laterite focus:ring-1 focus:ring-laterite"
+                        : "border-border-subtle focus:border-laterite focus:ring-1 focus:ring-laterite"
+                    }`}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((prev) => !prev)}
+                    aria-pressed={showPassword}
+                    aria-label={showPassword ? "Hide password" : "Show password"}
+                    className="absolute right-1 top-1 bottom-1 px-3 flex items-center gap-1.5 text-xs font-medium text-river-silt hover:text-deep-slate transition-colors cursor-pointer min-h-[44px]"
+                  >
+                    {showPassword ? (
+                      <>
+                        <EyeOff className="h-4 w-4" />
+                        <span>Hide</span>
+                      </>
+                    ) : (
+                      <>
+                        <Eye className="h-4 w-4" />
+                        <span>Show</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+                {errors.password && (
+                  <p
+                    id="login-password-error"
+                    className="text-xs text-laterite flex items-center gap-1 mt-1"
+                  >
+                    <AlertCircle className="h-3.5 w-3.5 shrink-0" />
+                    <span>{errors.password}</span>
+                  </p>
+                )}
+              </div>
+
+              {/* Submit Button */}
+              <button
+                type="submit"
+                className="w-full h-12 min-h-[48px] rounded-full bg-laterite text-white text-sm font-semibold hover:bg-laterite-dark active:bg-laterite-dark transition-colors cursor-pointer shadow-xs"
+              >
+                Sign in
+              </button>
+            </form>
+
+            {/* Footer Navigation Links */}
+            <div className="pt-4 border-t border-border-subtle text-center text-xs text-river-silt space-y-2">
               <p>
-                Don&apos;t have an account yet?{" "}
+                New here?{" "}
                 <Link
                   href="/register"
-                  className="font-medium text-laterite hover:underline"
+                  className="font-medium text-deep-slate hover:text-laterite hover:underline underline-offset-2 inline-flex items-center min-h-[44px]"
                 >
-                  Create Client Account
+                  Create an account
                 </Link>
               </p>
               <p>
-                Are you a professional or business?{" "}
+                Offer your services?{" "}
                 <Link
                   href="/join"
-                  className="font-medium text-deep-slate hover:text-laterite hover:underline"
+                  className="font-medium text-deep-slate hover:text-laterite hover:underline underline-offset-2 inline-flex items-center min-h-[44px]"
                 >
-                  Join as a professional
+                  Build your profile
                 </Link>
               </p>
             </div>
