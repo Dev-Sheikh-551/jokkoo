@@ -1,14 +1,23 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useRef, useCallback } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { Search, MapPin, Filter, X } from "lucide-react";
+import { Search, SlidersHorizontal, X, RotateCcw } from "lucide-react";
 import { getProfessionals } from "@/data/professionals";
 import { CATEGORIES } from "@/data/categories";
-import { GAMBIAN_LOCATIONS } from "@/data/locations";
+import {
+  GAMBIAN_LOCATIONS,
+  getLocationLabel,
+  getProfessionalLocationMatch,
+} from "@/data/locations";
+import { Professional } from "@/types/professional";
 import { ProfessionalCard } from "@/components/professionals/ProfessionalCard";
-import { Button } from "@/components/common/Button";
+import { getCompleteness } from "@/lib/profile/schema";
+
+type SortOption = "recommended" | "newest";
+
+const INITIAL_VISIBLE_COUNT = 12;
 
 export function ExploreClient() {
   const searchParams = useSearchParams();
@@ -16,317 +25,559 @@ export function ExploreClient() {
 
   const allProfessionals = useMemo(() => getProfessionals(), []);
 
-  const initialQuery = searchParams.get("q") || "";
-  const initialCategory = searchParams.get("category") || "";
-  const initialLocation = searchParams.get("location") || "";
+  // Canonical state derived directly from URL searchParams
+  const paramQ = searchParams.get("q") ?? "";
+  const selectedCategory = searchParams.get("category") ?? "";
+  const selectedLocation = searchParams.get("location") ?? "";
+  const onlyVerified = searchParams.get("verified") === "true";
+  const sortBy = (searchParams.get("sort") as SortOption) || "recommended";
 
-  const [query, setQuery] = useState(initialQuery);
-  const [selectedCategory, setSelectedCategory] = useState(initialCategory);
-  const [selectedLocation, setSelectedLocation] = useState(initialLocation);
-  const [onlyVerified, setOnlyVerified] = useState(false);
-  const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
+  // Local state for interactive typing, pagination, and dialog drafts
+  const [query, setQuery] = useState(paramQ);
+  const [debouncedQuery, setDebouncedQuery] = useState(paramQ);
+  const [prevParamQ, setPrevParamQ] = useState(paramQ);
+  const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE_COUNT);
 
-  const updateURL = (newQuery: string, newCat: string, newLoc: string) => {
-    const params = new URLSearchParams();
-    if (newQuery) params.set("q", newQuery);
-    if (newCat) params.set("category", newCat);
-    if (newLoc) params.set("location", newLoc);
-    router.replace(`/explore?${params.toString()}`);
+  // Synchronize local input if URL query param changes externally (e.g. back/forward or clear)
+  if (prevParamQ !== paramQ) {
+    setPrevParamQ(paramQ);
+    setQuery(paramQ);
+    setDebouncedQuery(paramQ);
+  }
+
+  // Draft filters for native <dialog>
+  const [draftLocation, setDraftLocation] = useState(selectedLocation);
+  const [draftVerified, setDraftVerified] = useState(onlyVerified);
+
+  const dialogRef = useRef<HTMLDialogElement | null>(null);
+  const filterButtonRef = useRef<HTMLButtonElement | null>(null);
+  const isTypingRef = useRef(false);
+
+  // Debounce query input by 300ms and push to URL via router.replace (no scroll jump)
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedQuery(query);
+      if (isTypingRef.current) {
+        isTypingRef.current = false;
+        const params = new URLSearchParams(searchParams.toString());
+        if (query.trim()) {
+          params.set("q", query.trim());
+        } else {
+          params.delete("q");
+        }
+        const qs = params.toString();
+        router.replace(qs ? `/explore?${qs}` : "/explore", { scroll: false });
+      }
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [query, router, searchParams]);
+
+  // Helper to push URL changes for discrete actions (chips, modal apply, sort)
+  const pushFilterState = useCallback(
+    (updates: {
+      category?: string;
+      location?: string;
+      verified?: boolean;
+      sort?: SortOption;
+      q?: string;
+    }) => {
+      const nextCategory = updates.category !== undefined ? updates.category : selectedCategory;
+      const nextLocation = updates.location !== undefined ? updates.location : selectedLocation;
+      const nextVerified = updates.verified !== undefined ? updates.verified : onlyVerified;
+      const nextSort = updates.sort !== undefined ? updates.sort : sortBy;
+      const nextQ = updates.q !== undefined ? updates.q : query;
+
+      const params = new URLSearchParams();
+      if (nextQ.trim()) params.set("q", nextQ.trim());
+      if (nextCategory && nextCategory !== "all") params.set("category", nextCategory);
+      if (nextLocation && nextLocation !== "all") params.set("location", nextLocation);
+      if (nextVerified) params.set("verified", "true");
+      if (nextSort && nextSort !== "recommended") params.set("sort", nextSort);
+
+      const qs = params.toString();
+      router.push(qs ? `/explore?${qs}` : "/explore", { scroll: false });
+      setVisibleCount(INITIAL_VISIBLE_COUNT);
+    },
+    [selectedCategory, selectedLocation, onlyVerified, sortBy, query, router]
+  );
+
+  const handleCategorySelect = (catSlug: string) => {
+    const target = catSlug === "all" || catSlug === selectedCategory ? "" : catSlug;
+    pushFilterState({ category: target });
   };
 
-  const handleQueryChange = (val: string) => {
-    setQuery(val);
-    updateURL(val, selectedCategory, selectedLocation);
+  const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const newSort = e.target.value as SortOption;
+    pushFilterState({ sort: newSort });
   };
 
-  const handleCategoryChange = (val: string) => {
-    setSelectedCategory(val);
-    updateURL(query, val, selectedLocation);
+  // Open native <dialog>
+  const openFiltersDialog = () => {
+    setDraftLocation(selectedLocation);
+    setDraftVerified(onlyVerified);
+    if (dialogRef.current) {
+      dialogRef.current.showModal();
+    }
   };
 
-  const handleLocationChange = (val: string) => {
-    setSelectedLocation(val);
-    updateURL(query, selectedCategory, val);
+  // Close native <dialog> and return focus
+  const closeFiltersDialog = useCallback(() => {
+    if (dialogRef.current && dialogRef.current.open) {
+      dialogRef.current.close();
+    }
+    filterButtonRef.current?.focus();
+  }, []);
+
+  const handleApplyDraftFilters = () => {
+    pushFilterState({ location: draftLocation, verified: draftVerified });
+    closeFiltersDialog();
   };
 
-  const resetFilters = () => {
+  const handleResetFilters = () => {
     setQuery("");
-    setSelectedCategory("");
-    setSelectedLocation("");
-    setOnlyVerified(false);
-    router.replace("/explore");
+    setDebouncedQuery("");
+    setDraftLocation("");
+    setDraftVerified(false);
+    router.push("/explore", { scroll: false });
+    setVisibleCount(INITIAL_VISIBLE_COUNT);
+    closeFiltersDialog();
   };
 
-  // Filter logic
+  const handleClearLocationOnly = () => {
+    setDraftLocation("");
+    pushFilterState({ location: "" });
+  };
+
+  // Filter & deterministic sort calculation
   const filteredProfessionals = useMemo(() => {
-    return allProfessionals.filter((pro) => {
-      // 1. Text Search query
-      if (query.trim()) {
-        const q = query.toLowerCase();
+    const q = debouncedQuery.trim().toLowerCase();
+
+    // 1. Filtering
+    const matches = allProfessionals.filter((pro) => {
+      // Keyword query
+      if (q) {
         const matchesName = pro.displayName.toLowerCase().includes(q);
-        const matchesBusiness = pro.businessName?.toLowerCase().includes(q);
-        const matchesServices = pro.services.some(
+        const matchesBusiness = pro.businessName?.toLowerCase().includes(q) ?? false;
+        const matchesBio = pro.bio.toLowerCase().includes(q);
+        const matchesServices = (pro.services ?? []).some(
           (s) =>
             s.title.toLowerCase().includes(q) ||
             (s.description ? s.description.toLowerCase().includes(q) : false)
         );
-        const matchesBio = pro.bio.toLowerCase().includes(q);
-
-        if (!matchesName && !matchesBusiness && !matchesServices && !matchesBio) {
+        if (!matchesName && !matchesBusiness && !matchesBio && !matchesServices) {
           return false;
         }
       }
 
-      // 2. Category filter
+      // Category filter
       if (selectedCategory && selectedCategory !== "all") {
         if (!pro.categories.includes(selectedCategory as (typeof pro.categories)[number])) {
           return false;
         }
       }
 
-      // 3. Location filter (Check if base OR served areas match)
+      // Location filter (base, regular, or by-arrangement)
       if (selectedLocation && selectedLocation !== "all") {
-        const locLower = selectedLocation.toLowerCase();
-        const matchesBase = pro.baseLocation.toLowerCase() === locLower;
-        const matchesRegular = (pro.regularAreas ?? []).some(
-          (area) => area.toLowerCase() === locLower
-        );
-        const matchesByArrangement = (pro.byArrangementAreas ?? []).some(
-          (area) => area.toLowerCase() === locLower
-        );
-        if (!matchesBase && !matchesRegular && !matchesByArrangement) {
+        const matchType = getProfessionalLocationMatch(pro, selectedLocation);
+        if (!matchType) {
           return false;
         }
       }
 
-      // 4. Verification filter
+      // Phone verified filter
       if (onlyVerified && pro.verification !== "phone") {
         return false;
       }
 
       return true;
     });
-  }, [allProfessionals, query, selectedCategory, selectedLocation, onlyVerified]);
 
-  const activeFilterCount =
-    (query ? 1 : 0) +
-    (selectedCategory ? 1 : 0) +
-    (selectedLocation ? 1 : 0) +
-    (onlyVerified ? 1 : 0);
+    // 2. Deterministic sorting helper
+    const compareDeterministically = (a: Professional, b: Professional): number => {
+      if (sortBy === "recommended") {
+        // Phone verified first
+        const aVer = a.verification === "phone" ? 1 : 0;
+        const bVer = b.verification === "phone" ? 1 : 0;
+        if (aVer !== bVer) return bVer - aVer;
 
-  // If no professionals in directory at all (e.g. SHOW_MOCK=false and no real pros yet)
+        // Completeness score
+        const aScore = getCompleteness(a).percent;
+        const bScore = getCompleteness(b).percent;
+        if (aScore !== bScore) return bScore - aScore;
+
+        // Newest date
+        const aDate = new Date(a.createdAt).getTime() || 0;
+        const bDate = new Date(b.createdAt).getTime() || 0;
+        if (aDate !== bDate) return bDate - aDate;
+
+        // Tie breaker
+        return a.slug.localeCompare(b.slug);
+      } else {
+        // Newest
+        const aDate = new Date(a.createdAt).getTime() || 0;
+        const bDate = new Date(b.createdAt).getTime() || 0;
+        if (aDate !== bDate) return bDate - aDate;
+        return a.slug.localeCompare(b.slug);
+      }
+    };
+
+    // 3. Location matching order priority if location filter is active
+    if (selectedLocation && selectedLocation !== "all") {
+      const getPriority = (pro: Professional): number => {
+        const match = getProfessionalLocationMatch(pro, selectedLocation);
+        if (match === "base") return 1;
+        if (match === "regular") return 2;
+        if (match === "byArrangement") return 3;
+        return 4;
+      };
+
+      return [...matches].sort((a, b) => {
+        const prioA = getPriority(a);
+        const prioB = getPriority(b);
+        if (prioA !== prioB) return prioA - prioB;
+        return compareDeterministically(a, b);
+      });
+    }
+
+    // Default sorting when no location filter is active
+    return [...matches].sort(compareDeterministically);
+  }, [allProfessionals, debouncedQuery, selectedCategory, selectedLocation, onlyVerified, sortBy]);
+
+  // Compute draft results count for the filters modal button
+  const draftResultsCount = useMemo(() => {
+    const q = debouncedQuery.trim().toLowerCase();
+    return allProfessionals.filter((pro) => {
+      if (q) {
+        const matchesName = pro.displayName.toLowerCase().includes(q);
+        const matchesBusiness = pro.businessName?.toLowerCase().includes(q) ?? false;
+        const matchesBio = pro.bio.toLowerCase().includes(q);
+        const matchesServices = (pro.services ?? []).some(
+          (s) =>
+            s.title.toLowerCase().includes(q) ||
+            (s.description ? s.description.toLowerCase().includes(q) : false)
+        );
+        if (!matchesName && !matchesBusiness && !matchesBio && !matchesServices) return false;
+      }
+      if (selectedCategory && selectedCategory !== "all") {
+        if (!pro.categories.includes(selectedCategory as (typeof pro.categories)[number])) {
+          return false;
+        }
+      }
+      if (draftLocation && draftLocation !== "all") {
+        const matchType = getProfessionalLocationMatch(pro, draftLocation);
+        if (!matchType) return false;
+      }
+      if (draftVerified && pro.verification !== "phone") {
+        return false;
+      }
+      return true;
+    }).length;
+  }, [allProfessionals, debouncedQuery, selectedCategory, draftLocation, draftVerified]);
+
+  const activeModalFiltersCount =
+    (selectedLocation && selectedLocation !== "all" ? 1 : 0) + (onlyVerified ? 1 : 0);
+
+  // Result summary text
+  const locationLabel = selectedLocation && selectedLocation !== "all" ? getLocationLabel(selectedLocation) : "";
+  const resultSummary = useMemo(() => {
+    const count = filteredProfessionals.length;
+    const unit = count === 1 ? "professional" : "professionals";
+    if (locationLabel) {
+      return `${count} ${unit} in ${locationLabel}`;
+    }
+    return `${count} ${unit}`;
+  }, [filteredProfessionals.length, locationLabel]);
+
+  // Paginated visible items
+  const visibleProfessionals = useMemo(() => {
+    return filteredProfessionals.slice(0, visibleCount);
+  }, [filteredProfessionals, visibleCount]);
+
+  // EMPTY STATE (A): No professionals at all in directory (mock data off)
   if (allProfessionals.length === 0) {
     return (
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 lg:py-24 text-center space-y-6">
-        <h1 className="font-serif font-medium text-3xl sm:text-4xl tracking-tight text-deep-slate">
-          Directory of Professionals
-        </h1>
-        <p className="text-sm text-river-silt max-w-md mx-auto leading-relaxed">
-          There are no professionals listed on Jokkoo yet. We are actively welcoming independent tradespeople across The Gambia.
-        </p>
-        <div>
-          <Link
-            href="/join"
-            className="inline-flex min-h-[44px] items-center justify-center rounded-full bg-laterite px-6 py-2.5 text-sm font-semibold text-white hover:bg-laterite/90 transition-colors"
-          >
-            Be the first — join as a professional
-          </Link>
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 sm:py-24 text-center">
+        <div className="max-w-xl mx-auto space-y-6">
+          <h1 className="font-serif font-medium text-3xl sm:text-4xl text-deep-slate tracking-tight">
+            Be one of the first professionals on Jokkoo
+          </h1>
+          <p className="text-base text-river-silt leading-relaxed">
+            Create your profile in about five minutes. Build your presence and connect directly with customers across The Gambia.
+          </p>
+          <div>
+            <Link
+              href="/join"
+              className="inline-flex min-h-[48px] items-center justify-center rounded-full bg-laterite px-8 py-3 text-sm font-semibold text-white hover:bg-laterite-dark transition-colors shadow-xs"
+            >
+              Join as a professional
+            </Link>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10 lg:py-14">
-      {/* Page Header */}
-      <div className="mb-8 border-b border-border-subtle pb-6">
-        <span className="text-xs font-semibold uppercase tracking-wider text-laterite">
-          The Gambia Service Directory
-        </span>
-        <h1 className="text-2xl sm:text-4xl font-bold tracking-tight text-deep-slate mt-1">
-          Explore Skilled Professionals
+    <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-8">
+      {/* 1. Header & Live Result Summary */}
+      <div className="space-y-2 border-b border-border-subtle pb-6">
+        <h1 className="font-serif font-medium text-3xl sm:text-4xl tracking-tight text-deep-slate">
+          Explore professionals
         </h1>
-        <p className="text-sm text-river-silt mt-1.5 max-w-2xl">
-          Browse artisans, trade contractors, and service businesses. Every professional lists their actual base workshop and confirmed geographic coverage.
-        </p>
+        <div aria-live="polite" className="text-sm font-medium text-river-silt">
+          {resultSummary}
+        </div>
       </div>
 
-      {/* Search & Filter Controls */}
-      <div className="space-y-4 mb-8">
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-3">
-          {/* Text Search */}
-          <div className="md:col-span-5 relative">
+      {/* 2. Search & Controls */}
+      <div className="space-y-4">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+          {/* Keyword search input */}
+          <div className="relative flex-1">
             <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-river-silt/70 pointer-events-none" />
             <input
               type="text"
-              placeholder="Search by trade, skill, or keyword..."
               value={query}
-              onChange={(e) => handleQueryChange(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 rounded-[2px] bg-warm-bone border border-border-subtle text-sm text-deep-slate placeholder:text-river-silt/60 focus:outline-none focus:border-laterite focus:ring-1 focus:ring-laterite transition-colors"
+              onChange={(e) => {
+                isTypingRef.current = true;
+                setQuery(e.target.value);
+              }}
+              placeholder="Search by name, skill, or service..."
+              className="w-full h-11 min-h-[44px] rounded-full border border-border-subtle bg-white pl-10 pr-10 text-sm text-deep-slate placeholder:text-river-silt/60 focus:border-laterite focus:ring-1 focus:ring-laterite outline-none transition-colors"
+              aria-label="Search professionals by keyword"
             />
             {query && (
               <button
                 type="button"
-                onClick={() => handleQueryChange("")}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-river-silt hover:text-deep-slate"
+                onClick={() => {
+                  isTypingRef.current = true;
+                  setQuery("");
+                }}
+                className="absolute right-3 top-1/2 -translate-y-1/2 h-6 w-6 flex items-center justify-center text-river-silt hover:text-deep-slate cursor-pointer"
+                aria-label="Clear search text"
               >
                 <X className="h-4 w-4" />
               </button>
             )}
           </div>
 
-          {/* Location Select */}
-          <div className="md:col-span-4 relative">
-            <MapPin className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-river-silt/70 pointer-events-none" />
+          {/* Filters modal toggle button */}
+          <button
+            ref={filterButtonRef}
+            type="button"
+            onClick={openFiltersDialog}
+            className="inline-flex h-11 min-h-[44px] items-center justify-center gap-2 rounded-full border border-border-subtle bg-white px-5 text-sm font-medium text-deep-slate hover:border-deep-slate/40 transition-colors cursor-pointer shrink-0"
+            aria-haspopup="dialog"
+          >
+            <SlidersHorizontal className="h-4 w-4 text-river-silt" />
+            <span>Filters</span>
+            {activeModalFiltersCount > 0 && (
+              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-laterite text-[11px] font-bold text-white">
+                {activeModalFiltersCount}
+              </span>
+            )}
+          </button>
+
+          {/* Sort select */}
+          <div className="relative shrink-0">
+            <label htmlFor="explore-sort" className="sr-only">
+              Sort professionals
+            </label>
             <select
-              value={selectedLocation}
-              onChange={(e) => handleLocationChange(e.target.value)}
-              className="w-full pl-10 pr-8 py-2.5 rounded-[2px] bg-warm-bone border border-border-subtle text-sm text-deep-slate focus:outline-none focus:border-laterite focus:ring-1 focus:ring-laterite appearance-none cursor-pointer transition-colors"
+              id="explore-sort"
+              value={sortBy}
+              onChange={handleSortChange}
+              className="h-11 min-h-[44px] rounded-full border border-border-subtle bg-white px-4 text-sm font-medium text-deep-slate focus:border-laterite focus:ring-1 focus:ring-laterite outline-none cursor-pointer transition-colors"
             >
-              <option value="">All Locations (The Gambia)</option>
-              {GAMBIAN_LOCATIONS.filter((loc) => loc.id !== "all").map((loc) => (
-                <option key={loc.id} value={loc.id}>
-                  {loc.name}
-                </option>
-              ))}
+              <option value="recommended">Sort: Recommended</option>
+              <option value="newest">Sort: Newest</option>
             </select>
           </div>
+        </div>
 
-          {/* Mobile Filter Toggle */}
-          <div className="md:hidden">
-            <Button
-              variant="outline"
-              size="md"
-              onClick={() => setIsMobileFiltersOpen(!isMobileFiltersOpen)}
-              className="w-full justify-center gap-2"
-            >
-              <Filter className="h-4 w-4" />
-              <span>Filters {activeFilterCount > 0 && `(${activeFilterCount})`}</span>
-            </Button>
-          </div>
+        {/* Category chips row: "All" plus nine, single select, horizontally scrollable */}
+        <div className="flex items-center gap-2 overflow-x-auto pb-2 pt-1 no-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0">
+          <button
+            type="button"
+            onClick={() => handleCategorySelect("all")}
+            className={`min-h-[44px] rounded-full px-5 text-sm font-medium whitespace-nowrap transition-colors cursor-pointer border ${
+              !selectedCategory || selectedCategory === "all"
+                ? "bg-laterite text-white border-laterite"
+                : "bg-white text-deep-slate border-border-subtle hover:border-deep-slate/40"
+            }`}
+            aria-pressed={!selectedCategory || selectedCategory === "all"}
+          >
+            All
+          </button>
+          {CATEGORIES.map((cat) => {
+            const isSelected = selectedCategory === cat.slug;
+            return (
+              <button
+                key={cat.slug}
+                type="button"
+                onClick={() => handleCategorySelect(cat.slug)}
+                className={`min-h-[44px] rounded-full px-5 text-sm font-medium whitespace-nowrap transition-colors cursor-pointer border ${
+                  isSelected
+                    ? "bg-laterite text-white border-laterite"
+                    : "bg-white text-deep-slate border-border-subtle hover:border-deep-slate/40"
+                }`}
+                aria-pressed={isSelected}
+              >
+                {cat.shortName}
+              </button>
+            );
+          })}
         </div>
       </div>
 
-      {/* Main Grid: Sidebar Filters + Results */}
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-        {/* Desktop Sidebar: Category Links */}
-        <aside className="hidden lg:block space-y-6 pr-4 border-r border-border-subtle">
-          <div>
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-river-silt mb-3">
-              Service Categories
-            </h3>
-            <div className="space-y-1">
-              <button
-                type="button"
-                onClick={() => handleCategoryChange("")}
-                className={`w-full text-left px-2.5 py-1.5 rounded-[2px] text-xs transition-colors flex items-center justify-between ${
-                  !selectedCategory
-                    ? "bg-sand-dune font-semibold text-deep-slate"
-                    : "text-river-silt hover:bg-sand-dune/40 hover:text-deep-slate"
-                }`}
-              >
-                <span>All Categories</span>
-                <span>{allProfessionals.length}</span>
-              </button>
+      {/* 3. Filters Sheet Dialog (native <dialog>) */}
+      <dialog
+        ref={dialogRef}
+        onCancel={closeFiltersDialog}
+        className="w-full max-w-full m-0 mt-auto rounded-t-2xl sm:rounded-2xl sm:max-w-md sm:m-auto p-0 bg-warm-bone border border-border-subtle shadow-2xl backdrop:bg-deep-slate/60 backdrop:backdrop-blur-xs text-deep-slate"
+      >
+        <div className="flex flex-col max-h-[85vh] overflow-hidden">
+          {/* Dialog Header */}
+          <div className="flex items-center justify-between border-b border-border-subtle px-6 py-4">
+            <h2 className="font-serif font-medium text-xl text-deep-slate">
+              Filters
+            </h2>
+            <button
+              type="button"
+              onClick={closeFiltersDialog}
+              className="h-11 w-11 min-h-[44px] min-w-[44px] -mr-2 flex items-center justify-center rounded-full text-river-silt hover:text-deep-slate hover:bg-sand-dune/40 transition-colors cursor-pointer"
+              aria-label="Close filters"
+            >
+              <X className="h-5 w-5" />
+            </button>
+          </div>
 
-              {CATEGORIES.map((cat) => {
-                const count = allProfessionals.filter((p) =>
-                  p.categories.includes(cat.slug as (typeof p.categories)[number])
-                ).length;
-                const isSelected = selectedCategory === cat.slug;
-                return (
-                  <button
-                    key={cat.slug}
-                    type="button"
-                    onClick={() => handleCategoryChange(cat.slug)}
-                    className={`w-full text-left px-2.5 py-1.5 rounded-[2px] text-xs transition-colors flex items-center justify-between ${
-                      isSelected
-                        ? "bg-sand-dune font-semibold text-deep-slate"
-                        : "text-river-silt hover:bg-sand-dune/40 hover:text-deep-slate"
-                    }`}
-                  >
-                    <span className="truncate pr-2">{cat.name}</span>
-                    <span className="text-[10px] text-river-silt">{count}</span>
-                  </button>
-                );
-              })}
+          {/* Dialog Body */}
+          <div className="p-6 space-y-6 overflow-y-auto">
+            {/* Location Filter */}
+            <div className="space-y-2">
+              <label htmlFor="filter-location" className="block text-sm font-semibold text-deep-slate">
+                Location
+              </label>
+              <select
+                id="filter-location"
+                value={draftLocation}
+                onChange={(e) => setDraftLocation(e.target.value)}
+                className="w-full h-11 min-h-[44px] rounded-xl border border-border-subtle bg-white px-3.5 text-sm text-deep-slate focus:border-laterite focus:ring-1 focus:ring-laterite outline-none cursor-pointer"
+              >
+                <option value="">Anywhere in The Gambia</option>
+                {GAMBIAN_LOCATIONS.filter((l) => l.id !== "all").map((loc) => (
+                  <option key={loc.id} value={loc.id}>
+                    {loc.name}
+                  </option>
+                ))}
+              </select>
+              <p className="text-xs text-river-silt">
+                Matches professionals based here or available to work in this area.
+              </p>
+            </div>
+
+            {/* Phone Verified Only Switch */}
+            <div className="pt-2 border-t border-border-subtle flex items-start gap-3">
+              <div className="flex h-6 items-center">
+                <input
+                  id="filter-verified"
+                  type="checkbox"
+                  checked={draftVerified}
+                  onChange={(e) => setDraftVerified(e.target.checked)}
+                  className="h-5 w-5 rounded border-border-subtle text-laterite focus:ring-laterite cursor-pointer"
+                />
+              </div>
+              <div className="space-y-0.5">
+                <label htmlFor="filter-verified" className="text-sm font-semibold text-deep-slate cursor-pointer">
+                  Phone verified only
+                </label>
+                <p className="text-xs text-river-silt">
+                  Only show profiles with a confirmed Gambian phone number.
+                </p>
+              </div>
             </div>
           </div>
 
-          {/* Verification Status Filter */}
-          <div className="pt-2 border-t border-border-subtle">
-            <label className="flex items-center gap-2 cursor-pointer select-none">
-              <input
-                type="checkbox"
-                checked={onlyVerified}
-                onChange={(e) => setOnlyVerified(e.target.checked)}
-                className="h-3.5 w-3.5 rounded-[2px] border-border-subtle text-laterite focus:ring-laterite accent-laterite"
-              />
-              <span className="text-xs text-deep-slate font-medium">
-                Phone verified only
-              </span>
-            </label>
-            <p className="text-[10px] text-river-silt mt-1 pl-5">
-              Only shows professionals whose phone number we have confirmed.
-            </p>
+          {/* Dialog Footer Actions */}
+          <div className="border-t border-border-subtle px-6 py-4 flex items-center justify-between gap-3 bg-sand-dune/20">
+            <button
+              type="button"
+              onClick={() => {
+                setDraftLocation("");
+                setDraftVerified(false);
+              }}
+              className="min-h-[44px] px-4 py-2 text-sm font-medium text-river-silt hover:text-deep-slate transition-colors cursor-pointer"
+            >
+              Clear all
+            </button>
+            <button
+              type="button"
+              onClick={handleApplyDraftFilters}
+              className="inline-flex min-h-[44px] items-center justify-center rounded-full bg-laterite px-6 py-2.5 text-sm font-semibold text-white hover:bg-laterite-dark transition-colors cursor-pointer shadow-xs"
+            >
+              Show {draftResultsCount} {draftResultsCount === 1 ? "result" : "results"}
+            </button>
           </div>
-        </aside>
+        </div>
+      </dialog>
 
-        {/* Results Column */}
-        <div className="lg:col-span-3 space-y-6">
-          {/* Results Summary Bar */}
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-warm-bone border border-border-subtle px-4 py-3 rounded-[2px]">
-            <div className="text-xs text-river-silt">
-              Showing <strong className="text-deep-slate">{filteredProfessionals.length}</strong> {filteredProfessionals.length === 1 ? "profile" : "profiles"}
-              {selectedCategory && (
-                <span> in <span className="font-semibold text-deep-slate">{CATEGORIES.find((c) => c.slug === selectedCategory)?.name || selectedCategory}</span></span>
-              )}
-              {selectedLocation && (
-                <span> covering <span className="font-semibold text-deep-slate">{GAMBIAN_LOCATIONS.find((l) => l.id === selectedLocation)?.name || selectedLocation}</span></span>
-              )}
-            </div>
-
-            {activeFilterCount > 0 && (
+      {/* 4. Results Grid or Empty State (B) */}
+      {filteredProfessionals.length === 0 ? (
+        <div className="rounded-2xl border border-border-subtle bg-white p-8 sm:p-12 text-center max-w-lg mx-auto space-y-4 my-8">
+          <h2 className="font-serif font-medium text-2xl text-deep-slate">
+            No professionals match
+          </h2>
+          <p className="text-sm text-river-silt leading-relaxed">
+            We couldn&apos;t find any professionals matching your current filters. Try searching with different keywords or clearing your filters.
+          </p>
+          <div className="pt-2 flex flex-wrap items-center justify-center gap-3">
+            <button
+              type="button"
+              onClick={handleResetFilters}
+              className="inline-flex min-h-[44px] items-center justify-center gap-2 rounded-full border border-border-subtle bg-warm-bone px-5 py-2.5 text-sm font-semibold text-deep-slate hover:border-deep-slate/40 transition-colors cursor-pointer"
+            >
+              <RotateCcw className="h-4 w-4" />
+              <span>Clear filters</span>
+            </button>
+            {selectedLocation && (
               <button
                 type="button"
-                onClick={resetFilters}
-                className="text-xs font-medium text-laterite hover:underline"
+                onClick={handleClearLocationOnly}
+                className="inline-flex min-h-[44px] items-center justify-center rounded-full bg-laterite px-5 py-2.5 text-sm font-semibold text-white hover:bg-laterite-dark transition-colors cursor-pointer shadow-xs"
               >
-                Clear all filters ({activeFilterCount})
+                Try anywhere in The Gambia
               </button>
             )}
           </div>
+        </div>
+      ) : (
+        <div className="space-y-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+            {visibleProfessionals.map((pro) => (
+              <ProfessionalCard
+                key={pro.slug}
+                professional={pro}
+                filterLocation={selectedLocation}
+              />
+            ))}
+          </div>
 
-          {/* Listing Grid */}
-          {filteredProfessionals.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {filteredProfessionals.map((pro) => (
-                <ProfessionalCard key={pro.id} professional={pro} />
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-16 px-4 bg-sand-dune/20 border border-dashed border-border-subtle rounded-[3px] space-y-4">
-              <div className="h-12 w-12 mx-auto flex items-center justify-center rounded-full bg-sand-dune text-river-silt">
-                <Search className="h-5 w-5" />
-              </div>
-              <h3 className="text-base font-semibold text-deep-slate">
-                No professionals match your current filters
-              </h3>
-              <p className="text-xs text-river-silt max-w-sm mx-auto">
-                Try widening your location coverage or selecting a different service category.
-              </p>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={resetFilters}
-                className="mt-2"
+          {/* Show More Pagination */}
+          {visibleProfessionals.length < filteredProfessionals.length && (
+            <div className="flex justify-center pt-4 pb-8">
+              <button
+                type="button"
+                onClick={() => setVisibleCount((prev) => prev + INITIAL_VISIBLE_COUNT)}
+                className="inline-flex min-h-[48px] items-center justify-center rounded-full border border-border-subtle bg-white px-8 py-3 text-sm font-semibold text-deep-slate hover:border-deep-slate/40 transition-colors cursor-pointer shadow-xs"
               >
-                Reset All Filters
-              </Button>
+                Show more professionals ({filteredProfessionals.length - visibleProfessionals.length} remaining)
+              </button>
             </div>
           )}
         </div>
-      </div>
+      )}
     </div>
   );
 }

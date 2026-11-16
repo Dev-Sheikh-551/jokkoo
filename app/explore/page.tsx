@@ -5,9 +5,9 @@ import { Footer } from "@/components/layout/Footer";
 import { ExploreClient } from "@/components/explore/ExploreClient";
 
 export const metadata: Metadata = {
-  title: "Explore Skilled Professionals & Artisans — Jokkoo The Gambia",
+  title: "Explore Professionals — Jokkoo The Gambia",
   description:
-    "Discover verified Gambian tradespeople, carpenters, electricians, tailors, and mechanics with direct WhatsApp contact.",
+    "Browse skilled trade professionals, carpenters, electricians, tailors, and mechanics across The Gambia. Direct contact on WhatsApp.",
 };
 
 export default function ExplorePage() {

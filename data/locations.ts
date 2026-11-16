@@ -31,3 +31,51 @@ export function getLocationLabel(slug?: string): string {
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(" ");
 }
+
+export type LocationMatchType = "base" | "regular" | "byArrangement";
+
+export function getProfessionalLocationMatch(
+  professional: {
+    baseLocation: string;
+    regularAreas?: string[];
+    byArrangementAreas?: string[];
+  },
+  locationSlug?: string
+): LocationMatchType | null {
+  if (!locationSlug || locationSlug === "all") return null;
+  const target = locationSlug.toLowerCase();
+  if (professional.baseLocation.toLowerCase() === target) {
+    return "base";
+  }
+  if ((professional.regularAreas ?? []).some((a) => a.toLowerCase() === target)) {
+    return "regular";
+  }
+  if (
+    (professional.byArrangementAreas ?? []).some((a) => a.toLowerCase() === target)
+  ) {
+    return "byArrangement";
+  }
+  return null;
+}
+
+export function getLocationMatchLabel(
+  professional: {
+    baseLocation: string;
+    regularAreas?: string[];
+    byArrangementAreas?: string[];
+  },
+  locationSlug?: string
+): string | null {
+  const match = getProfessionalLocationMatch(professional, locationSlug);
+  if (!match || !locationSlug) return null;
+  const areaLabel = getLocationLabel(locationSlug);
+  switch (match) {
+    case "base":
+      return `Based in ${areaLabel}`;
+    case "regular":
+      return `Works in ${areaLabel} regularly`;
+    case "byArrangement":
+      return `Available in ${areaLabel} by arrangement`;
+  }
+}
+

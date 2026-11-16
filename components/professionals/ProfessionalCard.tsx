@@ -6,16 +6,18 @@ import { VerificationBadge } from "@/components/common/VerificationBadge";
 import { ImagePlaceholder } from "@/components/common/ImagePlaceholder";
 import { categoryMedia } from "@/lib/media";
 import { CATEGORIES } from "@/data/categories";
-import { getLocationLabel } from "@/data/locations";
+import { getLocationLabel, getLocationMatchLabel } from "@/data/locations";
 
 interface ProfessionalCardProps {
   professional: Professional;
   previewMode?: boolean;
+  filterLocation?: string;
 }
 
 export function ProfessionalCard({
   professional,
   previewMode = false,
+  filterLocation,
 }: ProfessionalCardProps) {
   const {
     slug,
@@ -50,6 +52,10 @@ export function ProfessionalCard({
   const mediaTone = categoryMedia[primaryCategorySlug]?.tone ?? "slate";
 
   const firstPhotoSrc = avatar ?? workPhotos?.[0]?.src;
+
+  const matchLine = filterLocation
+    ? getLocationMatchLabel(professional, filterLocation)
+    : null;
 
   return (
     <div className="group flex flex-col overflow-hidden rounded-[3px] border border-border-subtle bg-warm-bone">
@@ -92,14 +98,23 @@ export function ProfessionalCard({
         <h3 className="font-serif text-2xl leading-snug text-deep-slate">
           {displayName}
         </h3>
-        <p className="text-sm text-river-silt">
-          {categoryName} · Based in {getLocationLabel(baseLocation)}
-        </p>
-        {allOtherAreas.length > 0 && (
-          <p className="text-xs text-river-silt">
-            Also serves: {displayAreas}
-            {extraCount > 0 && ` +${extraCount} more`}
-          </p>
+        {matchLine ? (
+          <>
+            <p className="text-sm text-river-silt">{categoryName}</p>
+            <p className="text-xs font-medium text-deep-slate">{matchLine}</p>
+          </>
+        ) : (
+          <>
+            <p className="text-sm text-river-silt">
+              {categoryName} · Based in {getLocationLabel(baseLocation)}
+            </p>
+            {allOtherAreas.length > 0 && (
+              <p className="text-xs text-river-silt">
+                Also serves: {displayAreas}
+                {extraCount > 0 && ` +${extraCount} more`}
+              </p>
+            )}
+          </>
         )}
       </div>
 
