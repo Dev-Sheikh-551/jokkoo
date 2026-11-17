@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Professional } from "@/types/professional";
+import { ExploreProfessional } from "@/data/professionals";
 import { SampleDataBadge } from "@/components/common/Badge";
 import { VerificationBadge } from "@/components/common/VerificationBadge";
 import { ImagePlaceholder } from "@/components/common/ImagePlaceholder";
@@ -9,7 +10,7 @@ import { CATEGORIES } from "@/data/categories";
 import { getLocationLabel, getLocationMatchLabel } from "@/data/locations";
 
 interface ProfessionalCardProps {
-  professional: Professional;
+  professional: Professional | ExploreProfessional;
   previewMode?: boolean;
   filterLocation?: string;
   priority?: boolean;
@@ -30,9 +31,8 @@ export function ProfessionalCard({
     byArrangementAreas,
     verification,
     isSample,
-    avatar,
-    workPhotos,
   } = professional;
+  const whatsappNumber = "whatsappNumber" in professional ? professional.whatsappNumber : undefined;
 
   // All coverage areas beyond base
   const allOtherAreas = [
@@ -53,7 +53,11 @@ export function ProfessionalCard({
   // Category tone for placeholder
   const mediaTone = categoryMedia[primaryCategorySlug]?.tone ?? "slate";
 
-  const firstPhotoSrc = avatar ?? workPhotos?.[0]?.src;
+  const firstPhotoSrc =
+    ("firstPhotoSrc" in professional && professional.firstPhotoSrc)
+      ? professional.firstPhotoSrc
+      : ("avatar" in professional ? professional.avatar : undefined) ??
+        ("workPhotos" in professional ? professional.workPhotos?.[0]?.src : undefined);
 
   const matchLine = filterLocation
     ? getLocationMatchLabel(professional, filterLocation)
@@ -157,16 +161,18 @@ export function ProfessionalCard({
           </>
         ) : (
           <div className="w-full flex justify-end">
-            <a
-              href={`https://wa.me/${professional.whatsappNumber}?text=${encodeURIComponent(
-                `Hi, I found your profile on Jokkoo. I'd like to enquire about your services.`
-              )}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-center rounded-full bg-laterite px-4 text-xs font-semibold text-warm-bone transition-colors hover:bg-laterite/90 min-h-[44px]"
-            >
-              WhatsApp
-            </a>
+            {whatsappNumber && (
+              <a
+                href={`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
+                  `Hi, I found your profile on Jokkoo. I'd like to enquire about your services.`
+                )}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center rounded-full bg-laterite px-4 text-xs font-semibold text-warm-bone transition-colors hover:bg-laterite/90 min-h-[44px]"
+              >
+                WhatsApp
+              </a>
+            )}
           </div>
         )}
       </div>

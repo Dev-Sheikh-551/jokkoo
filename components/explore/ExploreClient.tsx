@@ -4,26 +4,31 @@ import { useState, useMemo, useEffect, useRef, useCallback } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { Search, SlidersHorizontal, X, RotateCcw } from "lucide-react";
-import { getProfessionals } from "@/data/professionals";
+import { ExploreProfessional, getExploreProfessionals } from "@/data/professionals";
 import { CATEGORIES } from "@/data/categories";
 import {
   GAMBIAN_LOCATIONS,
   getLocationLabel,
   getProfessionalLocationMatch,
 } from "@/data/locations";
-import { Professional } from "@/types/professional";
 import { ProfessionalCard } from "@/components/professionals/ProfessionalCard";
-import { getCompleteness } from "@/lib/profile/schema";
 
 type SortOption = "recommended" | "newest";
 
 const INITIAL_VISIBLE_COUNT = 12;
 
-export function ExploreClient() {
+interface ExploreClientProps {
+  initialProfessionals?: ExploreProfessional[];
+}
+
+export function ExploreClient({ initialProfessionals }: ExploreClientProps) {
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  const allProfessionals = useMemo(() => getProfessionals(), []);
+  const allProfessionals = useMemo(
+    () => initialProfessionals ?? getExploreProfessionals(),
+    [initialProfessionals]
+  );
 
   // Canonical state derived directly from URL searchParams
   const paramQ = searchParams.get("q") ?? "";
@@ -157,22 +162,19 @@ export function ExploreClient() {
     const matches = allProfessionals.filter((pro) => {
       // Keyword query
       if (q) {
+        const matchesSearchTerms = (pro.searchTerms ?? []).some((term) =>
+          term.toLowerCase().includes(q)
+        );
         const matchesName = pro.displayName.toLowerCase().includes(q);
         const matchesBusiness = pro.businessName?.toLowerCase().includes(q) ?? false;
-        const matchesBio = pro.bio.toLowerCase().includes(q);
-        const matchesServices = (pro.services ?? []).some(
-          (s) =>
-            s.title.toLowerCase().includes(q) ||
-            (s.description ? s.description.toLowerCase().includes(q) : false)
-        );
-        if (!matchesName && !matchesBusiness && !matchesBio && !matchesServices) {
+        if (!matchesSearchTerms && !matchesName && !matchesBusiness) {
           return false;
         }
       }
 
       // Category filter
       if (selectedCategory && selectedCategory !== "all") {
-        if (!pro.categories.includes(selectedCategory as (typeof pro.categories)[number])) {
+        if (!pro.categories.includes(selectedCategory)) {
           return false;
         }
       }
@@ -194,7 +196,7 @@ export function ExploreClient() {
     });
 
     // 2. Deterministic sorting helper
-    const compareDeterministically = (a: Professional, b: Professional): number => {
+    const compareDeterministically = (a: ExploreProfessional, b: ExploreProfessional): number => {
       if (sortBy === "recommended") {
         // Phone verified first
         const aVer = a.verification === "phone" ? 1 : 0;
@@ -202,21 +204,21 @@ export function ExploreClient() {
         if (aVer !== bVer) return bVer - aVer;
 
         // Completeness score
-        const aScore = getCompleteness(a).percent;
-        const bScore = getCompleteness(b).percent;
+        const aScore = a.completenessPercent ?? 0;
+        const bScore = b.completenessPercent ?? 0;
         if (aScore !== bScore) return bScore - aScore;
 
         // Newest date
-        const aDate = new Date(a.createdAt).getTime() || 0;
-        const bDate = new Date(b.createdAt).getTime() || 0;
+        const aDate = a.joinedTimestamp;
+        const bDate = b.joinedTimestamp;
         if (aDate !== bDate) return bDate - aDate;
 
         // Tie breaker
         return a.slug.localeCompare(b.slug);
       } else {
         // Newest
-        const aDate = new Date(a.createdAt).getTime() || 0;
-        const bDate = new Date(b.createdAt).getTime() || 0;
+        const aDate = a.joinedTimestamp;
+        const bDate = b.joinedTimestamp;
         if (aDate !== bDate) return bDate - aDate;
         return a.slug.localeCompare(b.slug);
       }
@@ -224,7 +226,7 @@ export function ExploreClient() {
 
     // 3. Location matching order priority if location filter is active
     if (selectedLocation && selectedLocation !== "all") {
-      const getPriority = (pro: Professional): number => {
+      const getPriority = (pro: ExploreProfessional): number => {
         const match = getProfessionalLocationMatch(pro, selectedLocation);
         if (match === "base") return 1;
         if (match === "regular") return 2;
@@ -249,18 +251,15 @@ export function ExploreClient() {
     const q = debouncedQuery.trim().toLowerCase();
     return allProfessionals.filter((pro) => {
       if (q) {
+        const matchesSearchTerms = (pro.searchTerms ?? []).some((term) =>
+          term.toLowerCase().includes(q)
+        );
         const matchesName = pro.displayName.toLowerCase().includes(q);
         const matchesBusiness = pro.businessName?.toLowerCase().includes(q) ?? false;
-        const matchesBio = pro.bio.toLowerCase().includes(q);
-        const matchesServices = (pro.services ?? []).some(
-          (s) =>
-            s.title.toLowerCase().includes(q) ||
-            (s.description ? s.description.toLowerCase().includes(q) : false)
-        );
-        if (!matchesName && !matchesBusiness && !matchesBio && !matchesServices) return false;
+        if (!matchesSearchTerms && !matchesName && !matchesBusiness) return false;
       }
       if (selectedCategory && selectedCategory !== "all") {
-        if (!pro.categories.includes(selectedCategory as (typeof pro.categories)[number])) {
+        if (!pro.categories.includes(selectedCategory)) {
           return false;
         }
       }

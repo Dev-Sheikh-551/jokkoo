@@ -1,10 +1,10 @@
 import { Search, SlidersHorizontal } from "lucide-react";
-import { getProfessionals } from "@/data/professionals";
+import { getExploreProfessionals } from "@/data/professionals";
 import { CATEGORIES } from "@/data/categories";
 import { ProfessionalCard } from "@/components/professionals/ProfessionalCard";
 
 export function ExploreFallback() {
-  const allProfessionals = getProfessionals();
+  const allProfessionals = getExploreProfessionals();
   const initialCards = allProfessionals.slice(0, 12);
   const totalCount = allProfessionals.length;
 

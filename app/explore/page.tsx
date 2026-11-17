@@ -4,6 +4,7 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { ExploreClient } from "@/components/explore/ExploreClient";
 import { ExploreFallback } from "@/components/explore/ExploreFallback";
+import { getExploreProfessionals } from "@/data/professionals";
 
 export const metadata: Metadata = {
   title: "Explore Professionals — Jokkoo The Gambia",
@@ -12,12 +13,14 @@ export const metadata: Metadata = {
 };
 
 export default function ExplorePage() {
+  const initialProfessionals = getExploreProfessionals();
+
   return (
     <div className="min-h-screen flex flex-col bg-warm-bone text-deep-slate">
       <Header />
       <main className="flex-1">
         <Suspense fallback={<ExploreFallback />}>
-          <ExploreClient />
+          <ExploreClient initialProfessionals={initialProfessionals} />
         </Suspense>
       </main>
       <Footer />
