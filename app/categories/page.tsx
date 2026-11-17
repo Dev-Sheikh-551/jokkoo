@@ -32,7 +32,7 @@ export default function CategoriesPage() {
 
           {/* Grid of Category Cards (1 / 2 / 3 columns) */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-            {CATEGORIES.map((category) => {
+            {CATEGORIES.map((category, index) => {
               const media = categoryMedia[category.slug];
               const popularServices = (category.popularServices ?? []).slice(0, 4);
 
@@ -48,6 +48,7 @@ export default function CategoriesPage() {
                         src={media.src}
                         alt={media.alt}
                         fill
+                        priority={index === 0}
                         sizes="(min-width: 1024px) 380px, (min-width: 768px) 50vw, 100vw"
                         quality={75}
                         style={{ objectPosition: media.objectPosition || "center" }}

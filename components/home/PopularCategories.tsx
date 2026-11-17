@@ -53,7 +53,6 @@ export function PopularCategories() {
                         : "(min-width: 1024px) 280px, 50vw"
                     }
                     quality={75}
-                    priority={index === 0}
                     className="object-cover transition-transform duration-300 group-hover:scale-105"
                     style={{ objectPosition: media.objectPosition ?? "center" }}
                   />

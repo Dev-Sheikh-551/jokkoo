@@ -12,12 +12,14 @@ interface ProfessionalCardProps {
   professional: Professional;
   previewMode?: boolean;
   filterLocation?: string;
+  priority?: boolean;
 }
 
 export function ProfessionalCard({
   professional,
   previewMode = false,
   filterLocation,
+  priority = false,
 }: ProfessionalCardProps) {
   const {
     slug,
@@ -66,6 +68,7 @@ export function ProfessionalCard({
             src={firstPhotoSrc}
             alt={displayName}
             fill
+            priority={priority}
             unoptimized={firstPhotoSrc.startsWith("blob:") || previewMode}
             className="object-cover transition-transform duration-300 group-hover:scale-105"
             sizes="(min-width: 1024px) 380px, 100vw"

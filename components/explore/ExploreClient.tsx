@@ -555,11 +555,12 @@ export function ExploreClient() {
       ) : (
         <div className="space-y-8">
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-            {visibleProfessionals.map((pro) => (
+            {visibleProfessionals.map((pro, index) => (
               <ProfessionalCard
                 key={pro.slug}
                 professional={pro}
                 filterLocation={selectedLocation}
+                priority={index === 0}
               />
             ))}
           </div>
