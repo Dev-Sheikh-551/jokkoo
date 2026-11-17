@@ -139,26 +139,14 @@ export function ProfessionalCard({
             </span>
           </div>
         ) : isSample ? (
-          <>
+          <div className="w-full flex justify-end">
             <Link
               href={`/professionals/${slug}`}
-              className="text-xs font-medium text-laterite hover:underline underline-offset-2 transition-colors"
+              className="inline-flex items-center justify-center rounded-full border border-border-subtle bg-warm-bone px-4 py-2 text-xs font-semibold text-deep-slate transition-colors hover:border-deep-slate/40 hover:bg-sand-dune/40 min-h-[44px]"
             >
               View sample profile
             </Link>
-            <div className="flex flex-col items-end">
-              <span
-                role="button"
-                aria-disabled="true"
-                className="inline-flex items-center justify-center rounded-full bg-laterite-light text-laterite-dark border border-laterite/20 px-3.5 py-1.5 text-xs font-semibold cursor-not-allowed min-h-[36px]"
-              >
-                WhatsApp
-              </span>
-              <span className="text-[10px] text-river-silt mt-0.5">
-                Sample profile: contact is disabled
-              </span>
-            </div>
-          </>
+          </div>
         ) : (
           <div className="w-full flex justify-end">
             {whatsappNumber && (

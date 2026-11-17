@@ -11,7 +11,7 @@ import { ImagePlaceholder } from "@/components/common/ImagePlaceholder";
 export const metadata: Metadata = {
   title: "Browse by Kind of Work — Jokkoo The Gambia",
   description:
-    "Explore trade service categories on Jokkoo: Electrical, Plumbing, Carpentry, Tailoring, Automotive, Painting, Cleaning, Photography, and Computer Repairs.",
+    "Explore service categories on Jokkoo: Electrical, Plumbing, Carpentry, Tailoring, Automotive, Painting, Cleaning, Photography, and Computer Repairs.",
 };
 
 export default function CategoriesPage() {
@@ -26,7 +26,7 @@ export default function CategoriesPage() {
               Browse by kind of work
             </h1>
             <p className="text-base text-river-silt leading-relaxed">
-              Find skilled trade professionals and workshops across The Gambia by service category.
+              Find skilled professionals and workshops across The Gambia by kind of work.
             </p>
           </div>
 
@@ -37,9 +37,11 @@ export default function CategoriesPage() {
               const popularServices = (category.popularServices ?? []).slice(0, 4);
 
               return (
-                <div
+                <Link
                   key={category.slug}
-                  className="group flex flex-col overflow-hidden rounded-[3px] border border-border-subtle bg-white hover:border-deep-slate/40 transition-colors shadow-2xs"
+                  href={`/explore?category=${category.slug}`}
+                  aria-label={`Browse ${category.name} professionals`}
+                  className="group flex flex-col overflow-hidden rounded-[3px] border border-border-subtle bg-white hover:border-deep-slate/40 transition-colors shadow-2xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-laterite cursor-pointer"
                 >
                   {/* Category Image */}
                   <div className="relative aspect-[16/10] overflow-hidden bg-sand-dune">
@@ -90,16 +92,13 @@ export default function CategoriesPage() {
 
                     {/* Action link */}
                     <div className="pt-2 mt-auto">
-                      <Link
-                        href={`/explore?category=${category.slug}`}
-                        className="inline-flex min-h-[44px] items-center justify-center gap-2 rounded-full bg-laterite px-6 py-2.5 text-sm font-semibold text-white hover:bg-laterite-dark transition-colors shadow-xs w-full sm:w-auto"
-                      >
+                      <span className="inline-flex min-h-[44px] items-center gap-1.5 text-sm font-semibold text-laterite group-hover:text-laterite-dark group-hover:underline underline-offset-4 transition-colors">
                         <span>See professionals</span>
-                        <ArrowRight className="h-4 w-4" />
-                      </Link>
+                        <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
+                      </span>
                     </div>
                   </div>
-                </div>
+                </Link>
               );
             })}
           </div>

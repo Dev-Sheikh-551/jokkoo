@@ -56,7 +56,20 @@ export function ExploreClient({ initialProfessionals }: ExploreClientProps) {
 
   const dialogRef = useRef<HTMLDialogElement | null>(null);
   const filterButtonRef = useRef<HTMLButtonElement | null>(null);
+  const chipsContainerRef = useRef<HTMLDivElement | null>(null);
+  const activeChipRef = useRef<HTMLButtonElement | null>(null);
   const isTypingRef = useRef(false);
+
+  // Scroll active chip into view on mount or URL change
+  useEffect(() => {
+    if (activeChipRef.current) {
+      activeChipRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+        inline: "center",
+      });
+    }
+  }, [selectedCategory]);
 
   // Debounce query input by 300ms and push to URL via router.replace (no scroll jump)
   useEffect(() => {
@@ -331,9 +344,9 @@ export function ExploreClient({ initialProfessionals }: ExploreClientProps) {
 
       {/* 2. Search & Controls */}
       <div className="space-y-4">
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-          {/* Keyword search input */}
-          <div className="relative flex-1">
+        <div className="flex flex-col sm:flex-row gap-3">
+          {/* Keyword search input (full-width on mobile, flex-1 on desktop) */}
+          <div className="relative w-full sm:flex-1">
             <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-river-silt/70 pointer-events-none" />
             <input
               type="text"
@@ -361,72 +374,101 @@ export function ExploreClient({ initialProfessionals }: ExploreClientProps) {
             )}
           </div>
 
-          {/* Filters modal toggle button */}
-          <button
-            ref={filterButtonRef}
-            type="button"
-            onClick={openFiltersDialog}
-            className="inline-flex h-11 min-h-[44px] items-center justify-center gap-2 rounded-full border border-border-subtle bg-white px-5 text-sm font-medium text-deep-slate hover:border-deep-slate/40 transition-colors cursor-pointer shrink-0"
-            aria-haspopup="dialog"
-          >
-            <SlidersHorizontal className="h-4 w-4 text-river-silt" />
-            <span>Filters</span>
-            {activeModalFiltersCount > 0 && (
-              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-laterite text-[11px] font-bold text-white">
-                {activeModalFiltersCount}
-              </span>
-            )}
-          </button>
-
-          {/* Sort select */}
-          <div className="relative shrink-0">
-            <label htmlFor="explore-sort" className="sr-only">
-              Sort professionals
-            </label>
-            <select
-              id="explore-sort"
-              value={sortBy}
-              onChange={handleSortChange}
-              className="h-11 min-h-[44px] rounded-full border border-border-subtle bg-white px-4 text-sm font-medium text-deep-slate focus:border-laterite focus:ring-1 focus:ring-laterite outline-none cursor-pointer transition-colors"
+          {/* Row with Filters button on the left and Sort select on the right (equal weight on mobile, shrink-0 on desktop) */}
+          <div className="grid grid-cols-2 sm:flex sm:items-center gap-3 w-full sm:w-auto">
+            {/* Filters modal toggle button */}
+            <button
+              ref={filterButtonRef}
+              type="button"
+              onClick={openFiltersDialog}
+              className="inline-flex h-11 min-h-[44px] w-full sm:w-auto items-center justify-center gap-2 rounded-full border border-border-subtle bg-white px-5 text-sm font-medium text-deep-slate hover:border-deep-slate/40 transition-colors cursor-pointer"
+              aria-haspopup="dialog"
             >
-              <option value="recommended">Sort: Recommended</option>
-              <option value="newest">Sort: Newest</option>
-            </select>
+              <SlidersHorizontal className="h-4 w-4 text-river-silt" />
+              <span>Filters</span>
+              {activeModalFiltersCount > 0 && (
+                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-laterite text-[11px] font-bold text-white">
+                  {activeModalFiltersCount}
+                </span>
+              )}
+            </button>
+
+            {/* Sort select */}
+            <div className="relative w-full sm:w-auto sm:shrink-0">
+              <label htmlFor="explore-sort" className="sr-only">
+                Sort professionals
+              </label>
+              <select
+                id="explore-sort"
+                value={sortBy}
+                onChange={handleSortChange}
+                className="w-full sm:w-auto h-11 min-h-[44px] rounded-full border border-border-subtle bg-white px-4 text-sm font-medium text-deep-slate focus:border-laterite focus:ring-1 focus:ring-laterite outline-none cursor-pointer transition-colors text-center sm:text-left"
+              >
+                <option value="recommended">Sort: Recommended</option>
+                <option value="newest">Sort: Newest</option>
+              </select>
+            </div>
           </div>
         </div>
 
-        {/* Category chips row: "All" plus nine, single select, horizontally scrollable */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-2 pt-1 no-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0">
-          <button
-            type="button"
-            onClick={() => handleCategorySelect("all")}
-            className={`min-h-[44px] rounded-full px-5 text-sm font-medium whitespace-nowrap transition-colors cursor-pointer border ${
-              !selectedCategory || selectedCategory === "all"
-                ? "bg-laterite text-white border-laterite"
-                : "bg-white text-deep-slate border-border-subtle hover:border-deep-slate/40"
-            }`}
-            aria-pressed={!selectedCategory || selectedCategory === "all"}
+        {/* Category chips row: "All" plus nine, single select, horizontally scrollable with right edge fade */}
+        <div className="relative -mx-4 px-4 sm:mx-0 sm:px-0">
+          <div
+            ref={chipsContainerRef}
+            className="flex items-center gap-2 overflow-x-auto pb-2 pt-1 no-scrollbar"
           >
-            All
-          </button>
-          {CATEGORIES.map((cat) => {
-            const isSelected = selectedCategory === cat.slug;
-            return (
-              <button
-                key={cat.slug}
-                type="button"
-                onClick={() => handleCategorySelect(cat.slug)}
-                className={`min-h-[44px] rounded-full px-5 text-sm font-medium whitespace-nowrap transition-colors cursor-pointer border ${
-                  isSelected
-                    ? "bg-laterite text-white border-laterite"
-                    : "bg-white text-deep-slate border-border-subtle hover:border-deep-slate/40"
-                }`}
-                aria-pressed={isSelected}
-              >
-                {cat.shortName}
-              </button>
-            );
-          })}
+            <button
+              type="button"
+              ref={!selectedCategory || selectedCategory === "all" ? activeChipRef : null}
+              onClick={(e) => {
+                e.currentTarget.scrollIntoView({
+                  behavior: "smooth",
+                  block: "nearest",
+                  inline: "center",
+                });
+                handleCategorySelect("all");
+              }}
+              className={`min-h-[44px] rounded-full px-5 text-sm font-medium whitespace-nowrap transition-colors cursor-pointer border shrink-0 ${
+                !selectedCategory || selectedCategory === "all"
+                  ? "bg-laterite text-white border-laterite"
+                  : "bg-white text-deep-slate border-border-subtle hover:border-deep-slate/40"
+              }`}
+              aria-pressed={!selectedCategory || selectedCategory === "all"}
+            >
+              All
+            </button>
+            {CATEGORIES.map((cat) => {
+              const isSelected = selectedCategory === cat.slug;
+              return (
+                <button
+                  key={cat.slug}
+                  ref={isSelected ? activeChipRef : null}
+                  type="button"
+                  onClick={(e) => {
+                    e.currentTarget.scrollIntoView({
+                      behavior: "smooth",
+                      block: "nearest",
+                      inline: "center",
+                    });
+                    handleCategorySelect(cat.slug);
+                  }}
+                  className={`min-h-[44px] rounded-full px-5 text-sm font-medium whitespace-nowrap transition-colors cursor-pointer border shrink-0 ${
+                    isSelected
+                      ? "bg-laterite text-white border-laterite"
+                      : "bg-white text-deep-slate border-border-subtle hover:border-deep-slate/40"
+                  }`}
+                  aria-pressed={isSelected}
+                >
+                  {cat.shortName}
+                </button>
+              );
+            })}
+          </div>
+          {/* Soft fade on the right edge */}
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute right-0 top-0 bottom-2 w-8 sm:w-12 bg-gradient-to-l from-warm-bone to-transparent"
+          />
         </div>
       </div>
 
@@ -522,8 +564,25 @@ export function ExploreClient({ initialProfessionals }: ExploreClientProps) {
         </div>
       </dialog>
 
-      {/* 4. Results Grid or Empty State (B) */}
-      {filteredProfessionals.length === 0 ? (
+      {/* 4. Results Grid or Empty States */}
+      {allProfessionals.length === 0 ? (
+        <div className="rounded-2xl border border-border-subtle bg-white p-8 sm:p-12 text-center max-w-lg mx-auto space-y-4 my-8">
+          <h2 className="font-serif font-medium text-2xl text-deep-slate">
+            Be one of the first professionals on Jokkoo
+          </h2>
+          <p className="text-sm text-river-silt leading-relaxed">
+            Profiles across The Gambia will appear here as professionals join. Build your profile today to get discovered.
+          </p>
+          <div className="pt-2 flex justify-center">
+            <Link
+              href="/join"
+              className="inline-flex min-h-[44px] items-center justify-center rounded-full bg-laterite px-6 py-2.5 text-sm font-semibold text-white hover:bg-laterite-dark transition-colors shadow-xs"
+            >
+              Build your profile
+            </Link>
+          </div>
+        </div>
+      ) : filteredProfessionals.length === 0 ? (
         <div className="rounded-2xl border border-border-subtle bg-white p-8 sm:p-12 text-center max-w-lg mx-auto space-y-4 my-8">
           <h2 className="font-serif font-medium text-2xl text-deep-slate">
             No professionals match

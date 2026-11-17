@@ -16,7 +16,7 @@ export function VerificationBadge({ level, className }: VerificationBadgeProps) 
     return (
       <div
         className={cn(
-          "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-[3px] bg-verified-soft text-verified text-xs font-medium border border-verified/20",
+          "inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-[3px] bg-warm-bone text-deep-slate text-xs font-medium border border-border-subtle shadow-xs",
           className
         )}
       >

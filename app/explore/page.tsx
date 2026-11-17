@@ -9,7 +9,7 @@ import { getExploreProfessionals } from "@/data/professionals";
 export const metadata: Metadata = {
   title: "Explore Professionals — Jokkoo The Gambia",
   description:
-    "Browse skilled trade professionals, carpenters, electricians, tailors, and mechanics across The Gambia. Direct contact on WhatsApp.",
+    "Browse skilled professionals, carpenters, electricians, tailors, and mechanics across The Gambia. Direct contact on WhatsApp.",
 };
 
 export default function ExplorePage() {

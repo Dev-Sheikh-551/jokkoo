@@ -26,14 +26,14 @@ export function Footer() {
               <Logo size="footer" />
             </div>
             <p className="text-sm text-warm-bone/70 max-w-sm leading-relaxed">
-              Connecting households and businesses across The Gambia with independent skilled trade professionals.
+              Connecting households and businesses across The Gambia with independent skilled professionals.
             </p>
           </div>
 
-          {/* Trades Column */}
+          {/* Kinds of work Column */}
           <div>
             <h3 className="text-xs font-semibold uppercase tracking-wider text-warm-bone mb-4">
-              Trades
+              Kinds of work
             </h3>
             <ul className="space-y-2.5 text-sm text-warm-bone/70">
               {CATEGORIES.map((category) => (

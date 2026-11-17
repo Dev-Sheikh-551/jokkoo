@@ -8,7 +8,7 @@ export function SampleDataBadge({ className }: SampleDataBadgeProps) {
   return (
     <span
       className={cn(
-        "inline-flex items-center px-2 py-0.5 rounded-[2px] bg-sand-dune/80 text-[10px] uppercase tracking-wider text-river-silt font-semibold border border-border-subtle",
+        "inline-flex items-center px-2.5 py-0.5 rounded-[3px] bg-warm-bone text-[11px] font-medium text-deep-slate border border-border-subtle shadow-xs",
         className
       )}
       title="This is demonstration data for testing and preview"

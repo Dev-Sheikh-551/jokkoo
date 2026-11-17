@@ -55,6 +55,15 @@ body {
   font-family: var(--font-serif-italic, var(--font-serif));
 }
 
+/* Hide scrollbars while preserving scrolling */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
 /* Custom selection styling reflecting Laterite brand */
 ::selection {
   background-color: #F7EDE8;
