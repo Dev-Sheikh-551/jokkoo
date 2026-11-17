@@ -47,6 +47,14 @@ body {
   font-optical-sizing: auto;
 }
 
+.font-serif em,
+.font-serif i,
+.font-serif .italic,
+.italic.font-serif,
+.italic .font-serif {
+  font-family: var(--font-serif-italic, var(--font-serif));
+}
+
 /* Custom selection styling reflecting Laterite brand */
 ::selection {
   background-color: #F7EDE8;

@@ -9,15 +9,17 @@ const plusJakartaSans = Plus_Jakarta_Sans({
   variable: "--font-sans",
   weight: ["400", "500", "600", "700"],
   display: "swap",
+  adjustFontFallback: true,
 });
 
 const newsreader = Newsreader({
   subsets: ["latin"],
   variable: "--font-serif",
   weight: "variable",
-  style: ["normal", "italic"],
+  style: ["normal"],
   display: "swap",
   axes: ["opsz"],
+  adjustFontFallback: true,
 });
 
 export const metadata: Metadata = {
