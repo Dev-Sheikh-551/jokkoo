@@ -12,7 +12,7 @@ export function JoinCtaSection() {
           </div>
 
           <div className="flex flex-col items-start gap-6">
-            <p className="text-base text-warm-bone/90 leading-relaxed max-w-xl">
+            <p className="text-base text-warm-bone leading-relaxed max-w-xl">
               Build your profile from your phone in minutes. Add photos of your work, your area and your WhatsApp number. Free to join.
             </p>
 
@@ -23,7 +23,7 @@ export function JoinCtaSection() {
               Start your profile
             </Link>
 
-            <p className="text-xs text-warm-bone/70">
+            <p className="text-xs text-warm-bone/95">
               We confirm your phone number before the Phone verified badge appears.
             </p>
           </div>
