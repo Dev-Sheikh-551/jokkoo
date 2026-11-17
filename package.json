@@ -9,7 +9,8 @@
     "build": "node -e \"if(process.env.CI || process.env.VERCEL){require('child_process').execSync('node scripts/predeploy-check.mjs', {stdio:'inherit'})}\" && next build",
     "predeploy": "node scripts/predeploy-check.mjs",
     "start": "next start",
-    "lint": "node scripts/check-encoding.mjs && eslint"
+    "lint": "node scripts/check-encoding.mjs && eslint",
+    "perf": "node scripts/perf.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^7.0.5",
