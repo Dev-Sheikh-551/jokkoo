@@ -24,11 +24,11 @@ This document defines the production performance budget and thresholds for Jokko
 Run the automated Lighthouse audit suite against a local production build (`npm run start`):
 
 ```bash
-# Run 3-pass median audit with budget enforcement (fails if any metric exceeds budget)
+# Run 5-pass median audit with budget enforcement (fails if any metric exceeds budget)
 npm run perf
 
 # Generate report table without non-zero exit code
 npm run perf -- --report-only
 ```
 
-The script measures 3 passes per route, extracts the median values for each metric, prints a Markdown comparison table, and exits with code 1 if any route breaches the budget (unless `--report-only` is provided).
+The script measures 5 passes per route on mobile simulated 4G, extracts the median, min, and max for Performance, LCP, TBT, CLS, Total Transfer, measured Unused JavaScript, and the four LCP subparts (TTFB, Resource Load Delay, Resource Load Duration, Element Render Delay), prints Markdown tables, and exits with code 1 if any route breaches the budget (unless `--report-only` is provided).
