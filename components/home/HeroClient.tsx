@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { LazyMotion, domAnimation, AnimatePresence, m } from "motion/react";
+import { LazyMotion, domAnimation, AnimatePresence, MotionConfig, m } from "motion/react";
 import Image from "next/image";
 import { Category } from "@/types/category";
 import { LocationItem } from "@/data/locations";
@@ -128,39 +128,41 @@ export function HeroClient({
       <div className="lg:col-span-5">
         <div className="relative aspect-4/3 lg:aspect-4/5 w-full overflow-hidden rounded-[var(--radius-card,1.5rem)] border border-border-subtle bg-sand-dune shadow-sm">
           <LazyMotion features={domAnimation}>
-            <AnimatePresence mode="wait">
-              <m.div
-                key={selectedTrade}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.25 }}
-                className="relative h-full w-full"
-              >
-                {/* ImagePlaceholder as background fallback if photo fails to load */}
-                <div aria-hidden="true" className="absolute inset-0 h-full w-full">
-                  <ImagePlaceholder
-                    tone={categoryMedia[selectedTrade]?.tone ?? "clay"}
-                    label=""
-                    className="h-full w-full border-none"
-                  />
-                </div>
-                {categoryMedia[selectedTrade]?.src && (
-                  <Image
-                    src={categoryMedia[selectedTrade].src!}
-                    alt={categoryMedia[selectedTrade].alt}
-                    fill
-                    sizes="(min-width: 1024px) 50vw, 100vw"
-                    quality={75}
-                    priority={selectedTrade === (categories[0]?.slug ?? "electrical-work")}
-                    className="object-cover"
-                    style={{
-                      objectPosition: categoryMedia[selectedTrade]?.objectPosition ?? "center",
-                    }}
-                  />
-                )}
-              </m.div>
-            </AnimatePresence>
+            <MotionConfig reducedMotion="user">
+              <AnimatePresence mode="wait">
+                <m.div
+                  key={selectedTrade}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.25 }}
+                  className="relative h-full w-full"
+                >
+                  {/* ImagePlaceholder as background fallback if photo fails to load */}
+                  <div aria-hidden="true" className="absolute inset-0 h-full w-full">
+                    <ImagePlaceholder
+                      tone={categoryMedia[selectedTrade]?.tone ?? "clay"}
+                      label=""
+                      className="h-full w-full border-none"
+                    />
+                  </div>
+                  {categoryMedia[selectedTrade]?.src && (
+                    <Image
+                      src={categoryMedia[selectedTrade].src!}
+                      alt={categoryMedia[selectedTrade].alt}
+                      fill
+                      sizes="(min-width: 1024px) 50vw, 100vw"
+                      quality={75}
+                      priority={selectedTrade === (categories[0]?.slug ?? "electrical-work")}
+                      className="object-cover"
+                      style={{
+                        objectPosition: categoryMedia[selectedTrade]?.objectPosition ?? "center",
+                      }}
+                    />
+                  )}
+                </m.div>
+              </AnimatePresence>
+            </MotionConfig>
           </LazyMotion>
 
           <div className="absolute bottom-3 left-3 sm:bottom-4 sm:left-4 z-10 max-w-[calc(100%-1.5rem)] px-3 py-1 rounded-[2px] bg-deep-slate/90 text-[10px] sm:text-xs font-mono uppercase tracking-wider text-warm-bone backdrop-blur-xs">
