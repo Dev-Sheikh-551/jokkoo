@@ -43,7 +43,10 @@ async function shot(page, name) {
 }
 
 async function main() {
-  const browser = await chromium.launch({ headless: true });
+  const browser = await chromium.launch({
+    headless: true,
+    executablePath: "C:\\Users\\sheik\\AppData\\Local\\ms-playwright\\chromium-1255\\chrome-win64\\chrome.exe",
+  });
 
   // ── 390px mobile screenshots ──────────────────────────────────────────────
   console.log("\n── Screenshots at 390×844 ──");
@@ -136,8 +139,9 @@ async function main() {
     const ctx = await browser.newContext({ viewport: { width: 420, height: 420 } });
     const page = await ctx.newPage();
     for (const q of [75, 70]) {
-      const url = `${BASE}/_next/image?url=%2Fimages%2Fcategories%2Felectrical.jpg&w=384&q=${q}`;
-      await page.goto(url, { waitUntil: "load", timeout: 15000 });
+      const imgUrl = `${BASE}/_next/image?url=%2Fimages%2Fcategories%2Felectrical.jpg&w=384&q=${q}`;
+      await page.setContent(`<!DOCTYPE html><html><body style="margin:0;background:#fff;"><img src="${imgUrl}" style="display:block;width:384px;height:auto;" /></body></html>`);
+      await page.waitForTimeout(500);
       await shot(page, `hero-compare-q${q}.png`);
     }
     await ctx.close();

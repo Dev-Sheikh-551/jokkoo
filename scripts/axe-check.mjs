@@ -59,7 +59,10 @@ async function runAxe(page) {
 }
 
 async function main() {
-  const browser = await chromium.launch({ headless: true });
+  const browser = await chromium.launch({
+    headless: true,
+    executablePath: "C:\\Users\\sheik\\AppData\\Local\\ms-playwright\\chromium-1255\\chrome-win64\\chrome.exe",
+  });
   const ctx = await browser.newContext({ viewport: { width: 390, height: 844 } });
 
   let totalViolations = 0;
