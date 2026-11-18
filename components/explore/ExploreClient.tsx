@@ -3,15 +3,19 @@
 import { useState, useMemo, useEffect, useRef, useCallback } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { Search, SlidersHorizontal, X, RotateCcw } from "lucide-react";
-import { ExploreProfessional, getExploreProfessionals } from "@/data/professionals";
+import dynamic from "next/dynamic";
+import { Search, SlidersHorizontal, RotateCcw, X } from "lucide-react";
+import type { ExploreProfessional } from "@/data/professionals";
 import { CATEGORIES } from "@/data/categories";
 import {
-  GAMBIAN_LOCATIONS,
   getLocationLabel,
   getProfessionalLocationMatch,
 } from "@/data/locations";
 import { ProfessionalCard } from "@/components/professionals/ProfessionalCard";
+
+const FiltersDialog = dynamic(() => import("./FiltersDialog"), {
+  ssr: false,
+});
 
 type SortOption = "recommended" | "newest";
 
@@ -21,12 +25,12 @@ interface ExploreClientProps {
   initialProfessionals?: ExploreProfessional[];
 }
 
-export function ExploreClient({ initialProfessionals }: ExploreClientProps) {
+export function ExploreClient({ initialProfessionals = [] }: ExploreClientProps) {
   const searchParams = useSearchParams();
   const router = useRouter();
 
   const allProfessionals = useMemo(
-    () => initialProfessionals ?? getExploreProfessionals(),
+    () => initialProfessionals,
     [initialProfessionals]
   );
 
@@ -51,10 +55,10 @@ export function ExploreClient({ initialProfessionals }: ExploreClientProps) {
   }
 
   // Draft filters for native <dialog>
+  const [isFiltersDialogOpen, setIsFiltersDialogOpen] = useState(false);
   const [draftLocation, setDraftLocation] = useState(selectedLocation);
   const [draftVerified, setDraftVerified] = useState(onlyVerified);
 
-  const dialogRef = useRef<HTMLDialogElement | null>(null);
   const filterButtonRef = useRef<HTMLButtonElement | null>(null);
   const chipsContainerRef = useRef<HTMLDivElement | null>(null);
   const activeChipRef = useRef<HTMLButtonElement | null>(null);
@@ -134,16 +138,12 @@ export function ExploreClient({ initialProfessionals }: ExploreClientProps) {
   const openFiltersDialog = () => {
     setDraftLocation(selectedLocation);
     setDraftVerified(onlyVerified);
-    if (dialogRef.current) {
-      dialogRef.current.showModal();
-    }
+    setIsFiltersDialogOpen(true);
   };
 
   // Close native <dialog> and return focus
   const closeFiltersDialog = useCallback(() => {
-    if (dialogRef.current && dialogRef.current.open) {
-      dialogRef.current.close();
-    }
+    setIsFiltersDialogOpen(false);
     filterButtonRef.current?.focus();
   }, []);
 
@@ -472,97 +472,21 @@ export function ExploreClient({ initialProfessionals }: ExploreClientProps) {
         </div>
       </div>
 
-      {/* 3. Filters Sheet Dialog (native <dialog>) */}
-      <dialog
-        ref={dialogRef}
-        onCancel={closeFiltersDialog}
-        className="w-full max-w-full m-0 mt-auto rounded-t-2xl sm:rounded-2xl sm:max-w-md sm:m-auto p-0 bg-warm-bone border border-border-subtle shadow-2xl backdrop:bg-deep-slate/60 backdrop:backdrop-blur-xs text-deep-slate"
-      >
-        <div className="flex flex-col max-h-[85vh] overflow-hidden">
-          {/* Dialog Header */}
-          <div className="flex items-center justify-between border-b border-border-subtle px-6 py-4">
-            <h2 className="font-serif font-medium text-xl text-deep-slate">
-              Filters
-            </h2>
-            <button
-              type="button"
-              onClick={closeFiltersDialog}
-              className="h-11 w-11 min-h-[44px] min-w-[44px] -mr-2 flex items-center justify-center rounded-full text-river-silt hover:text-deep-slate hover:bg-sand-dune/40 transition-colors cursor-pointer"
-              aria-label="Close filters"
-            >
-              <X className="h-5 w-5" />
-            </button>
-          </div>
-
-          {/* Dialog Body */}
-          <div className="p-6 space-y-6 overflow-y-auto">
-            {/* Location Filter */}
-            <div className="space-y-2">
-              <label htmlFor="filter-location" className="block text-sm font-semibold text-deep-slate">
-                Location
-              </label>
-              <select
-                id="filter-location"
-                value={draftLocation}
-                onChange={(e) => setDraftLocation(e.target.value)}
-                className="w-full h-11 min-h-[44px] rounded-xl border border-border-subtle bg-white px-3.5 text-sm text-deep-slate focus:border-laterite focus:ring-1 focus:ring-laterite outline-none cursor-pointer"
-              >
-                <option value="">Anywhere in The Gambia</option>
-                {GAMBIAN_LOCATIONS.filter((l) => l.id !== "all").map((loc) => (
-                  <option key={loc.id} value={loc.id}>
-                    {loc.name}
-                  </option>
-                ))}
-              </select>
-              <p className="text-xs text-river-silt">
-                Matches professionals based here or available to work in this area.
-              </p>
-            </div>
-
-            {/* Phone Verified Only Switch */}
-            <div className="pt-2 border-t border-border-subtle flex items-start gap-3">
-              <div className="flex h-6 items-center">
-                <input
-                  id="filter-verified"
-                  type="checkbox"
-                  checked={draftVerified}
-                  onChange={(e) => setDraftVerified(e.target.checked)}
-                  className="h-5 w-5 rounded border-border-subtle text-laterite focus:ring-laterite cursor-pointer"
-                />
-              </div>
-              <div className="space-y-0.5">
-                <label htmlFor="filter-verified" className="text-sm font-semibold text-deep-slate cursor-pointer">
-                  Phone verified only
-                </label>
-                <p className="text-xs text-river-silt">
-                  Only show profiles with a confirmed Gambian phone number.
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Dialog Footer Actions */}
-          <div className="border-t border-border-subtle px-6 py-4 flex items-center justify-between gap-3 bg-sand-dune/20">
-            <button
-              type="button"
-              onClick={() => {
-                setDraftLocation("");
-                setDraftVerified(false);
-              }}
-              className="min-h-[44px] px-4 py-2 text-sm font-medium text-river-silt hover:text-deep-slate transition-colors cursor-pointer"
-            >
-              Clear all
-            </button>
-            <button
-              type="button"
-              onClick={handleApplyDraftFilters}
-              className="inline-flex min-h-[44px] items-center justify-center rounded-full bg-laterite px-6 py-2.5 text-sm font-semibold text-white hover:bg-laterite-dark transition-colors cursor-pointer shadow-xs"
-            >
-              Show {draftResultsCount} {draftResultsCount === 1 ? "result" : "results"}
-            </button>
-          </div>
-        </div>
-      </dialog>
+      {/* 3. Filters Sheet Dialog (dynamically loaded on open) */}
+      <FiltersDialog
+        isOpen={isFiltersDialogOpen}
+        onClose={closeFiltersDialog}
+        draftLocation={draftLocation}
+        setDraftLocation={setDraftLocation}
+        draftVerified={draftVerified}
+        setDraftVerified={setDraftVerified}
+        onClearAll={() => {
+          setDraftLocation("");
+          setDraftVerified(false);
+        }}
+        onApply={handleApplyDraftFilters}
+        draftResultsCount={draftResultsCount}
+      />
 
       {/* 4. Results Grid or Empty States */}
       {allProfessionals.length === 0 ? (

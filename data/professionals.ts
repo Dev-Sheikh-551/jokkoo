@@ -1,7 +1,7 @@
 import type { Professional } from "@/types/professional";
 import { SHOW_MOCK } from "@/lib/mock";
 import { MOCK_PROFESSIONALS } from "@/data/mock/professionals.mock";
-import { getCompleteness } from "@/lib/profile/schema";
+import { getCompleteness } from "@/lib/profile/completeness";
 
 // Real published professionals (populated when users register)
 const REAL_PROFESSIONALS: Professional[] = [];

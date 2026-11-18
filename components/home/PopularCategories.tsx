@@ -49,9 +49,10 @@ export function PopularCategories() {
                     fill
                     sizes={
                       isLarge
-                        ? "(min-width: 1024px) 600px, 100vw"
-                        : "(min-width: 1024px) 280px, 50vw"
+                        ? "(min-width: 1024px) 600px, 1px"
+                        : "(min-width: 1024px) 280px, 1px"
                     }
+                    loading="lazy"
                     quality={75}
                     className="object-cover transition-transform duration-300 group-hover:scale-105"
                     style={{ objectPosition: media.objectPosition ?? "center" }}
@@ -100,7 +101,8 @@ export function PopularCategories() {
                         src={media.src}
                         alt={media.alt}
                         fill
-                        sizes="150px"
+                        sizes="(max-width: 1023px) 150px, 1px"
+                        loading="lazy"
                         quality={75}
                         className="object-cover"
                         style={{ objectPosition: media.objectPosition ?? "center" }}

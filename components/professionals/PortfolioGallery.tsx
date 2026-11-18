@@ -2,9 +2,18 @@
 
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
+import dynamic from "next/dynamic";
 import { ImagePlaceholder } from "@/components/common/ImagePlaceholder";
-import { GalleryLightbox, LightboxPhoto } from "@/components/professionals/GalleryLightbox";
+import type { LightboxPhoto } from "@/components/professionals/GalleryLightbox";
 import { categoryMedia } from "@/lib/media";
+
+const GalleryLightbox = dynamic(
+  () =>
+    import("@/components/professionals/GalleryLightbox").then(
+      (m) => m.GalleryLightbox
+    ),
+  { ssr: false }
+);
 
 export interface WorkPhoto {
   src: string;
