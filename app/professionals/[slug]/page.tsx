@@ -73,10 +73,10 @@ export default async function ProfessionalProfilePage({ params }: PageProps) {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-warm-bone text-deep-slate pb-24 lg:pb-16 [scroll-padding-bottom:5.5rem] lg:[scroll-padding-bottom:2rem]">
+    <div className="min-h-screen flex flex-col bg-warm-bone text-deep-slate">
       <Header />
 
-      <main className="flex-1">
+      <main className="flex-1 pb-24 lg:pb-0 [scroll-padding-bottom:5.5rem] lg:[scroll-padding-bottom:0]">
         {/* Top Breadcrumb Navigation */}
         <div className="border-b border-border-subtle bg-warm-bone/80 px-4 sm:px-6 lg:px-8 py-3.5">
           <div className="mx-auto max-w-7xl flex items-center justify-between text-xs text-river-silt">
@@ -96,6 +96,7 @@ export default async function ProfessionalProfilePage({ params }: PageProps) {
           <PortfolioGallery
             workPhotos={professional.workPhotos}
             displayName={professional.displayName}
+            primaryCategorySlug={professional.primaryCategorySlug}
           />
 
           {/* Desktop Two-column grid / Mobile sequential stack */}
@@ -148,9 +149,11 @@ export default async function ProfessionalProfilePage({ params }: PageProps) {
               <ReviewSection displayName={professional.displayName} />
 
               {/* Disclaimer note */}
-              <p className="text-xs text-river-silt pt-2 border-t border-border-subtle">
-                Details on this profile are provided by the professional.
-              </p>
+              <div className="pt-12 pb-16 border-t border-border-subtle">
+                <p className="text-xs text-river-silt">
+                  Details on this profile are provided by the professional.
+                </p>
+              </div>
             </div>
 
             {/* Desktop Sticky Sidebar (380px, top offset 24px) */}

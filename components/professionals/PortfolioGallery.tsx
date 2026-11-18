@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { ImagePlaceholder } from "@/components/common/ImagePlaceholder";
 import { GalleryLightbox, LightboxPhoto } from "@/components/professionals/GalleryLightbox";
+import { categoryMedia } from "@/lib/media";
 
 export interface WorkPhoto {
   src: string;
@@ -13,11 +14,13 @@ export interface WorkPhoto {
 interface PortfolioGalleryProps {
   workPhotos: WorkPhoto[];
   displayName?: string;
+  primaryCategorySlug?: string;
 }
 
 export function PortfolioGallery({
   workPhotos,
   displayName = "Professional",
+  primaryCategorySlug,
 }: PortfolioGalleryProps) {
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [activePhotoIndex, setActivePhotoIndex] = useState(0);
@@ -58,6 +61,12 @@ export function PortfolioGallery({
 
   const count = workPhotos.length;
 
+  // Resolve object position from categoryMedia config
+  const matchedMedia = primaryCategorySlug
+    ? categoryMedia[primaryCategorySlug]
+    : Object.values(categoryMedia).find((m) => m.src === workPhotos?.[0]?.src);
+  const objectPosition = matchedMedia?.objectPosition ?? "center";
+
   const lightboxPhotos: LightboxPhoto[] = workPhotos.map((photo, i) => ({
     src: photo.src,
     caption: photo.caption || `${displayName}: work photo ${i + 1} of ${count}`,
@@ -83,7 +92,9 @@ export function PortfolioGallery({
       <div className="lg:hidden relative">
         <div
           ref={mobileScrollerRef}
-          className="flex w-full overflow-x-auto snap-x snap-mandatory scrollbar-none aspect-4/3 rounded-[var(--radius-card,1.5rem)] border border-border-subtle bg-sand-dune/30"
+          className={`flex w-full overflow-x-auto snap-x snap-mandatory scrollbar-none ${
+            count === 1 ? "aspect-16/9 max-h-[520px]" : "aspect-4/3"
+          } rounded-[var(--radius-card,1.5rem)] border border-border-subtle bg-sand-dune/30`}
         >
           {workPhotos.map((photo, i) => (
             <button
@@ -99,6 +110,7 @@ export function PortfolioGallery({
                 fill
                 priority={i === 0}
                 className="object-cover"
+                style={{ objectPosition }}
                 sizes="(max-width: 1023px) 100vw, 1px"
                 quality={75}
               />
@@ -115,14 +127,14 @@ export function PortfolioGallery({
       </div>
 
       {/* DESKTOP ADAPTIVE LAYOUT (>= lg):
-          1 photo: 1 wide image (max 480px tall)
+          1 photo: 16:9 frame (max height 520px) with object-position from config
           2 photos: 2 equal columns
           3 photos: large left (2fr) plus 2 stacked right (1fr)
           4+ photos: large left (2fr) plus 2x2 grid right (up to 4 shown, with '+N photos' overlay if > 5)
       */}
       <div className="hidden lg:block w-full">
         {count === 1 && (
-          <div className="relative w-full h-[440px] max-h-[480px] overflow-hidden rounded-[var(--radius-card,1.5rem)] border border-border-subtle bg-sand-dune/20">
+          <div className="relative w-full aspect-16/9 max-h-[520px] max-w-[924px] mx-auto overflow-hidden rounded-[var(--radius-card,1.5rem)] border border-border-subtle bg-sand-dune/20">
             <button
               type="button"
               onClick={(e) => openLightbox(0, e.currentTarget)}
@@ -135,7 +147,8 @@ export function PortfolioGallery({
                 fill
                 priority
                 className="object-cover transition-transform duration-300 group-hover:scale-[1.01]"
-                sizes="(min-width: 1024px) 1280px, 1px"
+                style={{ objectPosition }}
+                sizes="(min-width: 1024px) 924px, 1px"
                 quality={75}
               />
             </button>

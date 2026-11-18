@@ -31,7 +31,7 @@ export function OnboardingSuccess({ draft }: OnboardingSuccessProps) {
       {/* Card Preview */}
       <div className="space-y-2">
         <h2 className="text-xs font-semibold uppercase tracking-wider text-river-silt block text-center">
-          Profile Card Preview
+          Profile card preview
         </h2>
         <div className="max-w-md mx-auto">
           <ProfessionalCard professional={draft} previewMode />

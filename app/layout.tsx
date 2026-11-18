@@ -44,8 +44,8 @@ export default function RootLayout({
       className={`${plusJakartaSans.variable} ${newsreader.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-warm-bone text-deep-slate font-sans selection:bg-laterite-light selection:text-laterite">
-        {children}
         <MockDataPill />
+        {children}
       </body>
     </html>
   );

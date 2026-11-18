@@ -16,7 +16,7 @@ export default function ProfessionalNotFound() {
 
           <div className="space-y-2">
             <h1 className="font-serif font-medium text-3xl sm:text-4xl tracking-tight text-deep-slate">
-              Profile Not Found
+              Profile not found
             </h1>
             <p className="text-sm text-river-silt leading-relaxed">
               The professional profile you are looking for does not exist or may have been unlisted.

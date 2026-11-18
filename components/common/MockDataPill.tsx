@@ -5,10 +5,10 @@ export function MockDataPill() {
 
   return (
     <div
-      className="fixed z-50 pointer-events-none select-none px-2.5 py-1 rounded-full bg-deep-slate/90 text-warm-bone text-[10px] font-mono tracking-wider backdrop-blur-xs border border-warm-bone/10 shadow-sm left-4 bottom-[calc(env(safe-area-inset-bottom,0px)+6rem)] lg:bottom-4 lg:right-4 lg:left-auto"
-      aria-hidden="true"
+      className="w-full h-[28px] bg-deep-slate text-warm-bone font-mono text-[11px] flex items-center justify-center px-4 shrink-0 select-none border-b border-warm-bone/10"
+      aria-label="Preview notice"
     >
-      Preview: sample content
+      Preview: sample content. Not shown in production.
     </div>
   );
 }
