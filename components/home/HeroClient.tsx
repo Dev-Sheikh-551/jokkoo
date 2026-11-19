@@ -14,12 +14,14 @@ interface HeroClientProps {
   categories: Category[];
   locations: LocationItem[];
   defaultCategorySlug?: string;
+  headerCopy?: React.ReactNode;
 }
 
 export function HeroClient({
   categories,
   locations,
   defaultCategorySlug,
+  headerCopy,
 }: HeroClientProps) {
   const router = useRouter();
   const [selectedTrade, setSelectedTrade] = useState(
@@ -42,20 +44,22 @@ export function HeroClient({
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
       {/* Left Column (Text & Search) */}
       <div className="lg:col-span-7 space-y-6">
-        <div>
-          <span className="text-xs sm:text-sm font-semibold uppercase tracking-wider text-river-silt block mb-3">
-            Connecting people across The Gambia
-          </span>
-          <h1 className="font-serif font-medium text-[clamp(2.75rem,6.5vw,5.25rem)] leading-[0.98] tracking-tight text-deep-slate">
-            Skilled hands,{" "}
-            <span className="italic font-normal text-laterite">
-              close to home.
+        {headerCopy || (
+          <div>
+            <span className="text-xs sm:text-sm font-semibold uppercase tracking-wider text-river-silt block mb-3">
+              Connecting people across The Gambia
             </span>
-          </h1>
-          <p className="text-base sm:text-lg text-river-silt max-w-[520px] leading-relaxed mt-4">
-            Electricians, tailors, plumbers, mechanics and more. See their work, then reach them on WhatsApp.
-          </p>
-        </div>
+            <h1 className="font-serif font-medium text-[clamp(2.75rem,6.5vw,5.25rem)] leading-[0.98] tracking-tight text-deep-slate">
+              Skilled hands,{" "}
+              <span className="italic font-normal text-laterite">
+                close to home.
+              </span>
+            </h1>
+            <p className="text-base sm:text-lg text-river-silt max-w-[520px] leading-relaxed mt-4">
+              Electricians, tailors, plumbers, mechanics and more. See their work, then reach them on WhatsApp.
+            </p>
+          </div>
+        )}
 
         {/* Sentence Search Card */}
         <form
