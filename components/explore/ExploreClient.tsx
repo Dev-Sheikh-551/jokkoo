@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect, useRef, useCallback } from "react";
+import { useState, useMemo, useEffect, useRef, useCallback, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import dynamic from "next/dynamic";
@@ -19,6 +19,34 @@ const FiltersDialog = dynamic(() => import("./FiltersDialog"), {
 
 type SortOption = "recommended" | "newest";
 
+interface UrlFilterState {
+  q: string;
+  category: string;
+  location: string;
+  verified: boolean;
+  sort: SortOption;
+}
+
+function SearchParamsSync({
+  onSync,
+}: {
+  onSync: (params: UrlFilterState) => void;
+}) {
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    onSync({
+      q: searchParams.get("q") ?? "",
+      category: searchParams.get("category") ?? "",
+      location: searchParams.get("location") ?? "",
+      verified: searchParams.get("verified") === "true",
+      sort: (searchParams.get("sort") as SortOption) || "recommended",
+    });
+  }, [searchParams, onSync]);
+
+  return null;
+}
+
 const INITIAL_VISIBLE_COUNT = 12;
 
 interface ExploreClientProps {
@@ -26,7 +54,6 @@ interface ExploreClientProps {
 }
 
 export function ExploreClient({ initialProfessionals = [] }: ExploreClientProps) {
-  const searchParams = useSearchParams();
   const router = useRouter();
 
   const allProfessionals = useMemo(
@@ -34,12 +61,35 @@ export function ExploreClient({ initialProfessionals = [] }: ExploreClientProps)
     [initialProfessionals]
   );
 
-  // Canonical state derived directly from URL searchParams
-  const paramQ = searchParams.get("q") ?? "";
-  const selectedCategory = searchParams.get("category") ?? "";
-  const selectedLocation = searchParams.get("location") ?? "";
-  const onlyVerified = searchParams.get("verified") === "true";
-  const sortBy = (searchParams.get("sort") as SortOption) || "recommended";
+  // Default state matches server render (no query params) so client hydrates identically
+  const [urlState, setUrlState] = useState<UrlFilterState>({
+    q: "",
+    category: "",
+    location: "",
+    verified: false,
+    sort: "recommended",
+  });
+
+  const handleUrlSync = useCallback((next: UrlFilterState) => {
+    setUrlState((prev) => {
+      if (
+        prev.q === next.q &&
+        prev.category === next.category &&
+        prev.location === next.location &&
+        prev.verified === next.verified &&
+        prev.sort === next.sort
+      ) {
+        return prev;
+      }
+      return next;
+    });
+  }, []);
+
+  const paramQ = urlState.q;
+  const selectedCategory = urlState.category;
+  const selectedLocation = urlState.location;
+  const onlyVerified = urlState.verified;
+  const sortBy = urlState.sort;
 
   // Local state for interactive typing, pagination, and dialog drafts
   const [query, setQuery] = useState(paramQ);
@@ -81,19 +131,20 @@ export function ExploreClient({ initialProfessionals = [] }: ExploreClientProps)
       setDebouncedQuery(query);
       if (isTypingRef.current) {
         isTypingRef.current = false;
-        const params = new URLSearchParams(searchParams.toString());
-        if (query.trim()) {
-          params.set("q", query.trim());
-        } else {
-          params.delete("q");
-        }
+        const params = new URLSearchParams();
+        if (query.trim()) params.set("q", query.trim());
+        if (selectedCategory && selectedCategory !== "all") params.set("category", selectedCategory);
+        if (selectedLocation && selectedLocation !== "all") params.set("location", selectedLocation);
+        if (onlyVerified) params.set("verified", "true");
+        if (sortBy && sortBy !== "recommended") params.set("sort", sortBy);
         const qs = params.toString();
         router.replace(qs ? `/explore?${qs}` : "/explore", { scroll: false });
+        setUrlState((prev) => ({ ...prev, q: query.trim() }));
       }
     }, 300);
 
     return () => clearTimeout(timer);
-  }, [query, router, searchParams]);
+  }, [query, router, selectedCategory, selectedLocation, onlyVerified, sortBy]);
 
   // Helper to push URL changes for discrete actions (chips, modal apply, sort)
   const pushFilterState = useCallback(
@@ -119,6 +170,13 @@ export function ExploreClient({ initialProfessionals = [] }: ExploreClientProps)
 
       const qs = params.toString();
       router.push(qs ? `/explore?${qs}` : "/explore", { scroll: false });
+      setUrlState({
+        q: nextQ.trim(),
+        category: nextCategory === "all" ? "" : nextCategory,
+        location: nextLocation === "all" ? "" : nextLocation,
+        verified: nextVerified,
+        sort: nextSort,
+      });
       setVisibleCount(INITIAL_VISIBLE_COUNT);
     },
     [selectedCategory, selectedLocation, onlyVerified, sortBy, query, router]
@@ -157,6 +215,13 @@ export function ExploreClient({ initialProfessionals = [] }: ExploreClientProps)
     setDebouncedQuery("");
     setDraftLocation("");
     setDraftVerified(false);
+    setUrlState({
+      q: "",
+      category: "",
+      location: "",
+      verified: false,
+      sort: "recommended",
+    });
     router.push("/explore", { scroll: false });
     setVisibleCount(INITIAL_VISIBLE_COUNT);
     closeFiltersDialog();
@@ -310,6 +375,9 @@ export function ExploreClient({ initialProfessionals = [] }: ExploreClientProps)
   if (allProfessionals.length === 0) {
     return (
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 sm:py-24 text-center">
+        <Suspense fallback={null}>
+          <SearchParamsSync onSync={handleUrlSync} />
+        </Suspense>
         <div className="max-w-xl mx-auto space-y-6">
           <h1 className="font-serif font-medium text-3xl sm:text-4xl text-deep-slate tracking-tight">
             Be one of the first professionals on Jokkoo
@@ -332,6 +400,9 @@ export function ExploreClient({ initialProfessionals = [] }: ExploreClientProps)
 
   return (
     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-8">
+      <Suspense fallback={null}>
+        <SearchParamsSync onSync={handleUrlSync} />
+      </Suspense>
       {/* 1. Header & Live Result Summary */}
       <div className="space-y-2 border-b border-border-subtle pb-6">
         <h1 className="font-serif font-medium text-3xl sm:text-4xl tracking-tight text-deep-slate">
