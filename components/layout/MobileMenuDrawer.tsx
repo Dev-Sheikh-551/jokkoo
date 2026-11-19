@@ -10,7 +10,7 @@ export default function MobileMenuDrawer({
   onClose,
 }: MobileMenuDrawerProps) {
   return (
-    <div className="md:hidden border-b border-border-subtle bg-warm-bone px-4 pt-3 pb-6 animate-in fade-in-50 duration-150 motion-reduce:animate-none">
+    <div className="md:hidden border-b border-border-subtle bg-warm-bone px-4 pt-3 pb-6 animate-in fade-in-50 duration-150 motion-reduce:animate-none motion-reduce:transition-none">
       <nav className="flex flex-col space-y-2">
         {navLinks.map((link) => (
           <Link

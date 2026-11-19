@@ -270,7 +270,8 @@ export default function JoinPage() {
         ) as HTMLElement | null;
         if (element) {
           element.focus();
-          element.scrollIntoView({ behavior: "smooth", block: "center" });
+          const behavior = typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth";
+          element.scrollIntoView({ behavior, block: "center" });
         }
       }
     }
@@ -290,7 +291,8 @@ export default function JoinPage() {
 
   const handleDraftSubmit = (draft: Professional) => {
     setSubmittedDraft(draft);
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    const behavior = typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth";
+    window.scrollTo({ top: 0, behavior });
   };
 
   const handlePublish = async () => {
@@ -309,7 +311,8 @@ export default function JoinPage() {
         ) as HTMLElement | null;
         if (element) {
           element.focus();
-          element.scrollIntoView({ behavior: "smooth", block: "center" });
+          const behavior = typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth";
+          element.scrollIntoView({ behavior, block: "center" });
         }
       }
       return;

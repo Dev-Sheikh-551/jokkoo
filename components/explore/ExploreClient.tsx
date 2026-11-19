@@ -49,6 +49,13 @@ function SearchParamsSync({
 
 const INITIAL_VISIBLE_COUNT = 12;
 
+const getScrollBehavior = (): ScrollBehavior => {
+  if (typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    return "auto";
+  }
+  return "smooth";
+};
+
 interface ExploreClientProps {
   initialProfessionals?: ExploreProfessional[];
 }
@@ -118,7 +125,7 @@ export function ExploreClient({ initialProfessionals = [] }: ExploreClientProps)
   useEffect(() => {
     if (activeChipRef.current) {
       activeChipRef.current.scrollIntoView({
-        behavior: "smooth",
+        behavior: getScrollBehavior(),
         block: "nearest",
         inline: "center",
       });
@@ -493,7 +500,7 @@ export function ExploreClient({ initialProfessionals = [] }: ExploreClientProps)
               ref={!selectedCategory || selectedCategory === "all" ? activeChipRef : null}
               onClick={(e) => {
                 e.currentTarget.scrollIntoView({
-                  behavior: "smooth",
+                  behavior: getScrollBehavior(),
                   block: "nearest",
                   inline: "center",
                 });
@@ -517,7 +524,7 @@ export function ExploreClient({ initialProfessionals = [] }: ExploreClientProps)
                   type="button"
                   onClick={(e) => {
                     e.currentTarget.scrollIntoView({
-                      behavior: "smooth",
+                      behavior: getScrollBehavior(),
                       block: "nearest",
                       inline: "center",
                     });
