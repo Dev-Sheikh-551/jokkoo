@@ -129,10 +129,10 @@ export function HeroClient({
         <div className="relative aspect-4/3 lg:aspect-4/5 w-full overflow-hidden rounded-[var(--radius-card,1.5rem)] border border-border-subtle bg-sand-dune shadow-sm">
           <LazyMotion features={domAnimation}>
             <MotionConfig reducedMotion="user">
-              <AnimatePresence mode="wait">
+              <AnimatePresence mode="wait" initial={false}>
                 <m.div
                   key={selectedTrade}
-                  initial={{ opacity: 0 }}
+                  initial={false}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.25 }}
