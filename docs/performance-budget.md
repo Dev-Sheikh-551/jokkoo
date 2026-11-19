@@ -19,6 +19,11 @@ This document defines the production performance budget and thresholds for Jokko
 3. **Categories (`/categories`)**: Category cards grid with service badges and responsive layout.
 4. **Profile (`/professionals/lamin-ceesay`)**: Full professional portfolio with responsive gallery, contact details, and location coverage.
 
+## Baseline Reports
+
+- [Performance Baseline 2026-11-19](performance-baseline-2026-11-19.md) — Targeted performance diagnosis, shell floor audit, throttling comparison, and font contention benchmarks.
+- [Performance Baseline 2026-11-18](performance-baseline-2026-11-18.md) — Initial Phase 1 post-optimization baseline.
+
 ## Verification & Guardrails
 
 Run the automated Lighthouse audit suite against a local production build (`npm run start`):
